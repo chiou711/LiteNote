@@ -40,13 +40,11 @@ import android.widget.TextView;
 
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_folder;
-import com.cw.litenote.db.DB_page;
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
-import com.cw.litenote.page.Page;
-import com.cw.litenote.page.RecyclerViewFragment;//todo temp
+import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
@@ -159,8 +157,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                     lastPageTableId = pageTableId;
 
 //                System.out.println("TabsHost / _addPages / page_tableId = " + pageTableId);
-//                adapter.addFragment(new Page(i, pageTableId));
-                adapter.addFragment(new RecyclerViewFragment(i, pageTableId));//todo temp
+                adapter.addFragment(new Page_recycler(i, pageTableId));//todo temp
             }
         }
     }
@@ -196,7 +193,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         //todo temp
         // refresh list view of selected page
 //        Page page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
-        RecyclerViewFragment page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
+        Page_recycler page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
 //        if( (tab.getPosition() == audioPlayTabPos) && (page != null) && (page.mItemAdapter != null) )
 //        {
 //            DragSortListView listView = page.drag_listView;
@@ -331,8 +328,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         System.out.println("TabsHost / _onPause");
 
         //  Remove fragments
-//        ArrayList<Page> fragmentList = mTabsPagerAdapter.fragmentList;
-        ArrayList<RecyclerViewFragment> fragmentList = mTabsPagerAdapter.fragmentList;//todo temp
+        ArrayList<Page_recycler> fragmentList = mTabsPagerAdapter.fragmentList;//todo temp
         if( (fragmentList != null) &&
             (fragmentList.size() >0) )
         {
@@ -406,7 +402,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     }
 
 //    public static Page getCurrentPage()
-    public static RecyclerViewFragment getCurrentPage()//todo temp
+    public static Page_recycler getCurrentPage()//todo temp
     {
         return mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
     }

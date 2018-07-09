@@ -50,10 +50,10 @@ import static com.cw.litenote.db.DB_page.KEY_NOTE_LINK_URI;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_MARKING;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_PICTURE_URI;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_TITLE;
-import static com.cw.litenote.page.RecyclerViewFragment.mDb_page;
+import static com.cw.litenote.page.Page_recycler.mDb_page;
 
 // Pager adapter
-public class PageRecyclerViewAdapter extends RecyclerView.Adapter<PageRecyclerViewAdapter.ViewHolder>
+public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recycler.ViewHolder>
 {
 	private AppCompatActivity mAct;
 	private Cursor cursor;
@@ -62,7 +62,7 @@ public class PageRecyclerViewAdapter extends RecyclerView.Adapter<PageRecyclerVi
 	private int style;
 	private int page_pos;
 
-    PageRecyclerViewAdapter(Cursor _cursor,int _page_pos) {
+    PageAdapter_recycler(Cursor _cursor, int _page_pos) {
         cursor = _cursor;
         page_pos = _page_pos;
         style = Util.getCurrentPageStyle(_page_pos);
@@ -72,8 +72,8 @@ public class PageRecyclerViewAdapter extends RecyclerView.Adapter<PageRecyclerVi
         else
             count = 0;
 
-        System.out.println("PageRecyclerViewAdapter / _constructor / count = " + count);
-        System.out.println("PageRecyclerViewAdapter / _constructor / page_pos = " + page_pos);
+        System.out.println("PageAdapter_recycler / _constructor / count = " + count);
+        System.out.println("PageAdapter_recycler / _constructor / page_pos = " + page_pos);
 
         // add this for fixing java.lang.IllegalStateException: attempt to re-open an already-closed object
         mDb_page.open();
@@ -157,7 +157,7 @@ public class PageRecyclerViewAdapter extends RecyclerView.Adapter<PageRecyclerVi
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        System.out.println("PageRecyclerViewAdapter / _onBindViewHolder / page_pos = " + page_pos);
+        System.out.println("PageAdapter_recycler / _onBindViewHolder / page_pos = " + page_pos);
 
         // get DB data
         String strTitle = null;
@@ -525,10 +525,6 @@ public class PageRecyclerViewAdapter extends RecyclerView.Adapter<PageRecyclerVi
 			pictureUri = "http://img.youtube.com/vi/"+Util.getYoutubeId(linkUri)+"/0.jpg";
 		}
 
-        System.out.println("PageRecyclerViewAdapter / _onBindViewHolder / position = " + position);
-        System.out.println("PageRecyclerViewAdapter / _onBindViewHolder / strTitle = " + strTitle);
-        System.out.println("PageRecyclerViewAdapter / _onBindViewHolder / pictureUri = " + pictureUri);
-
 		// case 1: show thumb nail if picture Uri exists
 		if(UtilImage.hasImageExtension(pictureUri, mAct ) ||
 		   UtilVideo.hasVideoExtension(pictureUri, mAct )   )
@@ -540,7 +536,6 @@ public class PageRecyclerViewAdapter extends RecyclerView.Adapter<PageRecyclerVi
 			// load bitmap to image view
 			try
 			{
-                System.out.println("PageRecyclerViewAdapter / _onBindViewHolder / case 1");
 				new UtilImage_bitmapLoader(holder.thumbPicture,
 										   pictureUri,
 										   holder.progressBar,
@@ -549,7 +544,7 @@ public class PageRecyclerViewAdapter extends RecyclerView.Adapter<PageRecyclerVi
 			}
 			catch(Exception e)
 			{
-				Log.e("PageRecyclerViewAdapter", "UtilImage_bitmapLoader error");
+				Log.e("PageAdapter_recycler", "UtilImage_bitmapLoader error");
 				holder.thumbBlock.setVisibility(View.GONE);
 				holder.thumbPicture.setVisibility(View.GONE);
 				holder.thumbAudio.setVisibility(View.GONE);

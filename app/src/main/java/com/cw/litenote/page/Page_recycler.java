@@ -35,7 +35,7 @@ import com.cw.litenote.util.uil.UilCommon;
  * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
  * {@link GridLayoutManager}.
  */
-public class RecyclerViewFragment extends Fragment {
+public class Page_recycler extends Fragment {
 
     public static DB_page mDb_page;
     public RecyclerView mRecyclerView;
@@ -44,13 +44,13 @@ public class RecyclerViewFragment extends Fragment {
     int page_pos;
 
     Cursor mCursor_note;
-    public PageRecyclerViewAdapter mItemAdapter;
+    public PageAdapter_recycler mItemAdapter;
 
-    public RecyclerViewFragment(){
+    public Page_recycler(){
     }
 
     @SuppressLint("ValidFragment")
-    public RecyclerViewFragment(int pos,int id){
+    public Page_recycler(int pos, int id){
         page_pos = pos;
         page_tableId = id;
     }
@@ -88,11 +88,11 @@ public class RecyclerViewFragment extends Fragment {
         mDb_page.open();
         mCursor_note = mDb_page.mCursor_note;
 
-        mItemAdapter = new PageRecyclerViewAdapter(mCursor_note,page_pos);
+        mItemAdapter = new PageAdapter_recycler(mCursor_note,page_pos);
 
         mDb_page.close();// set close here, if cursor is used in mTabsPagerAdapter
 
-        // Set PageRecyclerViewAdapter as the adapter for RecyclerView.
+        // Set PageAdapter_recycler as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mItemAdapter);
 
         UilCommon.init();
