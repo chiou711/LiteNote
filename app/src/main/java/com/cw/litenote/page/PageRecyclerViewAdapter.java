@@ -549,7 +549,7 @@ public class PageRecyclerViewAdapter extends RecyclerView.Adapter<PageRecyclerVi
 			}
 			catch(Exception e)
 			{
-				Log.e("PageAdapter", "UtilImage_bitmapLoader error");
+				Log.e("PageRecyclerViewAdapter", "UtilImage_bitmapLoader error");
 				holder.thumbBlock.setVisibility(View.GONE);
 				holder.thumbPicture.setVisibility(View.GONE);
 				holder.thumbAudio.setVisibility(View.GONE);

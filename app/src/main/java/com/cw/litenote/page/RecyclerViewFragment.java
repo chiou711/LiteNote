@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
+import com.cw.litenote.util.uil.UilCommon;
 
 /**
  * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
@@ -93,6 +94,8 @@ public class RecyclerViewFragment extends Fragment {
 
         // Set PageRecyclerViewAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mItemAdapter);
+
+        UilCommon.init();
 
         return rootView;
     }
