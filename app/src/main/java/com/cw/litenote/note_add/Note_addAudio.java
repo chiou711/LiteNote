@@ -8,6 +8,7 @@ import com.cw.litenote.page.Page;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.page.PageUi;
+import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
 
@@ -162,7 +163,7 @@ public class Note_addAudio extends AppCompatActivity {
 					if( (dB.getNotesCount(true) > 0) &&
 		        		option.equalsIgnoreCase("single_to_top"))
 		        	{
-		        		Page.swap(Page.mDb_page);
+		        		Page_recycler.swap(Page_recycler.mDb_page);
 		        		//update playing focus
 						AudioManager.mAudioPos++;
 		        	}

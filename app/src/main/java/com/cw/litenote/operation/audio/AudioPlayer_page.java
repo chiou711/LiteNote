@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
@@ -196,9 +198,8 @@ public class AudioPlayer_page
 	   					{
 	   						@Override
 	   						public void onBufferingUpdate(MediaPlayer mp, int percent) {
-	   							//todo temp
-//								if(TabsHost.getCurrentPage().seekBarProgress != null)
-//	   								TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
+								if(TabsHost.getCurrentPage().seekBarProgress != null)
+	   								TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
 	   						}
 	   					});
    						
@@ -245,9 +246,8 @@ public class AudioPlayer_page
 //	   			System.out.println("AudioPlayer_page / page_runnable / for non-audio item");
 				nextAudio_player();
 
-				//todo temp
-//				TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().drag_listView);
-//				TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+				TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
+				TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
 
 			}
 		}
@@ -310,10 +310,8 @@ public class AudioPlayer_page
 					if(AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
 					{
                         nextAudio_player();
-                        // todo TBD
-						// todo temp
-//						TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().drag_listView);
-//						TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+						TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
+						TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
 					}
 				}
 			});
@@ -353,9 +351,8 @@ public class AudioPlayer_page
                                         String.format(Locale.US, "%02d", fileSec));
                             }
 
-                            //todo temp
-//                            scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().drag_listView);
-//							TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+                            scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
+							TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
                         }
 
 						if (AudioManager.mMediaPlayer != null)
@@ -397,7 +394,6 @@ public class AudioPlayer_page
 	* In order to view audio highlight item, playing(highlighted) audio item can be auto scrolled to top,
 	* unless it is at the end page of list view, there is no need to scroll.
 	*/
-	//todo How scroll and show highlight?
 	public void scrollHighlightAudioItemToVisible(DragSortListView listView)
 	{
 		System.out.println("AudioPlayer_page / _scrollHighlightAudioItemToVisible");
@@ -491,64 +487,151 @@ public class AudioPlayer_page
 	}
 
 
+	public void scrollHighlightAudioItemToVisible(RecyclerView recyclerView)
+	{
+		System.out.println("AudioPlayer_page / _scrollHighlightAudioItemToVisible");
+
+        LinearLayoutManager layoutMgr = ((LinearLayoutManager) recyclerView.getLayoutManager());
+		// version limitation: _scrollListBy
+		// NoteFragment.drag_listView.scrollListBy(firstVisibleIndex_top);
+		if(Build.VERSION.SDK_INT < 19)
+			return;
+
+		int pos;
+		int itemHeight = 50;//init
+		int dividerHeight;
+		int firstVisible_note_pos;
+		View v;
+
+        pos = layoutMgr.findFirstVisibleItemPosition();
+//			System.out.println("---------------- pos = " + pos);
+
+		View childView;
+		if(recyclerView.getAdapter() != null) {
+            childView = layoutMgr.findViewByPosition(pos);
+			childView.measure(UNBOUNDED, UNBOUNDED);
+			itemHeight = childView.getMeasuredHeight();
+//                System.out.println("---------------- itemHeight = " + itemHeight);
+		}
+
+//		dividerHeight = recyclerView.getDividerHeight();//todo temp
+        dividerHeight = 0;
+//			System.out.println("---------------- dividerHeight = " + dividerHeight);
+
+        firstVisible_note_pos = layoutMgr.findFirstVisibleItemPosition();
+
+		System.out.println("---------------- firstVisible_note_pos = " + firstVisible_note_pos);
+
+		v = recyclerView.getChildAt(0);
+
+		int firstVisibleNote_top = (v == null) ? 0 : v.getTop();
+//			System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
+
+		System.out.println("---------------- AudioManager.mAudioPos = " + AudioManager.mAudioPos);
+
+		if(firstVisibleNote_top < 0)
+		{
+            // restore index and top position
+            recyclerView.scrollBy(0,firstVisibleNote_top);
+//				System.out.println("----- scroll backwards by firstVisibleNote_top " + firstVisibleNote_top);
+		}
+
+		boolean noScroll = false;
+		// base on AudioManager.mAudioPos to scroll
+		if(firstVisible_note_pos != AudioManager.mAudioPos)
+		{
+			while ((firstVisible_note_pos != AudioManager.mAudioPos) && (!noScroll))
+			{
+				int offset = itemHeight + dividerHeight;
+				// scroll forwards
+				if (firstVisible_note_pos > AudioManager.mAudioPos)
+				{
+                    recyclerView.scrollBy(0,-offset);
+//						System.out.println("-----scroll forwards (to top)" + (-offset));
+				}
+				// scroll backwards
+				else if (firstVisible_note_pos < AudioManager.mAudioPos)
+				{
+					// when real item height could be larger than visible item height, so
+					// scroll twice here in odder to do scroll successfully, otherwise scroll could fail
+                    recyclerView.scrollBy(0,offset/2);
+                    recyclerView.scrollBy(0,offset/2);
+					System.out.println("-----scroll backwards (to bottom) " + offset);
+				}
+
+//					System.out.println("---------------- firstVisible_note_pos = " + firstVisible_note_pos);
+//					System.out.println("---------------- Page.drag_listView.getFirstVisiblePosition() = " + listView.getFirstVisiblePosition());
+				if(firstVisible_note_pos == layoutMgr.findFirstVisibleItemPosition())
+					noScroll = true;
+				else {
+					// update first visible index
+					firstVisible_note_pos = layoutMgr.findFirstVisibleItemPosition();
+				}
+			}
+
+			// do v scroll
+			TabsHost.store_listView_vScroll(recyclerView);
+			TabsHost.resume_listView_vScroll(recyclerView);
+		}
+	}
+
     /**
      * Start new audio
      */
-	private void startNewAudio()
-	{
+    private void startNewAudio()
+    {
         System.out.println("AudioPlayer_page / _startNewAudio / AudioManager.mAudioPos = " + AudioManager.mAudioPos);
 
-		// remove call backs to make sure next toast will appear soon
-		if(mAudioHandler != null)
-			mAudioHandler.removeCallbacks(page_runnable);
+        // remove call backs to make sure next toast will appear soon
+        if(mAudioHandler != null)
+            mAudioHandler.removeCallbacks(page_runnable);
         mAudioHandler = null;
         mAudioHandler = new Handler();
 
         AudioManager.isRunnableOn_page = true;
         AudioManager.isRunnableOn_note = false;
-		AudioManager.mMediaPlayer = null;
+        AudioManager.mMediaPlayer = null;
 
-		// verify audio URL
-		Async_audioUrlVerify.mIsOkUrl = false;
+        // verify audio URL
+        Async_audioUrlVerify.mIsOkUrl = false;
 
-		if( (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE) &&
-            (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0)          )
-		{
-			mAudioHandler.postDelayed(page_runnable,Util.oneSecond/4);
-		}
-		else
-		{
-			mAudioUrlVerifyTask = new Async_audioUrlVerify(act, mAudioManager.getAudioStringAt(AudioManager.mAudioPos));
-			mAudioUrlVerifyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
+        if( (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE) &&
+                (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0)          )
+        {
+            mAudioHandler.postDelayed(page_runnable,Util.oneSecond/4);
+        }
+        else
+        {
+            mAudioUrlVerifyTask = new Async_audioUrlVerify(act, mAudioManager.getAudioStringAt(AudioManager.mAudioPos));
+            mAudioUrlVerifyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
 
-			while(!Async_audioUrlVerify.mIsOkUrl)
-			{
-				//wait for Url verification
-				try {
-					Thread.sleep(Util.oneSecond/20);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+            while(!Async_audioUrlVerify.mIsOkUrl)
+            {
+                //wait for Url verification
+                try {
+                    Thread.sleep(Util.oneSecond/20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
-			// prepare audio
-			if(Async_audioUrlVerify.mIsOkUrl)
-			{
-				// launch handler
-				if( (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) &&
-						(AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)   )
-				{
-					mAudioHandler.postDelayed(page_runnable, Util.oneSecond / 4);
-				}
+            // prepare audio
+            if(Async_audioUrlVerify.mIsOkUrl)
+            {
+                // launch handler
+                if( (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) &&
+                        (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)   )
+                {
+                    mAudioHandler.postDelayed(page_runnable, Util.oneSecond / 4);
+                }
 
-				// during audio Preparing
-				Async_audioPrepare mAsyncTaskAudioPrepare = new Async_audioPrepare(act);
-				mAsyncTaskAudioPrepare.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Preparing to play ...");
-			}
-		}
+                // during audio Preparing
+                Async_audioPrepare mAsyncTaskAudioPrepare = new Async_audioPrepare(act);
+                mAsyncTaskAudioPrepare.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Preparing to play ...");
+            }
+        }
 
     }
-	
 
     /**
      * Play next audio at AudioPlayer_page

@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
@@ -48,6 +49,7 @@ public class Page_recycler extends Fragment {
     int page_pos;
     public static int currPlayPosition;
     public static int mHighlightPosition;
+    public SeekBar seekBarProgress;
     public AppCompatActivity mAct;
 
     Cursor mCursor_note;
@@ -127,6 +129,86 @@ public class Page_recycler extends Fragment {
         //init
         TabsHost.showFooter(mAct);
     }
+
+    // swap rows
+    protected static void swapRows(DB_page dB_page, int startPosition, int endPosition)
+    {
+        Long mNoteNumber1;
+        String mNoteTitle1;
+        String mNotePictureUri1;
+        String mNoteAudioUri1;
+        String mNoteLinkUri1;
+        String mNoteBodyString1;
+        int mMarkingIndex1;
+        Long mCreateTime1;
+        Long mNoteNumber2 ;
+        String mNotePictureUri2;
+        String mNoteAudioUri2;
+        String mNoteLinkUri2;
+        String mNoteTitle2;
+        String mNoteBodyString2;
+        int mMarkingIndex2;
+        Long mCreateTime2;
+
+        dB_page.open();
+        mNoteNumber1 = dB_page.getNoteId(startPosition,false);
+        mNoteTitle1 = dB_page.getNoteTitle(startPosition,false);
+        mNotePictureUri1 = dB_page.getNotePictureUri(startPosition,false);
+        mNoteAudioUri1 = dB_page.getNoteAudioUri(startPosition,false);
+        mNoteLinkUri1 = dB_page.getNoteLinkUri(startPosition,false);
+        mNoteBodyString1 = dB_page.getNoteBody(startPosition,false);
+        mMarkingIndex1 = dB_page.getNoteMarking(startPosition,false);
+        mCreateTime1 = dB_page.getNoteCreatedTime(startPosition,false);
+
+        mNoteNumber2 = dB_page.getNoteId(endPosition,false);
+        mNoteTitle2 = dB_page.getNoteTitle(endPosition,false);
+        mNotePictureUri2 = dB_page.getNotePictureUri(endPosition,false);
+        mNoteAudioUri2 = dB_page.getNoteAudioUri(endPosition,false);
+        mNoteLinkUri2 = dB_page.getNoteLinkUri(endPosition,false);
+        mNoteBodyString2 = dB_page.getNoteBody(endPosition,false);
+        mMarkingIndex2 = dB_page.getNoteMarking(endPosition,false);
+        mCreateTime2 = dB_page.getNoteCreatedTime(endPosition,false);
+
+        dB_page.updateNote(mNoteNumber2,
+                mNoteTitle1,
+                mNotePictureUri1,
+                mNoteAudioUri1,
+                "",
+                mNoteLinkUri1,
+                mNoteBodyString1,
+                mMarkingIndex1,
+                mCreateTime1,false);
+
+        dB_page.updateNote(mNoteNumber1,
+                mNoteTitle2,
+                mNotePictureUri2,
+                mNoteAudioUri2,
+                "",
+                mNoteLinkUri2,
+                mNoteBodyString2,
+                mMarkingIndex2,
+                mCreateTime2,false);
+
+        dB_page.close();
+    }
+
+    static public void swap(DB_page dB_page)
+    {
+        int startCursor = dB_page.getNotesCount(true)-1;
+        int endCursor = 0;
+
+        //reorder data base storage for ADD_NEW_TO_TOP option
+        int loop = Math.abs(startCursor-endCursor);
+        for(int i=0;i< loop;i++)
+        {
+            swapRows(dB_page, startCursor,endCursor);
+            if((startCursor-endCursor) >0)
+                endCursor++;
+            else
+                endCursor--;
+        }
+    }
+
 
     public int getNotesCountInPage(AppCompatActivity mAct)
     {
