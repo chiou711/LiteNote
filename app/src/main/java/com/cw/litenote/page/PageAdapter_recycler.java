@@ -157,7 +157,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        System.out.println("PageAdapter_recycler / _onBindViewHolder / page_pos = " + page_pos);
+        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
 
         // get DB data
         String strTitle = null;

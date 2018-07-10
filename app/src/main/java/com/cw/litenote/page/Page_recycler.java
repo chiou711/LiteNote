@@ -48,6 +48,7 @@ public class Page_recycler extends Fragment {
     int page_pos;
     public static int currPlayPosition;
     public static int mHighlightPosition;
+    public AppCompatActivity mAct;
 
     Cursor mCursor_note;
     public PageAdapter_recycler mItemAdapter;
@@ -69,6 +70,7 @@ public class Page_recycler extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+		System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
         View rootView = inflater.inflate(R.layout.recycler_view_frag, container, false);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
@@ -90,18 +92,11 @@ public class Page_recycler extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.scrollToPosition(scrollPosition);
 
-        mDb_page = new DB_page(getActivity(), page_tableId);
-        mDb_page.open();
-        mCursor_note = mDb_page.mCursor_note;
-
-        mItemAdapter = new PageAdapter_recycler(mCursor_note,page_pos);
-
-        mDb_page.close();// set close here, if cursor is used in mTabsPagerAdapter
-
-        // Set PageAdapter_recycler as the adapter for RecyclerView.
-        recyclerView.setAdapter(mItemAdapter);
 
         UilCommon.init();
+
+        mAct = MainAct.mAct;
+        fillData();
 
         return rootView;
     }
@@ -114,6 +109,23 @@ public class Page_recycler extends Fragment {
             System.out.println("Page_recycler / _onResume / resume_listView_vScroll");
             TabsHost.resume_listView_vScroll(recyclerView);
         }
+    }
+
+    public void fillData()
+    {
+        mDb_page = new DB_page(getActivity(), page_tableId);
+        mDb_page.open();
+        mCursor_note = mDb_page.mCursor_note;
+
+        mItemAdapter = new PageAdapter_recycler(mCursor_note,page_pos);
+
+        mDb_page.close();// set close here, if cursor is used in mTabsPagerAdapter
+
+        // Set PageAdapter_recycler as the adapter for RecyclerView.
+        recyclerView.setAdapter(mItemAdapter);
+
+        //init
+        TabsHost.showFooter(mAct);
     }
 
     public int getNotesCountInPage(AppCompatActivity mAct)

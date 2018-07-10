@@ -98,7 +98,7 @@ public class Note_addText extends Activity {
             	else
             	{
         			Toast.makeText(Note_addText.this, R.string.btn_Cancel, Toast.LENGTH_SHORT).show();
-        			System.out.println("NoteFragment / Activity.RESULT_CANCELED");
+        			System.out.println("Note_addText / Activity.RESULT_CANCELED");
                     note_common.deleteNote(rowId);
                     enSaveDb = false;
                     setResult(RESULT_CANCELED, getIntent());
