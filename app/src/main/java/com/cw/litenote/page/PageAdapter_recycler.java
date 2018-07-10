@@ -30,6 +30,7 @@ import com.cw.litenote.note.Note;
 import com.cw.litenote.note.Note_edit;
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
+import com.cw.litenote.tabs.AudioUi_page;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.CustomWebView;
@@ -40,7 +41,6 @@ import com.cw.litenote.util.image.UtilImage;
 import com.cw.litenote.util.image.UtilImage_bitmapLoader;
 import com.cw.litenote.util.uil.UilCommon;
 import com.cw.litenote.util.video.UtilVideo;
-import com.mobeta.android.dslv.DragSortListView;
 
 import static android.content.ContentValues.TAG;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_AUDIO_URI;
@@ -116,7 +116,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 }
             });
 
-            textTitle = (TextView) v.findViewById(R.id.row_title);//todo temp
+            textTitle = (TextView) v.findViewById(R.id.row_title);
             rowId= (TextView) v.findViewById(R.id.row_id);
             audioBlock = v.findViewById(R.id.audio_block);
             iconAudio = (ImageView) v.findViewById(R.id.img_audio);
@@ -148,7 +148,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.page_view_card, viewGroup, false);//todo temp
+                .inflate(R.layout.page_view_card, viewGroup, false);
 
         return new ViewHolder(v);
     }
@@ -227,8 +227,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 }
 
                 //Toggle marking will resume page, so do Store v scroll
-//                DragSortListView listView = TabsHost.mTabsPagerAdapter.fragmentList.get(TabsHost.getFocus_tabPos()).drag_listView;
-                DragSortListView listView = null;//todo temp
+                RecyclerView listView = TabsHost.mTabsPagerAdapter.fragmentList.get(TabsHost.getFocus_tabPos()).recyclerView;
                 TabsHost.store_listView_vScroll(listView);
                 TabsHost.isDoingMarking = true;
 
@@ -253,7 +252,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         holder.btnViewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                TabsHost.getCurrentPage().currPlayPosition = position;//todo temp
+                TabsHost.getCurrentPage().currPlayPosition = position;
                 DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
                 int count = db_page.getNotesCount(true);
                 if(position < count)
@@ -331,8 +330,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                         AudioManager.mAudioPos = position;
                         AudioManager.setAudioPlayMode(AudioManager.PAGE_PLAY_MODE);
 
-                        //todo temp
-//                        TabsHost.audioUi_page = new AudioUi_page(mAct, TabsHost.getCurrentPage().drag_listView);
+                        TabsHost.audioUi_page = new AudioUi_page(mAct, TabsHost.getCurrentPage().recyclerView);
                         TabsHost.audioUi_page.initAudioBlock(MainAct.mAct);
 
                         TabsHost.audioPlayer_page = new AudioPlayer_page(mAct,TabsHost.audioUi_page);
@@ -394,8 +392,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         {
             @Override
             public void onClick(View v) {
-                //todo temp
-//                TabsHost.getCurrentPage().currPlayPosition = position;
+                TabsHost.getCurrentPage().currPlayPosition = position;
                 DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
                 db_page.open();
                 int count = db_page.getNotesCount(false);
@@ -448,8 +445,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE) 	)
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
-            //todo temp
-//            TabsHost.getCurrentPage().mHighlightPosition = position;
+            TabsHost.getCurrentPage().mHighlightPosition = position;
             holder.audioBlock.setBackgroundResource(R.drawable.bg_highlight_border);
             holder.audioBlock.setVisibility(View.VISIBLE);
 

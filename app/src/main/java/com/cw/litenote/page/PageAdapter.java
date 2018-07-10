@@ -285,7 +285,7 @@ public class PageAdapter extends SimpleDragSortCursorAdapter // DragSortCursorAd
         holder.btnViewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                TabsHost.getCurrentPage().currPlayPosition = position;//todo temp
+                TabsHost.getCurrentPage().currPlayPosition = position;
                 DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
                 int count = db_page.getNotesCount(true);
                 if(position < count)
@@ -363,8 +363,7 @@ public class PageAdapter extends SimpleDragSortCursorAdapter // DragSortCursorAd
                         AudioManager.mAudioPos = position;
                         AudioManager.setAudioPlayMode(AudioManager.PAGE_PLAY_MODE);
 
-                        //todo temp
-//                        TabsHost.audioUi_page = new AudioUi_page(mAct, TabsHost.getCurrentPage().drag_listView);
+                        TabsHost.audioUi_page = new AudioUi_page(mAct, TabsHost.getCurrentPage().recyclerView);
                         TabsHost.audioUi_page.initAudioBlock(MainAct.mAct);
 
                         TabsHost.audioPlayer_page = new AudioPlayer_page(mAct,TabsHost.audioUi_page);
@@ -435,8 +434,7 @@ public class PageAdapter extends SimpleDragSortCursorAdapter // DragSortCursorAd
         {
             @Override
             public void onClick(View v) {
-                //todo temp
-//                TabsHost.getCurrentPage().currPlayPosition = position;
+                TabsHost.getCurrentPage().currPlayPosition = position;
                 DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
                 db_page.open();
                 int count = db_page.getNotesCount(false);
@@ -489,8 +487,7 @@ public class PageAdapter extends SimpleDragSortCursorAdapter // DragSortCursorAd
             (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE) 	)
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
-            //todo temp
-//            TabsHost.getCurrentPage().mHighlightPosition = position;
+            TabsHost.getCurrentPage().mHighlightPosition = position;
             holder.audioBlock.setBackgroundResource(R.drawable.bg_highlight_border);
             holder.audioBlock.setVisibility(View.VISIBLE);
 

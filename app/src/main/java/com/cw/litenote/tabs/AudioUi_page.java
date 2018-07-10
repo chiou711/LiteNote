@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,9 +37,9 @@ public class AudioUi_page {
     public ImageView audioPanel_play_button;
     public SeekBar seekBarProgress;
     public static int mProgress;
-    DragSortListView listView;
+    RecyclerView listView;
 
-    public AudioUi_page(AppCompatActivity act, DragSortListView _listView)
+    public AudioUi_page(AppCompatActivity act, RecyclerView _listView)
     {
         this.mAct = act;
         listView = _listView;
@@ -180,11 +181,12 @@ public class AudioUi_page {
                 // update status
                 UtilAudio.updateAudioPanel((ImageView)v, audio_panel_title_textView); // here v is audio play button
 
-                //todo temp
-//                if(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)
-//                    TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().drag_listView);
-//
-//                TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+                if(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) {
+                    //todo temp
+//                    TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
+                }
+
+                TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
 
             }
         });
@@ -254,11 +256,12 @@ public class AudioUi_page {
         // update status
         UtilAudio.updateAudioPanel(audioPanel_play_button, audio_panel_title_textView);
 
-        //todo temp
-//        if(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)
-//            TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().drag_listView);
-//
-//        TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+        if(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) {
+            //todo temp
+//            TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
+        }
+
+        TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
     }
 
 }

@@ -498,8 +498,7 @@ public class Util
 
 		String sentString = NEW_LINE;
 
-//		int pageTableId = TabsHost.mTabsPagerAdapter.getItem(tabPos).page_tableId;
-		int pageTableId = 1;//todo temp
+		int pageTableId = TabsHost.mTabsPagerAdapter.getItem(tabPos).page_tableId;
 		List<Long> noteIdArray = new ArrayList<>();
 
 		DB_page dbPage = new DB_page(MainAct.mAct, pageTableId);

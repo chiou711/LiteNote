@@ -159,10 +159,9 @@ public class AudioManager
 
 	public static int getPlayingPage_notesCount()
     {
-//        int playingPageTableId = TabsHost.mTabsPagerAdapter.getItem(TabsHost.audioPlayTabPos).page_tableId;
-//        DB_page db_page = new DB_page(MainAct.mAct, playingPageTableId);
-//        return db_page.getNotesCount(true);
-        return 1;//todo temp
+        int playingPageTableId = TabsHost.mTabsPagerAdapter.getItem(TabsHost.audioPlayTabPos).page_tableId;
+        DB_page db_page = new DB_page(MainAct.mAct, playingPageTableId);
+        return db_page.getNotesCount(true);
     }
 	
 }

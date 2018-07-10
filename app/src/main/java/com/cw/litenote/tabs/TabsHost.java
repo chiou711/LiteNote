@@ -29,6 +29,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,7 @@ import android.widget.TextView;
 
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_folder;
+import com.cw.litenote.db.DB_page;
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.audio.AudioManager;
@@ -157,7 +159,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                     lastPageTableId = pageTableId;
 
 //                System.out.println("TabsHost / _addPages / page_tableId = " + pageTableId);
-                adapter.addFragment(new Page_recycler(i, pageTableId));//todo temp
+                adapter.addFragment(new Page_recycler(i, pageTableId));
             }
         }
     }
@@ -190,20 +192,19 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // current page table Id
         mFocusPageTableId = pageTableId;
 
-        //todo temp
         // refresh list view of selected page
-//        Page page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
         Page_recycler page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
-//        if( (tab.getPosition() == audioPlayTabPos) && (page != null) && (page.mItemAdapter != null) )
-//        {
-//            DragSortListView listView = page.drag_listView;
-//            if( !isDoingMarking &&
-//                (listView != null) &&
-//                (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)  )
-//            {
+        if( (tab.getPosition() == audioPlayTabPos) && (page != null) && (page.mItemAdapter != null) )
+        {
+            RecyclerView listView = page.recyclerView;
+            if( !isDoingMarking &&
+                (listView != null) &&
+                (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)  )
+            {
+                //todo temp
 //                audioPlayer_page.scrollHighlightAudioItemToVisible(listView);//todo Affected by toggle marking
-//            }
-//        }
+            }
+        }
 
         // add for update page item view
         if((page != null) && (page.mItemAdapter != null))
@@ -328,14 +329,14 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         System.out.println("TabsHost / _onPause");
 
         //  Remove fragments
-        ArrayList<Page_recycler> fragmentList = mTabsPagerAdapter.fragmentList;//todo temp
+        ArrayList<Page_recycler> fragmentList = mTabsPagerAdapter.fragmentList;
         if( (fragmentList != null) &&
             (fragmentList.size() >0) )
         {
-            //todo temp
-            RecyclerView listView = fragmentList.get(getFocus_tabPos()).mRecyclerView;//drag_listView;
-//            if(listView != null)
-//                store_listView_vScroll(listView);
+            RecyclerView listView = fragmentList.get(getFocus_tabPos()).recyclerView;//drag_listView;
+
+            if(listView != null)
+                store_listView_vScroll(listView);
 
             for (int i = 0; i < fragmentList.size(); i++) {
                 MainAct.mAct.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();//todo exception! Activity has been destroyed
@@ -364,6 +365,23 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         Pref.setPref_focusView_list_view_first_visible_index_top(MainAct.mAct, firstVisibleIndexTop);
     }
 
+    // store scroll of recycler view
+    public static void store_listView_vScroll(RecyclerView recyclerView)
+    {
+        int firstVisibleIndex = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                .findFirstVisibleItemPosition();
+
+        View v = recyclerView.getChildAt(0);
+        int firstVisibleIndexTop = (v == null) ? 0 : v.getTop();
+
+        System.out.println("TabsHost / _store_listView_vScroll / firstVisibleIndex = " + firstVisibleIndex +
+                " , firstVisibleIndexTop = " + firstVisibleIndexTop);
+
+        // keep index and top position
+        Pref.setPref_focusView_list_view_first_visible_index(MainAct.mAct, firstVisibleIndex);
+        Pref.setPref_focusView_list_view_first_visible_index_top(MainAct.mAct, firstVisibleIndexTop);
+    }
+
     // resume scroll of list view
     public static void resume_listView_vScroll(DragSortListView listView)
     {
@@ -372,11 +390,26 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         int firstVisibleIndexTop = Pref.getPref_focusView_list_view_first_visible_index_top(MainAct.mAct);
 
         System.out.println("TabsHost / _resume_listView_vScroll / firstVisibleIndex = " + firstVisibleIndex +
-                                                           " , firstVisibleIndexTop = " + firstVisibleIndexTop);
+                " , firstVisibleIndexTop = " + firstVisibleIndexTop);
 
         // restore index and top position
         listView.setSelectionFromTop(firstVisibleIndex, firstVisibleIndexTop);
     }
+
+    // resume scroll of recycler view
+    public static void resume_listView_vScroll(RecyclerView recyclerView)
+    {
+        // recover scroll Y
+        int firstVisibleIndex = Pref.getPref_focusView_list_view_first_visible_index(MainAct.mAct);
+        int firstVisibleIndexTop = Pref.getPref_focusView_list_view_first_visible_index_top(MainAct.mAct);
+
+        System.out.println("TabsHost / _resume_listView_vScroll / firstVisibleIndex = " + firstVisibleIndex +
+                " , firstVisibleIndexTop = " + firstVisibleIndexTop);
+
+        // restore index and top position
+        ((LinearLayoutManager)recyclerView.getLayoutManager()).scrollToPositionWithOffset(firstVisibleIndex, firstVisibleIndexTop);
+    }
+
 
     /**
      * Get first position page Id
@@ -401,8 +434,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         mViewPager.setCurrentItem(pagePos);
     }
 
-//    public static Page getCurrentPage()
-    public static Page_recycler getCurrentPage()//todo temp
+    public static Page_recycler getCurrentPage()
     {
         return mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
     }
@@ -416,8 +448,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     public static void getPage_rowItemView(int rowPos)
     {
         //todo temp
-//        DragSortListView listView = getCurrentPage().drag_listView;
-//        View convertView = listView.getChildAt(rowPos);
+        RecyclerView listView = getCurrentPage().recyclerView;
+        View convertView = listView.getChildAt(rowPos);
 //        listView.getAdapter().getView(rowPos, convertView, listView);
         mTabsPagerAdapter.notifyDataSetChanged();
     }
@@ -653,16 +685,14 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     // get footer message of list view
     static String getFooterMessage(AppCompatActivity mAct)
     {
-        //todo temp
-//        DB_page mDb_page = new DB_page(mAct, mTabsPagerAdapter.getItem(getFocus_tabPos()).page_tableId);
-//        return mAct.getResources().getText(R.string.footer_checked).toString() +
-//                "/" +
-//                mAct.getResources().getText(R.string.footer_total).toString() +
-//                ": " +
-//                mDb_page.getCheckedNotesCount() +
-//                "/" +
-//                mDb_page.getNotesCount(true);
-        return "";
+        DB_page mDb_page = new DB_page(mAct, mTabsPagerAdapter.getItem(getFocus_tabPos()).page_tableId);
+        return mAct.getResources().getText(R.string.footer_checked).toString() +
+                "/" +
+                mAct.getResources().getText(R.string.footer_total).toString() +
+                ": " +
+                mDb_page.getCheckedNotesCount() +
+                "/" +
+                mDb_page.getNotesCount(true);
     }
 
     /**

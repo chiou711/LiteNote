@@ -23,6 +23,7 @@ import com.cw.litenote.operation.import_export.Import_webAct;
 import com.cw.litenote.page.Checked_notes_option;
 import com.cw.litenote.page.Page;
 import com.cw.litenote.page.PageUi;
+import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.tabs.AudioUi_page;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.DeleteFileAlarmReceiver;
@@ -598,15 +599,14 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
             builder = new AlertDialog.Builder(this);
 
-            //todo temp
-//            do
-//            {
-//                TabsHost.getCurrentPage().currPlayPosition++;
-//                if(Page.currPlayPosition >= TabsHost.getCurrentPage().getNotesCountInPage(mAct))
-//                    TabsHost.getCurrentPage().currPlayPosition = 0; //back to first index
-//
-//                nextLinkTitle = mMainUi.getYouTubeLink(this,TabsHost.getCurrentPage().currPlayPosition);
-//            }
+            do
+            {
+                TabsHost.getCurrentPage().currPlayPosition++;
+                if(Page.currPlayPosition >= TabsHost.getCurrentPage().getNotesCountInPage(mAct))
+                    TabsHost.getCurrentPage().currPlayPosition = 0; //back to first index
+
+                nextLinkTitle = mMainUi.getYouTubeLink(this,TabsHost.getCurrentPage().currPlayPosition);
+            }
             while (!Util.isYouTubeLink(nextLinkTitle));
 
             countStr = getResources().getString(R.string.message_continue_or_stop_YouTube_message);
@@ -1016,9 +1016,8 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
                     AudioManager.setAudioPlayMode(AudioManager.PAGE_PLAY_MODE);
                     AudioManager.mAudioPos = 0;
 
-//                    Page page = TabsHost.getCurrentPage();//todo temp
-                    Page page = null;
-                    TabsHost.audioUi_page = new AudioUi_page(this,page.drag_listView);
+                    Page_recycler page = TabsHost.getCurrentPage();
+                    TabsHost.audioUi_page = new AudioUi_page(this,page.recyclerView);
                     TabsHost.audioUi_page.initAudioBlock(this);
 
                     TabsHost.audioPlayer_page = new AudioPlayer_page(this,TabsHost.audioUi_page);
