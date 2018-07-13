@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ import android.widget.SeekBar;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.main.MainAct;
+import com.cw.litenote.page.helper.OnStartDragListener;
+import com.cw.litenote.page.helper.SimpleItemTouchHelperCallback;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.preferences.Pref;
 import com.cw.litenote.util.uil.UilCommon;
@@ -40,7 +43,7 @@ import com.cw.litenote.util.uil.UilCommon;
  * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
  * {@link GridLayoutManager}.
  */
-public class Page_recycler extends Fragment {
+public class Page_recycler extends Fragment implements OnStartDragListener {
 
     public static DB_page mDb_page;
     public RecyclerView recyclerView;
@@ -54,6 +57,8 @@ public class Page_recycler extends Fragment {
 
     Cursor mCursor_note;
     public PageAdapter_recycler mItemAdapter;
+
+    private ItemTouchHelper mItemTouchHelper;
 
     public Page_recycler(){
     }
@@ -100,6 +105,10 @@ public class Page_recycler extends Fragment {
         mAct = MainAct.mAct;
         fillData();
 
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mItemAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
+
         return rootView;
     }
 
@@ -119,7 +128,7 @@ public class Page_recycler extends Fragment {
         mDb_page.open();
         mCursor_note = mDb_page.mCursor_note;
 
-        mItemAdapter = new PageAdapter_recycler(mCursor_note,page_pos);
+        mItemAdapter = new PageAdapter_recycler(mCursor_note,page_pos, this);
 
         mDb_page.close();// set close here, if cursor is used in mTabsPagerAdapter
 
@@ -217,5 +226,10 @@ public class Page_recycler extends Fragment {
         int count = mDb_page.getNotesCount(false);
         mDb_page.close();
         return count;
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
     }
 }

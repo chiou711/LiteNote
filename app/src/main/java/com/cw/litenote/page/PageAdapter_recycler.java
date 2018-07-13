@@ -6,11 +6,13 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -30,6 +32,9 @@ import com.cw.litenote.note.Note;
 import com.cw.litenote.note.Note_edit;
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
+import com.cw.litenote.page.helper.ItemTouchHelperAdapter;
+import com.cw.litenote.page.helper.ItemTouchHelperViewHolder;
+import com.cw.litenote.page.helper.OnStartDragListener;
 import com.cw.litenote.tabs.AudioUi_page;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.ColorSet;
@@ -51,9 +56,11 @@ import static com.cw.litenote.db.DB_page.KEY_NOTE_MARKING;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_PICTURE_URI;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_TITLE;
 import static com.cw.litenote.page.Page_recycler.mDb_page;
+import static com.cw.litenote.page.Page_recycler.swapRows;
 
 // Pager adapter
 public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recycler.ViewHolder>
+        implements ItemTouchHelperAdapter
 {
 	private AppCompatActivity mAct;
 	private Cursor cursor;
@@ -61,8 +68,9 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 	private String linkUri;
 	private int style;
 	private int page_pos;
+    private final OnStartDragListener mDragStartListener;
 
-    PageAdapter_recycler(Cursor _cursor, int _page_pos) {
+    PageAdapter_recycler(Cursor _cursor, int _page_pos, OnStartDragListener dragStartListener) {
         cursor = _cursor;
         page_pos = _page_pos;
         style = Util.getCurrentPageStyle(_page_pos);
@@ -80,12 +88,14 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         mDb_page.close();
 
         mAct = MainAct.mAct;
+
+        mDragStartListener = dragStartListener;
     }
 
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
         ImageView btnMarking;
         ImageView btnViewNote;
         ImageView btnEditNote;
@@ -141,6 +151,16 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         public TextView getTextView() {
             return textTitle;
         }
+
+        @Override
+        public void onItemSelected() {
+            itemView.setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundColor(0);
+        }
     }
 
     // Create new views (invoked by the layout manager)
@@ -157,7 +177,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
+//        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
 
         // get DB data
         String strTitle = null;
@@ -656,6 +676,17 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             holder.textTime.setVisibility(View.GONE);
 	  	}
 
+        // Start a drag whenever the handle view it touched
+        holder.btnDrag.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    mDragStartListener.onStartDrag(holder);
+                }
+                return false;
+            }
+        });
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -697,8 +728,78 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         }
         db_page.close();
 
-        System.out.println("PageAdapter / _toggleNoteMarking / position = " + position + ", marking = " + db_page.getNoteMarking(position,true));
+        System.out.println("PageAdapter_recycler / _toggleNoteMarking / position = " + position + ", marking = " + db_page.getNoteMarking(position,true));
         return  marking;
     }
 
+    @Override
+    public void onItemDismiss(int position) {
+//        cursor.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public boolean onItemMove(int fromPos, int toPos) {
+//        System.out.println("PageAdapter_recycler / _onItemMove / fromPos = " +
+//                        fromPos + ", toPos = " + toPos);
+
+        notifyItemMoved(fromPos, toPos);
+
+        int oriStartPos = fromPos;
+        int oriEndPos = toPos;
+
+        mDb_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+        if(fromPos >= mDb_page.getNotesCount(true)) // avoid footer error
+            return false;
+
+        //reorder data base storage
+        int loop = Math.abs(fromPos-toPos);
+        for(int i=0;i< loop;i++)
+        {
+            swapRows(mDb_page, fromPos,toPos);
+            if((fromPos-toPos) >0)
+                toPos++;
+            else
+                toPos--;
+        }
+
+        if( PageUi.isAudioPlayingPage() &&
+                (AudioManager.mMediaPlayer != null)				   )
+        {
+            if( (Page_recycler.mHighlightPosition == oriEndPos)  && (oriStartPos > oriEndPos))
+            {
+                Page_recycler.mHighlightPosition = oriEndPos+1;
+            }
+            else if( (Page_recycler.mHighlightPosition == oriEndPos) && (oriStartPos < oriEndPos))
+            {
+                Page_recycler.mHighlightPosition = oriEndPos-1;
+            }
+            else if( (Page_recycler.mHighlightPosition == oriStartPos)  && (oriStartPos > oriEndPos))
+            {
+                Page_recycler.mHighlightPosition = oriEndPos;
+            }
+            else if( (Page_recycler.mHighlightPosition == oriStartPos) && (oriStartPos < oriEndPos))
+            {
+                Page_recycler.mHighlightPosition = oriEndPos;
+            }
+            else if(  (Page_recycler.mHighlightPosition < oriEndPos) &&
+                    (Page_recycler.mHighlightPosition > oriStartPos)   )
+            {
+                Page_recycler.mHighlightPosition--;
+            }
+            else if( (Page_recycler.mHighlightPosition > oriEndPos) &&
+                    (Page_recycler.mHighlightPosition < oriStartPos)  )
+            {
+                Page_recycler.mHighlightPosition++;
+            }
+
+            AudioManager.mAudioPos = Page_recycler.mHighlightPosition;
+            AudioPlayer_page.prepareAudioInfo();
+        }
+
+        // update footer
+        TabsHost.showFooter(mAct);
+
+        return true;
+    }
 }
