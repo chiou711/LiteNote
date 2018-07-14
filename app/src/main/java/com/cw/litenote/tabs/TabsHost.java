@@ -194,7 +194,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // refresh list view of selected page
         Page_recycler page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
-        if( (tab.getPosition() == audioPlayTabPos) && (page != null) && (page.mItemAdapter != null) )
+        if( (tab.getPosition() == audioPlayTabPos) && (page != null) && (page.itemAdapter != null) )
         {
             RecyclerView listView = page.recyclerView;
             if( !isDoingMarking &&
@@ -206,9 +206,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         }
 
         // add for update page item view
-        if((page != null) && (page.mItemAdapter != null))
+        if((page != null) && (page.itemAdapter != null))
         {
-            page.mItemAdapter.notifyDataSetChanged();
+            page.itemAdapter.notifyDataSetChanged();
             System.out.println("TabsHost / _onTabSelected / notifyDataSetChanged ");
         }
         else

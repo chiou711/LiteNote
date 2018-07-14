@@ -214,7 +214,7 @@ public class MainUi {
      */
     void launchNextYouTubeIntent(AppCompatActivity act, Handler handler, Runnable runCountDown)
     {
-        String link = getYouTubeLink(act,TabsHost.getCurrentPage().currPlayPosition);
+        String link = getYouTubeLink(act,TabsHost.getCurrentPage().mCurrPlayPosition);
         if( Util.isYouTubeLink(link) )
         {
             Util.openLink_YouTube(act, link);

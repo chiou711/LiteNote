@@ -365,7 +365,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         {
             String intentLink = mMainUi.addNote_IntentLink(intent, mAct);
             if (!Util.isEmptyString(intentLink) && intentLink.startsWith("http")) {
-//                Page.mItemAdapter.notifyDataSetChanged();
+//                Page.itemAdapter.notifyDataSetChanged();
             }
 
             if(Build.VERSION.SDK_INT >= O)//API26
@@ -601,11 +601,11 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
             do
             {
-                TabsHost.getCurrentPage().currPlayPosition++;
+                TabsHost.getCurrentPage().mCurrPlayPosition++;
                 if(Page.currPlayPosition >= TabsHost.getCurrentPage().getNotesCountInPage(mAct))
-                    TabsHost.getCurrentPage().currPlayPosition = 0; //back to first index
+                    TabsHost.getCurrentPage().mCurrPlayPosition = 0; //back to first index
 
-                nextLinkTitle = mMainUi.getYouTubeLink(this,TabsHost.getCurrentPage().currPlayPosition);
+                nextLinkTitle = mMainUi.getYouTubeLink(this,TabsHost.getCurrentPage().mCurrPlayPosition);
             }
             while (!Util.isYouTubeLink(nextLinkTitle));
 

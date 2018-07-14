@@ -272,7 +272,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         holder.btnViewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TabsHost.getCurrentPage().currPlayPosition = position;
+                TabsHost.getCurrentPage().mCurrPlayPosition = position;
                 DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
                 int count = db_page.getNotesCount(true);
                 if(position < count)
@@ -412,7 +412,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         {
             @Override
             public void onClick(View v) {
-                TabsHost.getCurrentPage().currPlayPosition = position;
+                TabsHost.getCurrentPage().mCurrPlayPosition = position;
                 DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
                 db_page.open();
                 int count = db_page.getNotesCount(false);
@@ -734,7 +734,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
     @Override
     public void onItemDismiss(int position) {
-//        cursor.remove(position);
         notifyItemRemoved(position);
     }
 

@@ -247,7 +247,7 @@ public class AudioPlayer_page
 				nextAudio_player();
 
 				TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
-				TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+				TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 
 			}
 		}
@@ -311,7 +311,7 @@ public class AudioPlayer_page
 					{
                         nextAudio_player();
 						TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
-						TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+						TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 					}
 				}
 			});
@@ -352,7 +352,7 @@ public class AudioPlayer_page
                             }
 
                             scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
-							TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+							TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                         }
 
 						if (AudioManager.mMediaPlayer != null)

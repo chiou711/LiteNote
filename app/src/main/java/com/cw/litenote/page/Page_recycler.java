@@ -46,19 +46,19 @@ import com.cw.litenote.util.uil.UilCommon;
 public class Page_recycler extends Fragment implements OnStartDragListener {
 
     public static DB_page mDb_page;
-    public RecyclerView recyclerView;
-    protected RecyclerView.LayoutManager mLayoutManager;
     public int page_tableId;
+    Cursor cursor_note;
+
+    public RecyclerView recyclerView;
+    protected RecyclerView.LayoutManager layoutMgr;
     int page_pos;
-    public static int currPlayPosition;
+    public static int mCurrPlayPosition;
     public static int mHighlightPosition;
     public SeekBar seekBarProgress;
-    public AppCompatActivity mAct;
+    public AppCompatActivity act;
 
-    Cursor mCursor_note;
-    public PageAdapter_recycler mItemAdapter;
-
-    private ItemTouchHelper mItemTouchHelper;
+    public PageAdapter_recycler itemAdapter;
+    private ItemTouchHelper itemTouchHelper;
 
     public Page_recycler(){
     }
@@ -85,7 +85,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
         // elements are laid out.
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        layoutMgr = new LinearLayoutManager(getActivity());
 
         int scrollPosition = 0;
 
@@ -95,19 +95,19 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
                     .findFirstCompletelyVisibleItemPosition();
         }
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
+        layoutMgr = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutMgr);
         recyclerView.scrollToPosition(scrollPosition);
 
 
         UilCommon.init();
 
-        mAct = MainAct.mAct;
+        act = MainAct.mAct;
         fillData();
 
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mItemAdapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(recyclerView);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         return rootView;
     }
@@ -126,77 +126,77 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     {
         mDb_page = new DB_page(getActivity(), page_tableId);
         mDb_page.open();
-        mCursor_note = mDb_page.mCursor_note;
+        cursor_note = mDb_page.mCursor_note;
 
-        mItemAdapter = new PageAdapter_recycler(mCursor_note,page_pos, this);
+        itemAdapter = new PageAdapter_recycler(cursor_note,page_pos, this);
 
         mDb_page.close();// set close here, if cursor is used in mTabsPagerAdapter
 
         // Set PageAdapter_recycler as the adapter for RecyclerView.
-        recyclerView.setAdapter(mItemAdapter);
+        recyclerView.setAdapter(itemAdapter);
 
         //init
-        TabsHost.showFooter(mAct);
+        TabsHost.showFooter(act);
     }
 
     // swap rows
     protected static void swapRows(DB_page dB_page, int startPosition, int endPosition)
     {
-        Long mNoteNumber1;
-        String mNoteTitle1;
-        String mNotePictureUri1;
-        String mNoteAudioUri1;
-        String mNoteLinkUri1;
-        String mNoteBodyString1;
-        int mMarkingIndex1;
-        Long mCreateTime1;
-        Long mNoteNumber2 ;
-        String mNotePictureUri2;
-        String mNoteAudioUri2;
-        String mNoteLinkUri2;
-        String mNoteTitle2;
-        String mNoteBodyString2;
-        int mMarkingIndex2;
-        Long mCreateTime2;
+        Long noteNumber1;
+        String noteTitle1;
+        String notePictureUri1;
+        String noteAudioUri1;
+        String noteLinkUri1;
+        String noteBodyString1;
+        int markingIndex1;
+        Long createTime1;
+        Long noteNumber2 ;
+        String notePictureUri2;
+        String noteAudioUri2;
+        String noteLinkUri2;
+        String noteTitle2;
+        String noteBodyString2;
+        int markingIndex2;
+        Long createTime2;
 
         dB_page.open();
-        mNoteNumber1 = dB_page.getNoteId(startPosition,false);
-        mNoteTitle1 = dB_page.getNoteTitle(startPosition,false);
-        mNotePictureUri1 = dB_page.getNotePictureUri(startPosition,false);
-        mNoteAudioUri1 = dB_page.getNoteAudioUri(startPosition,false);
-        mNoteLinkUri1 = dB_page.getNoteLinkUri(startPosition,false);
-        mNoteBodyString1 = dB_page.getNoteBody(startPosition,false);
-        mMarkingIndex1 = dB_page.getNoteMarking(startPosition,false);
-        mCreateTime1 = dB_page.getNoteCreatedTime(startPosition,false);
+        noteNumber1 = dB_page.getNoteId(startPosition,false);
+        noteTitle1 = dB_page.getNoteTitle(startPosition,false);
+        notePictureUri1 = dB_page.getNotePictureUri(startPosition,false);
+        noteAudioUri1 = dB_page.getNoteAudioUri(startPosition,false);
+        noteLinkUri1 = dB_page.getNoteLinkUri(startPosition,false);
+        noteBodyString1 = dB_page.getNoteBody(startPosition,false);
+        markingIndex1 = dB_page.getNoteMarking(startPosition,false);
+        createTime1 = dB_page.getNoteCreatedTime(startPosition,false);
 
-        mNoteNumber2 = dB_page.getNoteId(endPosition,false);
-        mNoteTitle2 = dB_page.getNoteTitle(endPosition,false);
-        mNotePictureUri2 = dB_page.getNotePictureUri(endPosition,false);
-        mNoteAudioUri2 = dB_page.getNoteAudioUri(endPosition,false);
-        mNoteLinkUri2 = dB_page.getNoteLinkUri(endPosition,false);
-        mNoteBodyString2 = dB_page.getNoteBody(endPosition,false);
-        mMarkingIndex2 = dB_page.getNoteMarking(endPosition,false);
-        mCreateTime2 = dB_page.getNoteCreatedTime(endPosition,false);
+        noteNumber2 = dB_page.getNoteId(endPosition,false);
+        noteTitle2 = dB_page.getNoteTitle(endPosition,false);
+        notePictureUri2 = dB_page.getNotePictureUri(endPosition,false);
+        noteAudioUri2 = dB_page.getNoteAudioUri(endPosition,false);
+        noteLinkUri2 = dB_page.getNoteLinkUri(endPosition,false);
+        noteBodyString2 = dB_page.getNoteBody(endPosition,false);
+        markingIndex2 = dB_page.getNoteMarking(endPosition,false);
+        createTime2 = dB_page.getNoteCreatedTime(endPosition,false);
 
-        dB_page.updateNote(mNoteNumber2,
-                mNoteTitle1,
-                mNotePictureUri1,
-                mNoteAudioUri1,
+        dB_page.updateNote(noteNumber2,
+                noteTitle1,
+                notePictureUri1,
+                noteAudioUri1,
                 "",
-                mNoteLinkUri1,
-                mNoteBodyString1,
-                mMarkingIndex1,
-                mCreateTime1,false);
+                noteLinkUri1,
+                noteBodyString1,
+                markingIndex1,
+                createTime1,false);
 
-        dB_page.updateNote(mNoteNumber1,
-                mNoteTitle2,
-                mNotePictureUri2,
-                mNoteAudioUri2,
+        dB_page.updateNote(noteNumber1,
+                noteTitle2,
+                notePictureUri2,
+                noteAudioUri2,
                 "",
-                mNoteLinkUri2,
-                mNoteBodyString2,
-                mMarkingIndex2,
-                mCreateTime2,false);
+                noteLinkUri2,
+                noteBodyString2,
+                markingIndex2,
+                createTime2,false);
 
         dB_page.close();
     }
@@ -219,17 +219,17 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     }
 
 
-    public int getNotesCountInPage(AppCompatActivity mAct)
+    public int getNotesCountInPage(AppCompatActivity act)
     {
-        DB_page mDb_page = new DB_page(mAct,page_tableId );
-        mDb_page.open();
-        int count = mDb_page.getNotesCount(false);
-        mDb_page.close();
+        DB_page db_page = new DB_page(act,page_tableId );
+        db_page.open();
+        int count = db_page.getNotesCount(false);
+        db_page.close();
         return count;
     }
 
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-        mItemTouchHelper.startDrag(viewHolder);
+        itemTouchHelper.startDrag(viewHolder);
     }
 }

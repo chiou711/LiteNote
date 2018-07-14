@@ -285,7 +285,7 @@ public class PageAdapter extends SimpleDragSortCursorAdapter // DragSortCursorAd
         holder.btnViewNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TabsHost.getCurrentPage().currPlayPosition = position;
+                TabsHost.getCurrentPage().mCurrPlayPosition = position;
                 DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
                 int count = db_page.getNotesCount(true);
                 if(position < count)
@@ -399,7 +399,7 @@ public class PageAdapter extends SimpleDragSortCursorAdapter // DragSortCursorAd
                 //                        View view = drag_listView.getChildAt(i-first);
                 //                        drag_listView.getAdapter().getView(i, view, drag_listView);
                 //                    }
-                //            mItemAdapter.notifyDataSetChanged();
+                //            itemAdapter.notifyDataSetChanged();
 
                 TabsHost.getPage_rowItemView(position);
 
@@ -434,7 +434,7 @@ public class PageAdapter extends SimpleDragSortCursorAdapter // DragSortCursorAd
         {
             @Override
             public void onClick(View v) {
-                TabsHost.getCurrentPage().currPlayPosition = position;
+                TabsHost.getCurrentPage().mCurrPlayPosition = position;
                 DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
                 db_page.open();
                 int count = db_page.getNotesCount(false);

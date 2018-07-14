@@ -268,7 +268,7 @@ public class Note_addAudio extends AppCompatActivity {
 	        	{
 		        	AudioPlayer_page.prepareAudioInfo();
 		        	//todo TBD
-//		        	Page.mItemAdapter.notifyDataSetChanged();
+//		        	Page.itemAdapter.notifyDataSetChanged();
 	        	}
 
 	        	finish();

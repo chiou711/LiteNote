@@ -46,7 +46,7 @@ public class UtilAudio {
 				MainAct.mSubMenuItemAudio.setIcon(R.drawable.ic_menu_slideshow);
 
             //todo TBD
-//			Page.mItemAdapter.notifyDataSetChanged(); // disable focus
+//			Page.itemAdapter.notifyDataSetChanged(); // disable focus
 		}     	
     }
     

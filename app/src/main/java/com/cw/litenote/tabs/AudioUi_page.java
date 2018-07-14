@@ -18,7 +18,6 @@ import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
-import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.Locale;
 
@@ -184,7 +183,7 @@ public class AudioUi_page {
                 if(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)
                     TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
 
-                TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+                TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
 
             }
         });
@@ -257,7 +256,7 @@ public class AudioUi_page {
         if(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)
             TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
 
-        TabsHost.getCurrentPage().mItemAdapter.notifyDataSetChanged();
+        TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
     }
 
 }
