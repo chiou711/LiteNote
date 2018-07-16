@@ -509,6 +509,11 @@ public class AudioPlayer_page
 		View childView;
 		if(recyclerView.getAdapter() != null) {
             childView = layoutMgr.findViewByPosition(pos);
+
+            // avoid exception: audio playing and doing checked notes operation at non-playing page
+            if(childView == null)
+            	return;
+
 			childView.measure(UNBOUNDED, UNBOUNDED);
 			itemHeight = childView.getMeasuredHeight();
 //                System.out.println("---------------- itemHeight = " + itemHeight);

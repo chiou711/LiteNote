@@ -179,6 +179,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     {
         lastPageTableId = id;
     }
+
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         System.out.println("TabsHost / _onTabSelected: " + tab.getPosition());
@@ -194,7 +195,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // refresh list view of selected page
         Page_recycler page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
-        if( (tab.getPosition() == audioPlayTabPos) && (page != null) && (page.itemAdapter != null) )
+        if( (tab.getPosition() == audioPlayTabPos) &&
+            (page != null) &&
+            (page.itemAdapter != null) )
         {
             RecyclerView listView = page.recyclerView;
             if( !isDoingMarking &&
