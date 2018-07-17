@@ -532,7 +532,7 @@ public class FolderUi
 				DB_folder.setFocusFolder_tableId(folderTableId);
 
 				// set tab Id
-                //todo TBD
+                //todo TBD: need to try HAS_PREFERRED_TABLES
 //				TabsHost.setLastPos_pageId(0);
 
 				// check DB: before importing

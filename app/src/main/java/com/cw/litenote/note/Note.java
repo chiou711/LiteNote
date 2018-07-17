@@ -174,7 +174,6 @@ public class Note extends AppCompatActivity
 //			TabsHost.mDbFolder.close();
 
 		DB_folder dbFolder = new DB_folder(act,Pref.getPref_focusView_folder_tableId(act));
-
 		mStyle = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
 		if(mDb_page != null) {

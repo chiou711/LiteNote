@@ -80,6 +80,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
             Bundle savedInstanceState) {
 		System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
         View rootView = inflater.inflate(R.layout.recycler_view_frag, container, false);
+        act = MainAct.mAct;
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
 
@@ -100,10 +101,8 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
         recyclerView.setLayoutManager(layoutMgr);
         recyclerView.scrollToPosition(scrollPosition);
 
-
         UilCommon.init();
 
-        act = MainAct.mAct;
         fillData();
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter);

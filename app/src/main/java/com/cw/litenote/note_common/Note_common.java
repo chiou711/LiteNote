@@ -21,7 +21,6 @@ import java.util.Date;
 import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.R;
-import com.cw.litenote.page.PageUi;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.image.TouchImageView;
@@ -130,9 +129,8 @@ public class Note_common {
         progressBar = (ProgressBar) act.findViewById(R.id.edit_progress_bar);
         progressBarExpand = (ProgressBar) act.findViewById(R.id.edit_progress_bar_expand);
 
-		//todo TBD
-		//TabsPagerAdapter.mDbFolder.getPageStyle(PageUi.getFocus_pagePos(), true);
-		style = 1;
+		DB_folder dbFolder = new DB_folder(act, TabsHost.getCurrentPageTableId());
+		style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
 		enlargedImage = (TouchImageView)act.findViewById(R.id.expanded_image);
 

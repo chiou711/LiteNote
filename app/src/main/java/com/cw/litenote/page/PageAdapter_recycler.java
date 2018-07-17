@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,6 +42,7 @@ import android.widget.TextView;
 
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_drawer;
+import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
@@ -60,10 +62,10 @@ import com.cw.litenote.util.audio.UtilAudio;
 import com.cw.litenote.util.image.AsyncTaskAudioBitmap;
 import com.cw.litenote.util.image.UtilImage;
 import com.cw.litenote.util.image.UtilImage_bitmapLoader;
+import com.cw.litenote.util.preferences.Pref;
 import com.cw.litenote.util.uil.UilCommon;
 import com.cw.litenote.util.video.UtilVideo;
 
-import static android.content.ContentValues.TAG;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_AUDIO_URI;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_BODY;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_CREATED;
@@ -134,11 +136,11 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         public ViewHolder(View v) {
             super(v);
+
             // Define click listener for the ViewHolder's View.
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
                 }
             });
 
@@ -194,6 +196,12 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
 //        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
+
+        // style
+        DB_folder dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
+        int style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
+        ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
+
 
         // get DB data
         String strTitle = null;

@@ -37,7 +37,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
 
-public class TouchImageView extends AppCompatImageView {//todo change
+public class TouchImageView extends AppCompatImageView {
 	
 	//
 	// SuperMin and SuperMax multipliers. Determine how much the image can be
