@@ -283,7 +283,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         new Handler().postDelayed(
                 new Runnable() {
                     @Override public void run() {
-                        mTabLayout.getTabAt(getFocus_tabPos()).select();
+                        if(mTabLayout.getTabAt(getFocus_tabPos()) != null)
+                            mTabLayout.getTabAt(getFocus_tabPos()).select();
                     }
                 }, 100);
 

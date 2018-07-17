@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cw.litenote.page.helper;
+package com.cw.litenote.page.item_touch_helper;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
