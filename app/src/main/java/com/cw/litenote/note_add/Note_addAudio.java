@@ -1,10 +1,25 @@
+/*
+ * Copyright (C) 2018 CW Chiu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cw.litenote.note_add;
 
 import java.io.File;
 
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
-import com.cw.litenote.page.Page;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.page.PageUi;
@@ -232,7 +247,7 @@ public class Note_addAudio extends AppCompatActivity {
                             if( (dB.getNotesCount(true) > 0) &&
                                     option.equalsIgnoreCase("directory_to_top") )
                             {
-                                Page.swap(Page.mDb_page);
+                                Page_recycler.swap(Page_recycler.mDb_page);
                                 //update playing focus
                                 AudioManager.mAudioPos++;
                             }
@@ -267,8 +282,6 @@ public class Note_addAudio extends AppCompatActivity {
 	        	if(PageUi.isAudioPlayingPage())
 	        	{
 		        	AudioPlayer_page.prepareAudioInfo();
-		        	//todo TBD
-//		        	Page.itemAdapter.notifyDataSetChanged();
 	        	}
 
 	        	finish();

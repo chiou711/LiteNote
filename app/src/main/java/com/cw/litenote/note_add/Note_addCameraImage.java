@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2018 CW Chiu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cw.litenote.note_add;
 
 import java.io.File;
@@ -5,7 +21,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import com.cw.litenote.note_common.Note_common;
-import com.cw.litenote.page.Page;
+import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.util.image.UtilImage;
@@ -106,7 +122,7 @@ public class Note_addCameraImage extends Activity {
 				(Long) savedInstanceState.getSerializable(DB_page.KEY_NOTE_ID);
 
 		// get picture Uri in DB if instance is not null
-		dB = Page.mDb_page;
+		dB = Page_recycler.mDb_page;
 		if(savedInstanceState != null)
 		{
 			System.out.println("Note_addCameraImage / onCreate / noteId =  " + noteId);
@@ -399,7 +415,7 @@ public class Note_addCameraImage extends Activity {
 	            
     			if( getIntent().getExtras().getString("extra_ADD_NEW_TO_TOP", "false").equalsIgnoreCase("true") &&
     				(note_common.getCount() > 0) )
-		               Page.swap(Page.mDb_page);
+		               Page_recycler.swap(Page_recycler.mDb_page);
     			
     			Toast.makeText(this, R.string.toast_saved , Toast.LENGTH_SHORT).show();
 

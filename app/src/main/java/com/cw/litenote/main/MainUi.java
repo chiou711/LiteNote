@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2018 CW Chiu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cw.litenote.main;
 
 import android.content.Intent;
@@ -15,7 +31,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.db.DB_drawer;
 import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.db.DB_page;
-import com.cw.litenote.page.Page;
+import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.CustomWebView;
 import com.cw.litenote.util.Util;
@@ -71,7 +87,7 @@ public class MainUi {
             }
 
             System.out.println("MainUi / _addNote_IntentLink / path = " + path);
-            DB_page dB_page = new DB_page(act,Pref.getPref_focusView_page_tableId(MainAct.mAct));//todo ?
+            DB_page dB_page = new DB_page(act,Pref.getPref_focusView_page_tableId(MainAct.mAct));
             dB_page.open();
             dB_page.insertNote("", "", "", "", path, "", 0, (long) 0);// add new note, get return row Id
             dB_page.close();
@@ -85,7 +101,7 @@ public class MainUi {
             boolean isAddedToTop = pref_show_note_attribute.getString("KEY_ADD_NEW_NOTE_TO","bottom").equalsIgnoreCase("top");
             if( isAddedToTop && (count > 1) )
             {
-                Page.swap(dB_page);
+                Page_recycler.swap(dB_page);
             }
 
             // update title: YouTube
@@ -165,7 +181,7 @@ public class MainUi {
                 title = pathOri;
                 if (pref_show_note_attribute.getString("KEY_ADD_NEW_NOTE_TO", "bottom").equalsIgnoreCase("top") &&
                         (count > 1)) {
-                    Page.swap(dB_page);
+                    Page_recycler.swap(dB_page);
                 }
 
                 Toast.makeText(act,
@@ -199,7 +215,7 @@ public class MainUi {
         if(pos >= count)
         {
             pos = 0;
-            Page.currPlayPosition = 0;
+            Page_recycler.mCurrPlayPosition = 0;
         }
 
         String linkStr="";

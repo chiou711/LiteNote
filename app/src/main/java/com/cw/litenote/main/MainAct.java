@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2018 CW Chiu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cw.litenote.main;
 
 import java.io.OutputStream;
@@ -21,7 +37,6 @@ import com.cw.litenote.operation.delete.DeleteFolders;
 import com.cw.litenote.operation.delete.DeletePages;
 import com.cw.litenote.operation.import_export.Import_webAct;
 import com.cw.litenote.page.Checked_notes_option;
-import com.cw.litenote.page.Page;
 import com.cw.litenote.page.PageUi;
 import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.tabs.AudioUi_page;
@@ -602,7 +617,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             do
             {
                 TabsHost.getCurrentPage().mCurrPlayPosition++;
-                if(Page.currPlayPosition >= TabsHost.getCurrentPage().getNotesCountInPage(mAct))
+                if(Page_recycler.mCurrPlayPosition >= TabsHost.getCurrentPage().getNotesCountInPage(mAct))
                     TabsHost.getCurrentPage().mCurrPlayPosition = 0; //back to first index
 
                 nextLinkTitle = mMainUi.getYouTubeLink(this,TabsHost.getCurrentPage().mCurrPlayPosition);

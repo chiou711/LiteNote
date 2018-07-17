@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 CW Chiu <chiou711@gmail.com>
+ * Copyright (C) 2018 CW Chiu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -204,7 +204,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 (listView != null) &&
                 (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)  )
             {
-                audioPlayer_page.scrollHighlightAudioItemToVisible(listView);//todo Affected by toggle marking
+                audioPlayer_page.scrollHighlightAudioItemToVisible(listView);
             }
         }
 
@@ -342,7 +342,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 store_listView_vScroll(listView);
 
             for (int i = 0; i < fragmentList.size(); i++) {
-                MainAct.mAct.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();//todo exception! Activity has been destroyed
+                MainAct.mAct.getSupportFragmentManager().beginTransaction().remove(fragmentList.get(i)).commit();
             }
         }
     }
@@ -621,7 +621,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //		}
         mDbFolder.close();
 
-        //todo TBD
+        //todo TBD: need this?
         // set scroll X
 //        int scrollX = 0; //over the last scroll X
 //        SharedPreferences mPref_FinalPageViewed = activity.getSharedPreferences("focus_view", 0);
@@ -656,7 +656,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // update change after deleting tab
         FolderUi.startTabsHostRun();
 
-        //todo TBD
+        //todo TBD: need this?
         // Note: _onTabChanged will reset scroll X to another value,
         // so we need to add the following to set scroll X again
 //        mHorScrollView.post(new Runnable()
