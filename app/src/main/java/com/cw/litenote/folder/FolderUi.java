@@ -520,7 +520,7 @@ public class FolderUi
 
 		if(Define.HAS_PREFERRED_TABLES)
 		{
-			// Create preferred tables
+			// Create preferred tables after new installation
 			if( (position < Define.ORIGIN_FOLDERS_COUNT) &&
 				!Pref.getPref_has_preferred_tables(MainAct.mAct,position) )
 			{
@@ -530,10 +530,6 @@ public class FolderUi
 				int folderTableId = Pref.getPref_focusView_folder_tableId(act);
 				System.out.println("FolderUi / _selectFolder / folderTableId = " + folderTableId);
 				DB_folder.setFocusFolder_tableId(folderTableId);
-
-				// set tab Id
-                //todo TBD: need to try HAS_PREFERRED_TABLES
-//				TabsHost.setLastPos_pageId(0);
 
 				// check DB: before importing
                 dB_drawer.listFolders();
