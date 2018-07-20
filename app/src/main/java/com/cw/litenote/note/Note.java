@@ -63,7 +63,7 @@ public class Note extends AppCompatActivity
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
      */
-    public ViewPager mPager;
+    public ViewPager viewPager;
     public static boolean isPagerActive;
 
     /**
@@ -164,10 +164,10 @@ public class Note extends AppCompatActivity
 		mDb_page = new DB_page(act, TabsHost.getCurrentPageTableId());
 
 		// Instantiate a ViewPager and a PagerAdapter.
-		mPager = (ViewPager) findViewById(R.id.tabs_pager);
-		mPagerAdapter = new Note_adapter(mPager,this);
-		mPager.setAdapter(mPagerAdapter);
-		mPager.setCurrentItem(NoteUi.getFocus_notePos());
+		viewPager = (ViewPager) findViewById(R.id.tabs_pager);
+		mPagerAdapter = new Note_adapter(viewPager,this);
+		viewPager.setAdapter(mPagerAdapter);
+		viewPager.setCurrentItem(NoteUi.getFocus_notePos());
 
 		// tab style
 //		if(TabsHost.mDbFolder != null)
@@ -188,9 +188,9 @@ public class Note extends AppCompatActivity
         }
 
 
-		// Note: if mPager.getCurrentItem() is not equal to mEntryPosition, _onPageSelected will
+		// Note: if viewPager.getCurrentItem() is not equal to mEntryPosition, _onPageSelected will
 		//       be called again after rotation
-		mPager.setOnPageChangeListener(onPageChangeListener);
+		viewPager.setOnPageChangeListener(onPageChangeListener);
 
 		// edit note button
 		editButton = (Button) findViewById(R.id.view_edit);
@@ -241,7 +241,6 @@ public class Note extends AppCompatActivity
 				}
 			}
 		});
-
 	}
 
 	// on page change listener
@@ -253,7 +252,7 @@ public class Note extends AppCompatActivity
 			if(AudioManager.getAudioPlayMode()  == AudioManager.NOTE_PLAY_MODE)
                 AudioManager.stopAudioPlayer();
 
-			NoteUi.setFocus_notePos(mPager.getCurrentItem());
+			NoteUi.setFocus_notePos(viewPager.getCurrentItem());
 			System.out.println("Note / _onPageSelected");
 			System.out.println("    NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
 			System.out.println("    nextPosition = " + nextPosition);
@@ -311,10 +310,10 @@ public class Note extends AppCompatActivity
 
 		// show current item
 		if(requestCode == Util.YOUTUBE_LINK_INTENT)
-        	mPager.setCurrentItem(mPager.getCurrentItem());
+        	viewPager.setCurrentItem(viewPager.getCurrentItem());
 
 	    // check if there is one note at least in the pager
-		if( mPager.getAdapter().getCount() > 0 )
+		if( viewPager.getAdapter().getCount() > 0 )
 			setOutline(act);
 		else
 			finish();
@@ -389,7 +388,7 @@ public class Note extends AppCompatActivity
 	    super.onConfigurationChanged(newConfig);
 	    System.out.println("Note / _onConfigurationChanged");
 
-		// dismiss popup menu we
+		// dismiss popup menu
 		if(NoteUi.popup != null)
 		{
 			NoteUi.popup.dismiss();
@@ -453,14 +452,14 @@ public class Note extends AppCompatActivity
 		}
 
 		// to stop YouTube web view running
-    	String tagStr = "current"+ mPager.getCurrentItem()+"webView";
-    	CustomWebView webView = (CustomWebView) mPager.findViewWithTag(tagStr);
+    	String tagStr = "current"+ viewPager.getCurrentItem()+"webView";
+    	CustomWebView webView = (CustomWebView) viewPager.findViewWithTag(tagStr);
     	CustomWebView.pauseWebView(webView);
     	CustomWebView.blankWebView(webView);
 
 		// to stop Link web view running
-    	tagStr = "current"+ mPager.getCurrentItem()+"linkWebView";
-    	CustomWebView linkWebView = (CustomWebView) mPager.findViewWithTag(tagStr);
+    	tagStr = "current"+ viewPager.getCurrentItem()+"linkWebView";
+    	CustomWebView linkWebView = (CustomWebView) viewPager.findViewWithTag(tagStr);
     	CustomWebView.pauseWebView(linkWebView);
     	CustomWebView.blankWebView(linkWebView);
 
@@ -526,17 +525,17 @@ public class Note extends AppCompatActivity
 
 	    // menu item: previous
 		MenuItem itemPrev = menu.findItem(R.id.ACTION_PREVIOUS);
-		itemPrev.setEnabled(mPager.getCurrentItem() > 0);
-		itemPrev.getIcon().setAlpha(mPager.getCurrentItem() > 0?255:30);
+		itemPrev.setEnabled(viewPager.getCurrentItem() > 0);
+		itemPrev.getIcon().setAlpha(viewPager.getCurrentItem() > 0?255:30);
 
 		// menu item: Next or Finish
 		MenuItem itemNext = menu.findItem(R.id.ACTION_NEXT);
-		itemNext.setTitle((mPager.getCurrentItem() == mPagerAdapter.getCount() - 1)	?
+		itemNext.setTitle((viewPager.getCurrentItem() == mPagerAdapter.getCount() - 1)	?
 									R.string.view_note_slide_action_finish :
 									R.string.view_note_slide_action_next                  );
 
         // set Disable and Gray for Last item
-		boolean isLastOne = (mPager.getCurrentItem() == (mPagerAdapter.getCount() - 1));
+		boolean isLastOne = (viewPager.getCurrentItem() == (mPagerAdapter.getCount() - 1));
         if(isLastOne)
         	itemNext.setEnabled(false);
 
@@ -602,14 +601,14 @@ public class Note extends AppCompatActivity
                 // Go to the previous step in the wizard. If there is no previous step,
                 // setCurrentItem will do nothing.
             	NoteUi.setFocus_notePos(NoteUi.getFocus_notePos()-1);
-            	mPager.setCurrentItem(mPager.getCurrentItem() - 1);
+            	viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
                 return true;
 
             case R.id.ACTION_NEXT:
                 // Advance to the next step in the wizard. If there is no next step, setCurrentItem
                 // will do nothing.
 				NoteUi.setFocus_notePos(NoteUi.getFocus_notePos()+1);
-            	mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+            	viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
             	
             	//TO
 //            	mMP.setVolume(0,0);
@@ -664,8 +663,8 @@ public class Note extends AppCompatActivity
     public void onBackPressed() {
 		System.out.println("Note / _onBackPressed");
     	// web view can go back
-    	String tagStr = "current"+ mPager.getCurrentItem()+"linkWebView";
-    	CustomWebView linkWebView = (CustomWebView) mPager.findViewWithTag(tagStr);
+    	String tagStr = "current"+ viewPager.getCurrentItem()+"linkWebView";
+    	CustomWebView linkWebView = (CustomWebView) viewPager.findViewWithTag(tagStr);
         if (linkWebView.canGoBack()) 
         {
         	linkWebView.goBack();
@@ -708,7 +707,7 @@ public class Note extends AppCompatActivity
 		public void run()
 		{
             String tagStr = "current"+ NoteUi.getFocus_notePos() +"pictureView";
-            ViewGroup pictureGroup = (ViewGroup) mPager.findViewWithTag(tagStr);
+            ViewGroup pictureGroup = (ViewGroup) viewPager.findViewWithTag(tagStr);
             System.out.println("Note / _showPictureViewUI / tagStr = " + tagStr);
 
             Button picView_back_button;
@@ -817,10 +816,10 @@ public class Note extends AppCompatActivity
         switch (maskedAction) {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-    			 System.out.println("Note / _dispatchTouchEvent / MotionEvent.ACTION_UP / mPager.getCurrentItem() =" + mPager.getCurrentItem());
+    			 System.out.println("Note / _dispatchTouchEvent / MotionEvent.ACTION_UP / viewPager.getCurrentItem() =" + viewPager.getCurrentItem());
 				 //1st touch to turn on UI
 				 if(picUI_touch == null) {
-				 	picUI_touch = new NoteUi(act,mPager, mPager.getCurrentItem());
+				 	picUI_touch = new NoteUi(act, viewPager, viewPager.getCurrentItem());
 				 	picUI_touch.tempShow_picViewUI(5000,getCurrentPictureString());
 				 }
 				 //2nd touch to turn off UI
@@ -849,7 +848,7 @@ public class Note extends AppCompatActivity
     void setTransientPicViewUI()
     {
         NoteUi.cancel_UI_callbacks();
-        picUI_touch = new NoteUi(act,mPager, mPager.getCurrentItem());
+        picUI_touch = new NoteUi(act, viewPager, viewPager.getCurrentItem());
 
         // for video
         String pictureUriInDB = mDb_page.getNotePictureUri_byId(mNoteId);

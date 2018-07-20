@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.cw.litenote.R;
 import com.cw.litenote.note.Note;
 import com.cw.litenote.note.NoteUi;
+import com.cw.litenote.note.Note_adapter;
 import com.cw.litenote.note.Note_audio;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
@@ -253,7 +254,13 @@ public class AudioPlayer_note
                         nextPos = NoteUi.getFocus_notePos()+1;
 
                     NoteUi.setFocus_notePos(nextPos);
-                    pager.setCurrentItem(nextPos);
+
+                    // add for rotation case
+                    ViewPager viewPager = (ViewPager) act.findViewById(R.id.tabs_pager);
+                    Note.mPagerAdapter = new Note_adapter(viewPager,act);
+                    viewPager.setAdapter(Note.mPagerAdapter);
+
+                    viewPager.setCurrentItem(nextPos);
 
                     playNextAudio();
                 }

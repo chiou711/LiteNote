@@ -33,14 +33,13 @@ import com.cw.litenote.util.CustomWebView;
 import com.cw.litenote.util.Util;
 
 import android.annotation.SuppressLint;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -62,7 +61,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-class Note_adapter extends FragmentStatePagerAdapter
+public class Note_adapter extends FragmentStatePagerAdapter
 {
 	static int mLastPosition;
 	private static LayoutInflater inflater;
@@ -71,9 +70,9 @@ class Note_adapter extends FragmentStatePagerAdapter
 	private ViewPager pager;
 	DB_page db_page;
 
-    Note_adapter(ViewPager viewPager, AppCompatActivity activity)
+    public Note_adapter(ViewPager viewPager, AppCompatActivity activity)
     {
-    	super(activity.getFragmentManager());
+    	super(activity.getSupportFragmentManager());
 		pager = viewPager;
     	act = activity;
         inflater = act.getLayoutInflater();
@@ -304,15 +303,13 @@ class Note_adapter extends FragmentStatePagerAdapter
 		else
 			System.out.println("Note_adapter / _showPictureView / show none");
     }
-    
-    
-    // Add for FragmentStatePagerAdapter
-    @Override
-	public Fragment getItem(int arg0) {
-        return null;
+
+	@Override
+	public android.support.v4.app.Fragment getItem(int position) {
+		return null;
 	}
-    
-    // Add for calling mPagerAdapter.notifyDataSetChanged() 
+
+    // Add for calling mPagerAdapter.notifyDataSetChanged()
     @Override
     public int getItemPosition(Object object) {
         return POSITION_NONE;
