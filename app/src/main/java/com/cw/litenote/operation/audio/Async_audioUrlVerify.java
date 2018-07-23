@@ -56,15 +56,15 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		System.out.println("AudioUrlVerifyTask / onPreExecute" );
 
         mUrlVerifyDialog = new ProgressDialog(act);
-        if (!Note_audio.isPausedAtSeekerAnchor)
-        {
-            mUrlVerifyDialog.setMessage(act.getResources().getText(R.string.audio_message_searching_media));
-            mUrlVerifyDialog.setCancelable(true); // set true for enabling Back button
-            mUrlVerifyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); //ProgressDialog.STYLE_HORIZONTAL
-			//keep LOW_PROFILE for note view
-			if(AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)//todo how to add dialog for not affecting full screen
-            	mUrlVerifyDialog.show();
-        }
+
+		mUrlVerifyDialog.setMessage(act.getResources().getText(R.string.audio_message_searching_media));
+		mUrlVerifyDialog.setCancelable(true); // set true for enabling Back button
+		mUrlVerifyDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); //ProgressDialog.STYLE_HORIZONTAL
+
+		// only for Page play mode
+		// show dialog will affect full screen at Note play mode
+		if( AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE )
+			mUrlVerifyDialog.show();
 
 		AudioManager.mIsPrepared = false;
 	}

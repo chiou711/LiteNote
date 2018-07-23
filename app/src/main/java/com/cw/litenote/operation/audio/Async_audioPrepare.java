@@ -47,15 +47,15 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 	 	System.out.println("Async_audioPrepare / onPreExecute" );
 
 		mPrepareDialog = new ProgressDialog(act);
-	 	if (!Note_audio.isPausedAtSeekerAnchor)
-		{
-			mPrepareDialog.setMessage(act.getResources().getText(R.string.audio_message_preparing_to_play));
-			mPrepareDialog.setCancelable(true); // set true for enabling Back button
-			mPrepareDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); //ProgressDialog.STYLE_HORIZONTAL
-			//keep LOW_PROFILE for note view
-			if(AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
-				mPrepareDialog.show();
-		}
+
+		mPrepareDialog.setMessage(act.getResources().getText(R.string.audio_message_preparing_to_play));
+		mPrepareDialog.setCancelable(true); // set true for enabling Back button
+		mPrepareDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); //ProgressDialog.STYLE_HORIZONTAL
+
+		// only for Page play mode
+		// show dialog will affect full screen at Note play mode
+        if( AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
+		    mPrepareDialog.show();
 
         AudioManager.mIsPrepared = false;
 	 } 

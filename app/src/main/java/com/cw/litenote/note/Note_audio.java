@@ -234,7 +234,7 @@ public class Note_audio
                 }
                 else
                 {
-                    // pause at seek bar anchor
+                    // note audio: slide seek bar anchor from stop to pause
                     isPausedAtSeekerAnchor = true;
                     mAnchorPosition = (int) (((float)(mediaFileLength / 100)) * seekBar.getProgress());
                     playAudioInPager(act,audioStr,_pager);
