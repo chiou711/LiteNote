@@ -448,15 +448,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     }
 
 
-    public static void getPage_rowItemView(int rowPos)
-    {
-        //todo temp
-        RecyclerView listView = getCurrentPage().recyclerView;
-        View convertView = listView.getChildAt(rowPos);
-//        listView.getAdapter().getView(rowPos, convertView, listView);
-        mTabsPagerAdapter.notifyDataSetChanged();
-    }
-
     /**
      * Set long click listeners for tabs editing
      */
@@ -621,13 +612,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //		}
         mDbFolder.close();
 
-        //todo TBD: need this?
-        // set scroll X
-//        int scrollX = 0; //over the last scroll X
-//        SharedPreferences mPref_FinalPageViewed = activity.getSharedPreferences("focus_view", 0);
-//        Pref.setPref_focusView_scrollX_byFolderTableId(activity, scrollX );
-
-
         // get page table Id for dropping
         int pageTableId = mDbFolder.getPageTableId(tabPos, true);
         System.out.println("TabsHost / _deletePage / pageTableId =  " + pageTableId);
@@ -655,18 +639,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // update change after deleting tab
         FolderUi.startTabsHostRun();
-
-        //todo TBD: need this?
-        // Note: _onTabChanged will reset scroll X to another value,
-        // so we need to add the following to set scroll X again
-//        mHorScrollView.post(new Runnable()
-//        {
-//            @Override
-//            public void run() {
-//                mHorScrollView.scrollTo(0, 0);
-//                Pref.setPref_focusView_scrollX_byFolderTableId(activity, 0 );
-//            }
-//        });
     }
 
     public static TextView mFooterMessage;

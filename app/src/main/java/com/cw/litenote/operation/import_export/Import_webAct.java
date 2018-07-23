@@ -45,7 +45,8 @@ public class Import_webAct extends AppCompatActivity
     String content=null;
     WebView webView;
     Button btn_import;
-    String homeUrl = "http://litenoteapp.blogspot.tw/2017/09/xml-link.html";// TODO customization
+    // TODO Website path customization: input path, website rule for Import
+    String homeUrl = "http://litenoteapp.blogspot.tw/2017/09/xml-link.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

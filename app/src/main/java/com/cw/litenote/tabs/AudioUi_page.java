@@ -220,7 +220,7 @@ public class AudioUi_page {
                         AudioManager.mAudioPos = AudioManager.getPlayingPage_notesCount()-1;
                     }
                 }
-                while (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0);//todo logic error if id=0 is non-audio
+                while (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0);
 
                 nextAudio_panel();
             }

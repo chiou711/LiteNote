@@ -385,6 +385,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                         TabsHost.audioPlayTabPos = page_pos;
                         TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
 
+                        // update audio panel
                         UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,
                                 TabsHost.audioUi_page.audio_panel_title_textView);
 
@@ -402,9 +403,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                         MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
                     }
                 }
-
-                TabsHost.getPage_rowItemView(position);
-
             }
 		});
 
