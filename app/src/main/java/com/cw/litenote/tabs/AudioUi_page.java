@@ -50,6 +50,8 @@ public class AudioUi_page {
     public TextView audioPanel_curr_pos;
     public TextView audio_panel_title_textView;
     public ImageView audioPanel_play_button;
+    public ImageView audioPanel_next_btn;
+    public ImageView audioPanel_previous_btn;
     public SeekBar seekBarProgress;
     public static int mProgress;
     RecyclerView listView;
@@ -106,10 +108,10 @@ public class AudioUi_page {
         // update play button status
         audioPanel_play_button = (ImageView) act.findViewById(R.id.audioPanel_play);
 
-        ImageView audioPanel_previous_btn = (ImageView) act.findViewById(R.id.audioPanel_previous);
+        audioPanel_previous_btn = (ImageView) act.findViewById(R.id.audioPanel_previous);
         audioPanel_previous_btn.setImageResource(R.drawable.ic_media_previous);
 
-        ImageView audioPanel_next_btn = (ImageView) act.findViewById(R.id.audioPanel_next);
+        audioPanel_next_btn = (ImageView) act.findViewById(R.id.audioPanel_next);
         audioPanel_next_btn.setImageResource(R.drawable.ic_media_next);
 
         // text view for audio info

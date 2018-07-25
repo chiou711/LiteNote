@@ -61,6 +61,8 @@ import com.cw.litenote.util.preferences.Pref;
 import com.mobeta.android.dslv.DragSortListView;
 
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -81,6 +83,7 @@ import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -267,6 +270,78 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 		new EULA_dlg(this).show();
 
         isAddedOnNewIntent = false;
+
+        // Register Bluetooth device receiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        this.registerReceiver(mReceiver, filter);
+
+    }
+
+    //The BroadcastReceiver that listens for bluetooth broadcasts
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                //Device is now connected
+                Toast.makeText(getApplicationContext(), "ACTION_ACL_CONNECTED: device is " + device, Toast.LENGTH_LONG).show();
+            }
+
+            KeyEvent keyEvent = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+            if(keyEvent != null)
+                onKeyDown( keyEvent.getKeyCode(),keyEvent);
+
+        }
+    };
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        System.out.println("MainAct / _onKeyDown / keyCode = " + keyCode);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                // code for previous
+                TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
+//                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_PREVIOUS");
+                return true;
+
+            case KeyEvent.KEYCODE_MEDIA_NEXT:
+                // code for next
+//                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_NEXT");
+                TabsHost.audioUi_page.audioPanel_next_btn.performClick();
+                return true;
+
+            case KeyEvent.KEYCODE_MEDIA_PLAY:
+            case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                // code for play/pause
+                TabsHost.audioUi_page.audioPanel_play_button.performClick();
+//                if(keyCode == KeyEvent.KEYCODE_MEDIA_PLAY)
+//                    System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_PLAY");
+//                else
+//                    System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_PAUSE");
+                return true;
+
+            case KeyEvent.KEYCODE_BACK:
+                doBackKeyEvent();
+                return true;
+
+            case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+                // code for fast forward
+                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_FAST_FORWARD");
+                return true;
+
+            case KeyEvent.KEYCODE_MEDIA_REWIND:
+                // code for rewind
+                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_REWIND");
+                return true;
+
+            case KeyEvent.KEYCODE_MEDIA_STOP:
+                // code for stop
+                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_STOP");
+                return true;
+        }
+        return false;
     }
 
     // callback of granted permission
@@ -425,7 +500,10 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
     @Override
     protected void onPause() {
     	super.onPause();
-    	System.out.println("MainAct / _onPause");
+
+//        mReceiver.abortBroadcast();//todo better place?
+
+        System.out.println("MainAct / _onPause");
     }
 
 	@Override
@@ -518,7 +596,11 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
     public void onBackPressed()
     {
         System.out.println("MainAct / _onBackPressed");
+        doBackKeyEvent();
+    }
 
+    void doBackKeyEvent()
+    {
         if (onBackPressedListener != null)
         {
             DB_drawer dbDrawer = new DB_drawer(this);
@@ -543,7 +625,9 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             else
                 super.onBackPressed();
         }
+
     }
+
 
     @Override
     public void onBackStackChanged() {
@@ -1285,4 +1369,5 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             getSupportActionBar().setTitle(mFolderTitle);
         }
     }
+
 }
