@@ -65,6 +65,8 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.media.session.MediaSession;
+import android.media.session.PlaybackState;
 import android.os.Build;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -113,6 +115,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 	public static Folder mFolder;
     public static MainUi mMainUi;
     public static Toolbar mToolbar;
+    MediaSession audioSession;
 
 	// Main Act onCreate
     @Override
@@ -272,15 +275,75 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         isAddedOnNewIntent = false;
 
         // Register Bluetooth device receiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
-        this.registerReceiver(mReceiver, filter);
+        if(Build.VERSION.SDK_INT < 21)
+        {
+            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+            this.registerReceiver(mReceiver, filter);
+        }
+        else // Build.VERSION.SDK_INT >= 21
+        {
+            // Media session: to receive media button event of bluetooth device
+            audioSession = new MediaSession(getApplicationContext(), "MediaSession");
+            audioSession.setCallback(new MediaSession.Callback() {
+                @Override
+                public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
+                    super.onMediaButtonEvent(mediaButtonIntent);
+                    String intentAction = mediaButtonIntent.getAction();
 
+                    if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction))//android.intent.action.MEDIA_BUTTON
+                    {
+                        KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+                        if ((event != null) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
+                            System.out.println("MainAct / _onMediaButtonEvent / event.getKeyCode() = " + event.getKeyCode());
+                            switch (event.getKeyCode()) {
+                                case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
+                                    TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
+                                    return true;
+
+                                case KeyEvent.KEYCODE_MEDIA_NEXT: //87
+                                    TabsHost.audioUi_page.audioPanel_next_btn.performClick();
+                                    return true;
+
+                                case KeyEvent.KEYCODE_MEDIA_PLAY: //126
+                                case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
+                                    TabsHost.audioUi_page.audioPanel_play_button.performClick();
+                                    return true;
+
+                                case KeyEvent.KEYCODE_BACK://
+                                    doBackKeyEvent();
+                                    return true;
+
+                                case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+                                    return true;
+
+                                case KeyEvent.KEYCODE_MEDIA_REWIND:
+                                    return true;
+
+                                case KeyEvent.KEYCODE_MEDIA_STOP:
+                                    return true;
+                            }
+                        }
+                    }
+                    return true;
+                }
+            });
+
+            PlaybackState state = new PlaybackState.Builder()
+                    .setActions(PlaybackState.ACTION_PLAY_PAUSE)
+                    .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
+                    .build();
+            audioSession.setPlaybackState(state);
+            audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+            audioSession.setActive(true);
+        }
     }
 
+    Intent intentReceive;
     //The BroadcastReceiver that listens for bluetooth broadcasts
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            System.out.println("MainAct / _BroadcastReceiver / onReceive");
             String action = intent.getAction();
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
@@ -289,37 +352,29 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
                 Toast.makeText(getApplicationContext(), "ACTION_ACL_CONNECTED: device is " + device, Toast.LENGTH_LONG).show();
             }
 
-            KeyEvent keyEvent = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+            intentReceive = intent;
+            KeyEvent keyEvent = (KeyEvent) intentReceive.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
             if(keyEvent != null)
                 onKeyDown( keyEvent.getKeyCode(),keyEvent);
-
         }
     };
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         System.out.println("MainAct / _onKeyDown / keyCode = " + keyCode);
         switch (keyCode) {
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                // code for previous
                 TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
-//                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_PREVIOUS");
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT:
-                // code for next
-//                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_NEXT");
                 TabsHost.audioUi_page.audioPanel_next_btn.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PLAY:
             case KeyEvent.KEYCODE_MEDIA_PAUSE:
-                // code for play/pause
                 TabsHost.audioUi_page.audioPanel_play_button.performClick();
-//                if(keyCode == KeyEvent.KEYCODE_MEDIA_PLAY)
-//                    System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_PLAY");
-//                else
-//                    System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_PAUSE");
                 return true;
 
             case KeyEvent.KEYCODE_BACK:
@@ -327,22 +382,17 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-                // code for fast forward
-                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_FAST_FORWARD");
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_REWIND:
-                // code for rewind
-                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_REWIND");
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_STOP:
-                // code for stop
-                System.out.println("MainAct / _onKeyDown / KEYCODE_MEDIA_STOP");
                 return true;
         }
         return false;
     }
+
 
     // callback of granted permission
     @Override

@@ -408,102 +408,9 @@ public class AudioPlayer_page
 	* In order to view audio highlight item, playing(highlighted) audio item can be auto scrolled to top,
 	* unless it is at the end page of list view, there is no need to scroll.
 	*/
-	public void scrollHighlightAudioItemToVisible(DragSortListView listView)
-	{
-		System.out.println("AudioPlayer_page / _scrollHighlightAudioItemToVisible");
-
-		// version limitation: _scrollListBy
-		// NoteFragment.drag_listView.scrollListBy(firstVisibleIndex_top);
-		if(Build.VERSION.SDK_INT < 19)
-			return;
-
-		// check playing drawer and playing tab
-//		if(
-//		    (PageUi.getFocus_pagePos() == MainAct.mPlaying_pagePos) &&
-//			(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
-//			(listView.getChildAt(0) != null)
-//                )
-		{
-            int pos;
-            int itemHeight = 50;//init
-            int dividerHeight;
-            int firstVisible_note_pos;
-            View v;
-
-			pos = listView.getFirstVisiblePosition();
-//			System.out.println("---------------- pos = " + pos);
-
-            View childView;
-			if(listView.getAdapter() != null) {
-                childView = listView.getAdapter().getView(pos, null, listView);
-                childView.measure(UNBOUNDED, UNBOUNDED);
-                itemHeight = childView.getMeasuredHeight();
-//                System.out.println("---------------- itemHeight = " + itemHeight);
-            }
-
-			dividerHeight = listView.getDividerHeight();
-//			System.out.println("---------------- dividerHeight = " + dividerHeight);
-
-			firstVisible_note_pos = listView.getFirstVisiblePosition();
-			System.out.println("---------------- firstVisible_note_pos = " + firstVisible_note_pos);
-
-			v = listView.getChildAt(0);
-
-			int firstVisibleNote_top = (v == null) ? 0 : v.getTop();
-//			System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
-
-			System.out.println("---------------- AudioManager.mAudioPos = " + AudioManager.mAudioPos);
-
-			if(firstVisibleNote_top < 0)
-			{
-				listView.scrollListBy(firstVisibleNote_top);
-//				System.out.println("----- scroll backwards by firstVisibleNote_top " + firstVisibleNote_top);
-			}
-
-			boolean noScroll = false;
-			// base on AudioManager.mAudioPos to scroll
-			if(firstVisible_note_pos != AudioManager.mAudioPos)
-			{
-				while ((firstVisible_note_pos != AudioManager.mAudioPos) && (!noScroll))
-				{
-					int offset = itemHeight + dividerHeight;
-					// scroll forwards
-					if (firstVisible_note_pos > AudioManager.mAudioPos)
-					{
-						listView.scrollListBy(-offset);
-//						System.out.println("-----scroll forwards (to top)" + (-offset));
-					}
-					// scroll backwards
-					else if (firstVisible_note_pos < AudioManager.mAudioPos)
-					{
-                        // when real item height could be larger than visible item height, so
-                        // scroll twice here in odder to do scroll successfully, otherwise scroll could fail
-                        listView.scrollListBy(offset / 2);
-                        listView.scrollListBy(offset / 2);
-						System.out.println("-----scroll backwards (to bottom) " + offset);
-					}
-
-//					System.out.println("---------------- firstVisible_note_pos = " + firstVisible_note_pos);
-//					System.out.println("---------------- Page.drag_listView.getFirstVisiblePosition() = " + listView.getFirstVisiblePosition());
-					if(firstVisible_note_pos == listView.getFirstVisiblePosition())
-						noScroll = true;
-					else {
-						// update first visible index
-						firstVisible_note_pos = listView.getFirstVisiblePosition();
-					}
-				}
-			}
-
-			// do v scroll
-			TabsHost.store_listView_vScroll(listView);
-			TabsHost.resume_listView_vScroll(listView);
-		}
-	}
-
-
 	public void scrollHighlightAudioItemToVisible(RecyclerView recyclerView)
 	{
-		System.out.println("AudioPlayer_page / _scrollHighlightAudioItemToVisible");
+//		System.out.println("AudioPlayer_page / _scrollHighlightAudioItemToVisible");
 
         LinearLayoutManager layoutMgr = ((LinearLayoutManager) recyclerView.getLayoutManager());
 		// version limitation: _scrollListBy
@@ -539,14 +446,14 @@ public class AudioPlayer_page
 
         firstVisible_note_pos = layoutMgr.findFirstVisibleItemPosition();
 
-		System.out.println("---------------- firstVisible_note_pos = " + firstVisible_note_pos);
+//		System.out.println("---------------- firstVisible_note_pos = " + firstVisible_note_pos);
 
 		v = recyclerView.getChildAt(0);
 
 		int firstVisibleNote_top = (v == null) ? 0 : v.getTop();
 //			System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
 
-		System.out.println("---------------- AudioManager.mAudioPos = " + AudioManager.mAudioPos);
+//		System.out.println("---------------- AudioManager.mAudioPos = " + AudioManager.mAudioPos);
 
 		if(firstVisibleNote_top < 0)
 		{
@@ -575,7 +482,7 @@ public class AudioPlayer_page
 					// scroll twice here in odder to do scroll successfully, otherwise scroll could fail
                     recyclerView.scrollBy(0,offset/2);
                     recyclerView.scrollBy(0,offset/2);
-					System.out.println("-----scroll backwards (to bottom) " + offset);
+//					System.out.println("-----scroll backwards (to bottom) " + offset);
 				}
 
 //					System.out.println("---------------- firstVisible_note_pos = " + firstVisible_note_pos);
