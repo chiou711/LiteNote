@@ -46,6 +46,7 @@ import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
@@ -629,7 +630,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         else if((getFocus_tabPos() == MainAct.mPlaying_pagePos) &&
                 (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()))
         {
-            if(AudioManager.mMediaPlayer != null)
+            if(BackgroundAudioService.mMediaPlayer != null)
             {
                 AudioManager.stopAudioPlayer();
                 AudioManager.mAudioPos = 0;

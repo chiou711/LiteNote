@@ -57,7 +57,7 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
         if( AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
 		    mPrepareDialog.show();
 
-        AudioManager.mIsPrepared = false;
+        BackgroundAudioService.mIsPrepared = false;
 	 } 
 	 
 	 @Override
@@ -69,7 +69,7 @@ public class Async_audioPrepare extends AsyncTask<String,Integer,String>
 		 int progress = 0;
 		 int count = 0;
 
-		 while( (!AudioManager.mIsPrepared) && (!isTimeOut) )
+		 while( (!BackgroundAudioService.mIsPrepared) && (!isTimeOut) )
 		 {
 			 System.out.println("Async_audioPrepare / doInBackground / count = " + count);
 			 count++;

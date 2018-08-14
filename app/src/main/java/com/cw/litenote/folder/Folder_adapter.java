@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_drawer;
 import com.cw.litenote.main.MainAct;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
 /**
@@ -81,7 +81,7 @@ public class Folder_adapter extends SimpleDragSortCursorAdapter
             viewHolder = (ViewHolder) convertView.getTag();
 
         // set highlight of selected drawer
-        if( (AudioManager.mMediaPlayer != null) &&
+        if( (BackgroundAudioService.mMediaPlayer != null) &&
             (MainAct.mPlaying_folderPos == position)        )
             viewHolder.audioPlayingIcon.setVisibility(View.VISIBLE);
         else

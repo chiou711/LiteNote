@@ -19,6 +19,7 @@ package com.cw.litenote.note;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.operation.youtube.YouTubePlayerAct;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.image.UtilImage;
@@ -234,8 +235,8 @@ public class NoteUi
                 public void onClick(View view) {
                     System.out.println("NoteUi / setPictureView_listeners / mVideoPlayButton / getVideoState() = " + UtilVideo.getVideoState());
 
-                    if( (AudioManager.mMediaPlayer != null) &&
-                         AudioManager.mMediaPlayer.isPlaying() &&
+                    if( (BackgroundAudioService.mMediaPlayer != null) &&
+                         BackgroundAudioService.mMediaPlayer.isPlaying() &&
 						(UtilVideo.getVideoState() != UtilVideo.VIDEO_AT_PLAY) )
                     {
                         // Dialog: confirm to disable audio or not
@@ -387,9 +388,9 @@ public class NoteUi
 						public void onDismiss(PopupMenu menu)
 						{
                             TextView audio_title_text_view = (TextView) act.findViewById(R.id.pager_audio_title);
-							if(AudioManager.mMediaPlayer != null)
+							if(BackgroundAudioService.mMediaPlayer != null)
 							{
-								if(AudioManager.mMediaPlayer.isPlaying()) {
+								if(BackgroundAudioService.mMediaPlayer.isPlaying()) {
 									Note_audio.showAudioName(act);
 									audio_title_text_view.setSelected(true);
 								}

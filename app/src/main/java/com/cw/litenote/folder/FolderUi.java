@@ -40,6 +40,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.drawer.Drawer;
 import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.operation.import_export.Import_fileView;
 import com.cw.litenote.db.DB_drawer;
 import com.cw.litenote.db.DB_folder;
@@ -219,7 +220,7 @@ public class FolderUi
                     Pref.setPref_focusView_folder_tableId(act,db_drawer.getFolderTableId(getFocus_folderPos(),true) );
 
                     // update playing highlight if needed
-                    if(AudioManager.mMediaPlayer != null)
+                    if(BackgroundAudioService.mMediaPlayer != null)
                         MainAct.mPlaying_folderPos++;
                 }
 
@@ -314,14 +315,14 @@ public class FolderUi
         }
 
         // update audio playing highlight if needed
-        if(AudioManager.mMediaPlayer != null)
+        if(BackgroundAudioService.mMediaPlayer != null)
         {
             if (MainAct.mPlaying_folderPos > position)
                 MainAct.mPlaying_folderPos--;
             else if (MainAct.mPlaying_folderPos == position)
             {
                 // stop audio since the folder is deleted
-                if(AudioManager.mMediaPlayer != null)
+                if(BackgroundAudioService.mMediaPlayer != null)
                     AudioManager.stopAudioPlayer();
 
                 // update

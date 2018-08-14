@@ -32,6 +32,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
 
@@ -130,7 +131,7 @@ public class AudioUi_page {
 
         // show audio file audio length of playing
         int media_length = AudioPlayer_page.media_file_length;
-        System.out.println("AudioUi_page / _initAudioBlock / audioLen = " + media_length);
+//        System.out.println("AudioUi_page / _initAudioBlock / audioLen = " + media_length);
         int fileHour = Math.round((float)(media_length / 1000 / 60 / 60));
         int fileMin = Math.round((float)((media_length - fileHour * 60 * 60 * 1000) / 1000 / 60));
         int fileSec = Math.round((float)((media_length - fileHour * 60 * 60 * 1000 - fileMin * 1000 * 60 )/ 1000));
@@ -155,10 +156,10 @@ public class AudioUi_page {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar)
             {
-                if( AudioManager.mMediaPlayer != null  )
+                if( BackgroundAudioService.mMediaPlayer != null  )
                 {
                     int mPlayAudioPosition = (int) (((float)(AudioPlayer_page.media_file_length / 100)) * seekBar.getProgress());
-                    AudioManager.mMediaPlayer.seekTo(mPlayAudioPosition);
+                    BackgroundAudioService.mMediaPlayer.seekTo(mPlayAudioPosition);
                 }
             }
 
@@ -253,16 +254,18 @@ public class AudioUi_page {
      */
     private void nextAudio_panel()
     {
+        System.out.println("AudioUi_page / _nextAudio_panel");
+
         // cancel playing
-        if(AudioManager.mMediaPlayer != null)
+        if(BackgroundAudioService.mMediaPlayer != null)
         {
-            if(AudioManager.mMediaPlayer.isPlaying())
+            if(BackgroundAudioService.mMediaPlayer.isPlaying())
             {
-                AudioManager.mMediaPlayer.pause();
+                BackgroundAudioService.mMediaPlayer.pause();
             }
 
-            AudioManager.mMediaPlayer.release();
-            AudioManager.mMediaPlayer = null;
+            BackgroundAudioService.mMediaPlayer.release();
+            BackgroundAudioService.mMediaPlayer = null;
         }
 
         // new audio player instance

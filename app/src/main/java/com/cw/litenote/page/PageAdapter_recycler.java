@@ -50,6 +50,7 @@ import com.cw.litenote.note.Note;
 import com.cw.litenote.note.Note_edit;
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.page.item_touch_helper.ItemTouchHelperAdapter;
 import com.cw.litenote.page.item_touch_helper.ItemTouchHelperViewHolder;
 import com.cw.litenote.page.item_touch_helper.OnStartDragListener;
@@ -356,16 +357,17 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                     if(isAudioUri)
                     {
                         // cancel playing
-                        if(AudioManager.mMediaPlayer != null)
+                        if(BackgroundAudioService.mMediaPlayer != null)
                         {
-                            if(AudioManager.mMediaPlayer.isPlaying())
-                                AudioManager.mMediaPlayer.pause();
+                            if(BackgroundAudioService.mMediaPlayer.isPlaying())
+                                BackgroundAudioService.mMediaPlayer.pause();
 
-                            if(TabsHost.audioPlayer_page != null) {
+                            if((AudioPlayer_page.mAudioHandler != null) &&
+                               (TabsHost.audioPlayer_page != null)        ){
                                 AudioPlayer_page.mAudioHandler.removeCallbacks(TabsHost.audioPlayer_page.page_runnable);
                             }
-                            AudioManager.mMediaPlayer.release();
-                            AudioManager.mMediaPlayer = null;
+                            BackgroundAudioService.mMediaPlayer.release();
+                            BackgroundAudioService.mMediaPlayer = null;
                         }
 
                         AudioManager.setPlayerState(AudioManager.PLAYER_AT_PLAY);
@@ -785,7 +787,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         }
 
         if( PageUi.isAudioPlayingPage() &&
-                (AudioManager.mMediaPlayer != null)				   )
+                (BackgroundAudioService.mMediaPlayer != null)				   )
         {
             if( (Page_recycler.mHighlightPosition == oriEndPos)  && (oriStartPos > oriEndPos))
             {

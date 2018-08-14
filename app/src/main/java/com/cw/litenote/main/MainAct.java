@@ -33,6 +33,7 @@ import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.note_add.Add_note_option;
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.operation.delete.DeleteFolders;
 import com.cw.litenote.operation.delete.DeletePages;
 import com.cw.litenote.operation.import_export.Import_webAct;
@@ -63,12 +64,12 @@ import com.mobeta.android.dslv.DragSortListView;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.media.session.MediaSession;
-import android.media.session.PlaybackState;
 import android.os.Build;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.os.StrictMode;
 import android.content.Context;
 import android.content.Intent;
@@ -79,6 +80,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.session.MediaControllerCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -115,7 +120,14 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 	public static Folder mFolder;
     public static MainUi mMainUi;
     public static Toolbar mToolbar;
-    MediaSession audioSession;
+    public static MediaSessionCompat audioSession;
+
+    public static MediaBrowserCompat mMediaBrowserCompat;
+    public static MediaControllerCompat mMediaControllerCompat;
+    public static int mCurrentState;
+    public final static int STATE_PAUSED = 0;
+    public final static int STATE_PLAYING = 1;
+
 
 	// Main Act onCreate
     @Override
@@ -252,7 +264,6 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             // configure layout view
             configLayoutView();
 
-
 	        mContext = getBaseContext();
 
 			// add on back stack changed listener
@@ -283,60 +294,17 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         else // Build.VERSION.SDK_INT >= 21
         {
             // Media session: to receive media button event of bluetooth device
-            audioSession = new MediaSession(getApplicationContext(), "MediaSession");
-            audioSession.setCallback(new MediaSession.Callback() {
-                @Override
-                public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-                    super.onMediaButtonEvent(mediaButtonIntent);
-                    String intentAction = mediaButtonIntent.getAction();
-
-                    if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction))//android.intent.action.MEDIA_BUTTON
-                    {
-                        KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-                        if ((event != null) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                            System.out.println("MainAct / _onMediaButtonEvent / event.getKeyCode() = " + event.getKeyCode());
-                            switch (event.getKeyCode()) {
-                                case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
-                                    TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
-                                    return true;
-
-                                case KeyEvent.KEYCODE_MEDIA_NEXT: //87
-                                    TabsHost.audioUi_page.audioPanel_next_btn.performClick();
-                                    return true;
-
-                                case KeyEvent.KEYCODE_MEDIA_PLAY: //126
-                                case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
-                                    TabsHost.audioUi_page.audioPanel_play_button.performClick();
-                                    return true;
-
-                                case KeyEvent.KEYCODE_BACK://
-                                    doBackKeyEvent();
-                                    return true;
-
-                                case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-                                    return true;
-
-                                case KeyEvent.KEYCODE_MEDIA_REWIND:
-                                    return true;
-
-                                case KeyEvent.KEYCODE_MEDIA_STOP:
-                                    return true;
-                            }
-                        }
-                    }
-                    return true;
-                }
-            });
-
-            PlaybackState state = new PlaybackState.Builder()
-                    .setActions(PlaybackState.ACTION_PLAY_PAUSE)
-                    .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
-                    .build();
-            audioSession.setPlaybackState(state);
-            audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
-            audioSession.setActive(true);
+            // new media browser instance and create BackgroundAudioService instance: support notification
+            mMediaBrowserCompat = new MediaBrowserCompat(mAct,
+                    new ComponentName(mAct, BackgroundAudioService.class),
+                    mMediaBrowserCompatConnectionCallback,
+                    mAct.getIntent().getExtras());
+            mMediaBrowserCompat.connect();
+            mCurrentState = STATE_PAUSED;
         }
+
     }
+
 
     Intent intentReceive;
     //The BroadcastReceiver that listens for bluetooth broadcasts
@@ -360,25 +328,30 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
     };
 
 
+    // key event: 1 from bluetooth device 2 when notification bar dose not shown
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         System.out.println("MainAct / _onKeyDown / keyCode = " + keyCode);
         switch (keyCode) {
-            case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+            case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
                 TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
                 return true;
 
-            case KeyEvent.KEYCODE_MEDIA_NEXT:
+            case KeyEvent.KEYCODE_MEDIA_NEXT: //87
                 TabsHost.audioUi_page.audioPanel_next_btn.performClick();
+
                 return true;
 
-            case KeyEvent.KEYCODE_MEDIA_PLAY:
-            case KeyEvent.KEYCODE_MEDIA_PAUSE:
+            case KeyEvent.KEYCODE_MEDIA_PLAY: //126
+                TabsHost.audioUi_page.audioPanel_play_button.performClick();
+                return true;
+
+            case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
                 TabsHost.audioUi_page.audioPanel_play_button.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_BACK:
-                doBackKeyEvent();
+                doBackKeyEvent();//todo How to handle device back key?
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
@@ -550,15 +523,12 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
     @Override
     protected void onPause() {
     	super.onPause();
-
 //        mReceiver.abortBroadcast();//todo better place?
-
         System.out.println("MainAct / _onPause");
     }
 
 	@Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
     	System.out.println("MainAct / _onResume");
     }
@@ -605,7 +575,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 		}
 
         // stop audio player
-        if(AudioManager.mMediaPlayer != null)
+        if(BackgroundAudioService.mMediaPlayer != null)
             AudioManager.stopAudioPlayer();
 
 		super.onDestroy();
@@ -1131,7 +1101,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
         	case MenuId.OPEN_PLAY_SUBMENU:
         		// new play instance: stop button is off
-        	    if( (AudioManager.mMediaPlayer != null) &&
+        	    if( (BackgroundAudioService.mMediaPlayer != null) &&
         	    	(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP))
         		{
        		    	// show Stop
@@ -1147,7 +1117,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         		return true;
 
         	case MenuId.PLAY_OR_STOP_AUDIO:
-        		if( (AudioManager.mMediaPlayer != null) &&
+        		if( (BackgroundAudioService.mMediaPlayer != null) &&
         			(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP))
         		{
                     AudioManager.stopAudioPlayer();
@@ -1419,5 +1389,47 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             getSupportActionBar().setTitle(mFolderTitle);
         }
     }
+
+
+    // callback: media browser connection
+    private MediaBrowserCompat.ConnectionCallback mMediaBrowserCompatConnectionCallback = new MediaBrowserCompat.ConnectionCallback() {
+        @Override
+        public void onConnected() {
+            super.onConnected();
+
+            System.out.println("MainAct / MediaBrowserCompat.Callback / _onConnected");
+            try {
+                mMediaControllerCompat = new MediaControllerCompat(mAct, mMediaBrowserCompat.getSessionToken());
+                mMediaControllerCompat.registerCallback(mMediaControllerCompatCallback);
+                MediaControllerCompat.setMediaController(mAct,mMediaControllerCompat);
+            } catch( RemoteException e ) {
+
+            }
+        }
+
+    };
+
+    // callback: media controller
+    private MediaControllerCompat.Callback mMediaControllerCompatCallback = new MediaControllerCompat.Callback() {
+        @Override
+        public void onPlaybackStateChanged(PlaybackStateCompat state) {
+            super.onPlaybackStateChanged(state);
+//            System.out.println("MainAct / _MediaControllerCompat.Callback / _onPlaybackStateChanged / state = " + state);
+            if( state == null ) {
+                return;
+            }
+
+            switch( state.getState() ) {
+                case STATE_PLAYING: {
+                    mCurrentState = STATE_PLAYING;
+                    break;
+                }
+                case STATE_PAUSED: {
+                    mCurrentState = STATE_PAUSED;
+                    break;
+                }
+            }
+        }
+    };
 
 }

@@ -25,10 +25,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -39,7 +39,6 @@ import com.cw.litenote.main.MainAct;
 import com.cw.litenote.tabs.AudioUi_page;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
-import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.Locale;
 
@@ -80,7 +79,7 @@ public class AudioPlayer_page
 	{
 	   	System.out.println("AudioPlayer_page / _runAudioState ");
 	   	// if media player is null, set new fragment
-		if(AudioManager.mMediaPlayer == null)
+		if(BackgroundAudioService.mMediaPlayer == null)
 		{
 		 	// show toast if Audio file is not found or No selection of audio file
 			if( (AudioManager.getAudioFilesCount() == 0) &&
@@ -88,34 +87,49 @@ public class AudioPlayer_page
 			{
 				Toast.makeText(act,R.string.audio_file_not_found,Toast.LENGTH_SHORT).show();
 			}
-			else
-			{
+			else			{
 				mPlaybackTime = 0;
                 AudioManager.setPlayerState(AudioManager.PLAYER_AT_PLAY);
 				mAudio_tryTimes = 0;
+
+				//for 1st play
+				audioUrl_page = AudioManager.getAudioStringAt(AudioManager.mAudioPos);
+
 				startNewAudio();
+
+                MediaControllerCompat.getMediaController(MainAct.mAct)
+                        .getTransportControls()
+                        .playFromUri(Uri.parse(audioUrl_page),null);
+
+                MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
 			}
 		}
 		else
 		{
 			// from play to pause
-			if(AudioManager.mMediaPlayer.isPlaying())
+			if(BackgroundAudioService.mMediaPlayer.isPlaying())
 			{
 				System.out.println("AudioPlayer_page / _runAudioState / play -> pause");
-				AudioManager.mMediaPlayer.pause();
+				BackgroundAudioService.mMediaPlayer.pause();
 				mAudioHandler.removeCallbacks(page_runnable);
                 AudioManager.setPlayerState(AudioManager.PLAYER_AT_PAUSE);
+
+                //for pause
+                MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().pause();
 			}
 			else // from pause to play
 			{
 				System.out.println("AudioPlayer_page / _runAudioState / pause -> play");
                 mAudio_tryTimes = 0;
-				AudioManager.mMediaPlayer.start();
 
-                if(AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
+                if( (mAudioHandler != null) &&
+			        (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE))
 					mAudioHandler.post(page_runnable);
 
                 AudioManager.setPlayerState(AudioManager.PLAYER_AT_PLAY);
+
+                //for play
+                MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
 			}
 		}
 	}
@@ -170,9 +184,9 @@ public class AudioPlayer_page
 	{   @Override
 		public void run()
 		{
+//			System.out.println("AudioPlayer_page / _page_runnable");
             if(!AudioManager.isRunnableOn_page)
             {
-//                System.out.println("AudioPlayer_page / _mRunContinueMode / AudioManager.isRunnableOn_page = " + AudioManager.isRunnableOn_page);
                 stopHandler();
                 stopAsyncTask();
 
@@ -184,13 +198,12 @@ public class AudioPlayer_page
 
 	   		if( AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 1 )
 	   		{
-                // for incoming call case
-                if(!isAudioPanelOn())
-                    showAudioPanel(act,true);
+                // for incoming call case //todo need this?
+//                if(!isAudioPanelOn())
+//                    showAudioPanel(act,true);
 
-	   			if(AudioManager.mMediaPlayer == null)
+                if(!BackgroundAudioService.mIsPrepared)
 	   			{
-//					System.out.println("AudioPlayer_page / page_runnable / AudioManager.mMediaPlayer = null");
 		    		// check if audio file exists or not
    					audioUrl_page = AudioManager.getAudioStringAt(AudioManager.mAudioPos);
 
@@ -201,49 +214,29 @@ public class AudioPlayer_page
 					}
 					else
    					{
-                        System.out.println("AudioPlayer_page / page_runnable / AudioManager.isRunnableOn = " + AudioManager.isRunnableOn_page);
+                        // set listeners
+                        if(BackgroundAudioService.mMediaPlayer != null)
+                            setMediaPlayerListeners();
 
-   						//create a MediaPlayer
-   						AudioManager.mMediaPlayer = new MediaPlayer();
-	   					AudioManager.mMediaPlayer.reset();
 	   					AudioUi_page.mProgress = 0;
 
-
 						// for network stream buffer change
-	   					AudioManager.mMediaPlayer.setOnBufferingUpdateListener(new OnBufferingUpdateListener()
-	   					{
-	   						@Override
-	   						public void onBufferingUpdate(MediaPlayer mp, int percent) {
-								if(TabsHost.getCurrentPage().seekBarProgress != null)
-	   								TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
-	   						}
-	   					});
-   						
-	   					// set listeners
-                        setMediaPlayerListeners();
-   						
-   						try
-   						{
-   							// set data source
-//							AudioManager.mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-							AudioManager.mMediaPlayer.setDataSource(act, Uri.parse(audioUrl_page));
-   							
-   							// prepare the MediaPlayer to play, could delay system response
-   							AudioManager.mMediaPlayer.prepare();
-   						}
-   						catch(Exception e)
-   						{
-   							System.out.println("AudioPlayer_page on Exception");
-   							Log.e(TAG, e.toString());
-							mAudio_tryTimes++;
-   							nextAudio_player();
-   						}
+                        if(BackgroundAudioService.mMediaPlayer != null) {
+                            BackgroundAudioService.mMediaPlayer.setOnBufferingUpdateListener(new OnBufferingUpdateListener() {
+                                @Override
+                                public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                                    if (TabsHost.getCurrentPage().seekBarProgress != null)
+                                        TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
+                                }
+                            });
+                        }
+
+                        showAudioPanel(act,true);
    					}
 	   			}
-	   			else//AudioManager.mMediaPlayer != null
+	   			else
 	   			{
-//                    System.out.println("AudioPlayer_page / page_runnable / AudioManager.mMediaPlayer != null");
-	   				// keep looping, do not set post() here, it will affect slide show timing
+//	   				// keep looping, do not set post() here, it will affect slide show timing
 	   				if(mAudio_tryTimes < AudioManager.getAudioFilesCount())
 	   				{
 						// update page audio seek bar
@@ -309,17 +302,19 @@ public class AudioPlayer_page
      */
 	private void setMediaPlayerListeners()
 	{
+		System.out.println("AudioPlayer_page / _setAudioPlayerListeners");
+
 			// On Completion listener
-			AudioManager.mMediaPlayer.setOnCompletionListener(new OnCompletionListener()
+			BackgroundAudioService.mMediaPlayer.setOnCompletionListener(new OnCompletionListener()
 			{	@Override
 				public void onCompletion(MediaPlayer mp) 
 				{
 					System.out.println("AudioPlayer_page / _setAudioPlayerListeners / _onCompletion");
 					
-					if(AudioManager.mMediaPlayer != null)
-						AudioManager.mMediaPlayer.release();
+					if(BackgroundAudioService.mMediaPlayer != null)
+						BackgroundAudioService.mMediaPlayer.release();
 	
-					AudioManager.mMediaPlayer = null;
+					BackgroundAudioService.mMediaPlayer = null;
 					mPlaybackTime = 0;
 
 					// get next index
@@ -333,18 +328,18 @@ public class AudioPlayer_page
 			});
 			
 			// - on prepared listener
-			AudioManager.mMediaPlayer.setOnPreparedListener(new OnPreparedListener()
+			BackgroundAudioService.mMediaPlayer.setOnPreparedListener(new OnPreparedListener()
 			{	@Override
 				public void onPrepared(MediaPlayer mp)
 				{
-					System.out.println("AudioPlayer_page / _setAudioPlayerListeners / _onPrepared");
+					System.out.println("AudioPlayer_page / _setAudioPlayerListeners / _onPrepared 1");
 
 					if (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
 					{
                         showAudioPanel(act,true);
 
 						// media file length
-						media_file_length = AudioManager.mMediaPlayer.getDuration(); // gets the song length in milliseconds from URL
+						media_file_length = BackgroundAudioService.mMediaPlayer.getDuration(); // gets the song length in milliseconds from URL
                         System.out.println("AudioPlayer_page / _setAudioPlayerListeners / media_file_length = " + media_file_length);
 
 						// set footer message: media name
@@ -369,11 +364,10 @@ public class AudioPlayer_page
 							TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                         }
 
-						if (AudioManager.mMediaPlayer != null)
 						{
-							AudioManager.mIsPrepared = true;
-							AudioManager.mMediaPlayer.start();
-                            AudioManager.mMediaPlayer.seekTo(mPlaybackTime);
+                            BackgroundAudioService.mIsPrepared = true;
+
+                            BackgroundAudioService.mMediaPlayer.seekTo(mPlaybackTime);
 
 							// add for calling runnable
 							if (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
@@ -384,7 +378,7 @@ public class AudioPlayer_page
 			});
 			
 			// - on error listener
-			AudioManager.mMediaPlayer.setOnErrorListener(new OnErrorListener()
+			BackgroundAudioService.mMediaPlayer.setOnErrorListener(new OnErrorListener()
 			{	@Override
 				public boolean onError(MediaPlayer mp,int what,int extra) 
 				{
@@ -516,13 +510,13 @@ public class AudioPlayer_page
 
         AudioManager.isRunnableOn_page = true;
         AudioManager.isRunnableOn_note = false;
-        AudioManager.mMediaPlayer = null;
+        BackgroundAudioService.mMediaPlayer = null;
 
         // verify audio URL
         Async_audioUrlVerify.mIsOkUrl = false;
 
         if( (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE) &&
-                (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0)          )
+            (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0)          )
         {
             mAudioHandler.postDelayed(page_runnable,Util.oneSecond/4);
         }
@@ -566,10 +560,10 @@ public class AudioPlayer_page
     {
 //		Toast.makeText(act,"Can not open file, try next one.",Toast.LENGTH_SHORT).show();
         System.out.println("AudioPlayer_page / _playNextAudio");
-        if(AudioManager.mMediaPlayer != null)
+        if(BackgroundAudioService.mMediaPlayer != null)
         {
-            AudioManager.mMediaPlayer.release();
-            AudioManager.mMediaPlayer = null;
+            BackgroundAudioService.mMediaPlayer.release();
+            BackgroundAudioService.mMediaPlayer = null;
         }
         mPlaybackTime = 0;
 
@@ -583,7 +577,15 @@ public class AudioPlayer_page
         System.out.println("AudioPlayer_page / check mTryTimes = " + mAudio_tryTimes);
         if(mAudio_tryTimes < AudioManager.getAudioFilesCount() )
         {
+			audioUrl_page = AudioManager.getAudioStringAt(AudioManager.mAudioPos);
+
             startNewAudio();
+
+			MediaControllerCompat.getMediaController(MainAct.mAct)
+					.getTransportControls()
+					.playFromUri(Uri.parse(audioUrl_page),null);
+			MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+
         }
         else // try enough times: still no audio file is found
         {
@@ -608,8 +610,8 @@ public class AudioPlayer_page
 
         // get current playing position
         int currentPos = 0;
-        if(AudioManager.mMediaPlayer != null)
-            currentPos = AudioManager.mMediaPlayer.getCurrentPosition();
+        if(BackgroundAudioService.mMediaPlayer != null)
+            currentPos = BackgroundAudioService.mMediaPlayer.getCurrentPosition();
 
         int curHour = Math.round((float)(currentPos / 1000 / 60 / 60));
         int curMin = Math.round((float)((currentPos - curHour * 60 * 60 * 1000) / 1000 / 60));

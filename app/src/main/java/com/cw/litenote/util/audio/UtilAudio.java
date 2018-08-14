@@ -23,6 +23,7 @@ import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.R;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
@@ -48,12 +49,12 @@ public class UtilAudio {
 
     public static void stopAudioIfNeeded()
     {
-		if( ( (AudioManager.mMediaPlayer != null) &&
+		if( ( (BackgroundAudioService.mMediaPlayer != null) &&
               (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) ) &&
 			(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
 			(TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)                           )
 		{
-            if(AudioManager.mMediaPlayer != null){
+            if(BackgroundAudioService.mMediaPlayer != null){
                 AudioManager.stopAudioPlayer();
                 AudioManager.mAudioPos = 0;
             }
@@ -137,10 +138,10 @@ public class UtilAudio {
                 //from Play to Pause
             	if(AudioManager.getPlayerState() == AudioManager.PLAYER_AT_PLAY)
             	{
-                    if( (AudioManager.mMediaPlayer != null) &&
-                            AudioManager.mMediaPlayer.isPlaying() ) {
+                    if( (BackgroundAudioService.mMediaPlayer != null) &&
+							BackgroundAudioService.mMediaPlayer.isPlaying() ) {
                         AudioManager.setPlayerState(AudioManager.PLAYER_AT_PAUSE);
-                        AudioManager.mMediaPlayer.pause();
+						BackgroundAudioService.mMediaPlayer.pause();
                     }
             		mIsCalledWhilePlayingAudio = true;
             	}
@@ -152,10 +153,10 @@ public class UtilAudio {
             	if( (AudioManager.getPlayerState() == AudioManager.PLAYER_AT_PAUSE) &&
             		mIsCalledWhilePlayingAudio )	
             	{
-                    if( (AudioManager.mMediaPlayer != null) &&
-                        !AudioManager.mMediaPlayer.isPlaying() ) {
+                    if( (BackgroundAudioService.mMediaPlayer != null) &&
+                        !BackgroundAudioService.mMediaPlayer.isPlaying() ) {
                         AudioManager.setPlayerState(AudioManager.PLAYER_AT_PLAY);
-                        AudioManager.mMediaPlayer.start();
+						BackgroundAudioService.mMediaPlayer.start();
                     }
                     mIsCalledWhilePlayingAudio = false;
             	}

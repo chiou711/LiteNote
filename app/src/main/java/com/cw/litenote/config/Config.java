@@ -21,6 +21,7 @@ import java.io.File;
 
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.BaseBackPressedListener;
 import com.cw.litenote.main.MainAct;
@@ -500,7 +501,7 @@ public class Config extends Fragment
 			db_drawer.deleteDB();
 
 			// stop audio player
-			if(AudioManager.mMediaPlayer != null)
+			if(BackgroundAudioService.mMediaPlayer != null)
 				AudioManager.stopAudioPlayer();
 
 			//set last tab Id to 0, otherwise TabId will not start from 0 when deleting all
@@ -547,7 +548,7 @@ public class Config extends Fragment
 		public void onClick(DialogInterface dialog, int which) {
 
 			// stop audio player
-			if(AudioManager.mMediaPlayer != null)
+			if(BackgroundAudioService.mMediaPlayer != null)
 				AudioManager.stopAudioPlayer();
 
 			//remove preference

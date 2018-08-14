@@ -39,6 +39,7 @@ import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.List_selectPage;
 import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.util.BaseBackPressedListener;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
@@ -207,7 +208,7 @@ public class DeletePages extends Fragment{
         int scrollX = 0; //over the last scroll X
         Pref.setPref_focusView_scrollX_byFolderTableId(act, scrollX );
 
-        if(AudioManager.mMediaPlayer != null)
+        if(BackgroundAudioService.mMediaPlayer != null)
         {
             AudioManager.stopAudioPlayer();
             AudioManager.mAudioPos = 0;

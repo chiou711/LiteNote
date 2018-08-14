@@ -23,6 +23,7 @@ import android.content.Intent;
 import com.cw.litenote.R;
 import com.cw.litenote.note.Note_audio;
 import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.tabs.TabsHost;
 
 // for earphone jack connection on/off
@@ -32,10 +33,10 @@ public class NoisyAudioStreamReceiver extends BroadcastReceiver {
 	{
         if (android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction()))
 		{
-			if((AudioManager.mMediaPlayer != null) && AudioManager.mMediaPlayer.isPlaying() )
+			if((BackgroundAudioService.mMediaPlayer != null) && BackgroundAudioService.mMediaPlayer.isPlaying() )
 			{
 				System.out.println("NoisyAudioStreamReceiver / play -> pause");
-                AudioManager.mMediaPlayer.pause();
+                BackgroundAudioService.mMediaPlayer.pause();
 
                 AudioManager.setPlayerState(AudioManager.PLAYER_AT_PAUSE);
 

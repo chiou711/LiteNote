@@ -70,7 +70,7 @@ public class AudioPlayer_note
 	{
 	   	System.out.println("AudioPlayer_note / _runAudioState ");
 	   	// if media player is null, set new fragment
-		if(AudioManager.mMediaPlayer == null)
+		if(BackgroundAudioService.mMediaPlayer == null)
 		{
             mPlaybackTime = 0;
             if(!Note_audio.isPausedAtSeekerAnchor)
@@ -83,17 +83,17 @@ public class AudioPlayer_note
 		else
 		{
 			// from play to pause
-			if(AudioManager.mMediaPlayer.isPlaying())
+			if(BackgroundAudioService.mMediaPlayer.isPlaying())
 			{
 				System.out.println("AudioPlayer_note / _runAudioState / play -> pause");
-				AudioManager.mMediaPlayer.pause();
+                BackgroundAudioService.mMediaPlayer.pause();
 				mAudioHandler.removeCallbacks(mRunOneTimeMode);
                 AudioManager.setPlayerState(AudioManager.PLAYER_AT_PAUSE);
 			}
 			else // from pause to play
 			{
 				System.out.println("AudioPlayer_note / _runAudioState / pause -> play");
-				AudioManager.mMediaPlayer.start();
+                BackgroundAudioService.mMediaPlayer.start();
 
 				if(AudioManager.getAudioPlayMode() == AudioManager.NOTE_PLAY_MODE)
 					mAudioHandler.post(mRunOneTimeMode);
@@ -119,7 +119,7 @@ public class AudioPlayer_note
                 return;
             }
 
-	   		if(AudioManager.mMediaPlayer == null)
+	   		if(BackgroundAudioService.mMediaPlayer == null)
 	   		{
 	   			String audioStr = AudioManager.getAudioStringAt(mAudioPos);
 	   			if(Async_audioUrlVerify.mIsOkUrl)
@@ -127,19 +127,18 @@ public class AudioPlayer_note
                     System.out.println("AudioPlayer_note / mRunOneTimeMode / AudioManager.isRunnableOn_note = " + AudioManager.isRunnableOn_note);
 
 				    //create a MediaPlayer
-				    AudioManager.mMediaPlayer = new MediaPlayer();
-	   				AudioManager.mMediaPlayer.reset();
+                    BackgroundAudioService.mMediaPlayer = new MediaPlayer();
+                    BackgroundAudioService.mMediaPlayer.reset();
 
 	   				//set audio player listeners
                     setMediaPlayerListeners(notePager);
 	   				
 	   				try
 	   				{
-//						AudioManager.mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-	   					AudioManager.mMediaPlayer.setDataSource(act, Uri.parse(audioStr));
+                        BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(audioStr));
 	   					
 					    // prepare the MediaPlayer to play, this will delay system response 
-   						AudioManager.mMediaPlayer.prepare();
+                        BackgroundAudioService.mMediaPlayer.prepare();
    						
 	   					//Note: below
 	   					//Set 1 second will cause Media player abnormal on Power key short click
@@ -204,7 +203,7 @@ public class AudioPlayer_note
 	private void setMediaPlayerListeners(final ViewPager pager)
 	{
         // - on prepared listener
-        AudioManager.mMediaPlayer.setOnPreparedListener(new OnPreparedListener()
+        BackgroundAudioService.mMediaPlayer.setOnPreparedListener(new OnPreparedListener()
         {	@Override
             public void onPrepared(MediaPlayer mp)
             {
@@ -212,17 +211,17 @@ public class AudioPlayer_note
 
                 if (AudioManager.getAudioPlayMode() == AudioManager.NOTE_PLAY_MODE)
                 {
-                    if (AudioManager.mMediaPlayer != null)
+                    if (BackgroundAudioService.mMediaPlayer != null)
                     {
-                        AudioManager.mIsPrepared = true;
+                        BackgroundAudioService.mIsPrepared = true;
                         if (!Note_audio.isPausedAtSeekerAnchor)
                         {
-                            AudioManager.mMediaPlayer.start();
-                            AudioManager.mMediaPlayer.getDuration();
-                            AudioManager.mMediaPlayer.seekTo(mPlaybackTime);
+                            BackgroundAudioService.mMediaPlayer.start();
+                            BackgroundAudioService.mMediaPlayer.getDuration();
+                            BackgroundAudioService.mMediaPlayer.seekTo(mPlaybackTime);
                         }
                         else
-                            AudioManager.mMediaPlayer.seekTo(Note_audio.mAnchorPosition);
+                            BackgroundAudioService.mMediaPlayer.seekTo(Note_audio.mAnchorPosition);
 
                         Note_audio.updateAudioPlayState(act);
                     }
@@ -231,16 +230,16 @@ public class AudioPlayer_note
         });
 
         // On Completion listener
-        AudioManager.mMediaPlayer.setOnCompletionListener(new OnCompletionListener()
+        BackgroundAudioService.mMediaPlayer.setOnCompletionListener(new OnCompletionListener()
         {	@Override
         public void onCompletion(MediaPlayer mp)
         {
             System.out.println("AudioPlayer_note / _setAudioPlayerListeners / _onCompletion");
 
-            if(AudioManager.mMediaPlayer != null)
-                AudioManager.mMediaPlayer.release();
+            if(BackgroundAudioService.mMediaPlayer != null)
+                BackgroundAudioService.mMediaPlayer.release();
 
-            AudioManager.mMediaPlayer = null;
+            BackgroundAudioService.mMediaPlayer = null;
             mPlaybackTime = 0;
 
             if(AudioManager.getAudioPlayMode() == AudioManager.NOTE_PLAY_MODE) // one time mode
@@ -275,7 +274,7 @@ public class AudioPlayer_note
         });
 
         // - on error listener
-        AudioManager.mMediaPlayer.setOnErrorListener(new OnErrorListener()
+        BackgroundAudioService.mMediaPlayer.setOnErrorListener(new OnErrorListener()
         {	@Override
             public boolean onError(MediaPlayer mp,int what,int extra)
             {
@@ -300,7 +299,7 @@ public class AudioPlayer_note
 
         AudioManager.isRunnableOn_page = false;
         AudioManager.isRunnableOn_note = true;
-        AudioManager.mMediaPlayer = null;
+        BackgroundAudioService.mMediaPlayer = null;
 
         // verify audio
         Async_audioUrlVerify.mIsOkUrl = false;

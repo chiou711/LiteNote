@@ -16,7 +16,6 @@
 
 package com.cw.litenote.operation.audio;
 
-import android.media.MediaPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,6 @@ public class AudioManager
 {
 	private static List<String> audioList;
 	private static List<Integer> audioList_checked;
-    static boolean mIsPrepared;
 
     private static int mAudioPlayMode;
     public final static int NOTE_PLAY_MODE = 0;
@@ -41,9 +39,7 @@ public class AudioManager
     public static int PLAYER_AT_PAUSE = 2;
     public static boolean isRunnableOn_note;
     public static boolean isRunnableOn_page;
-    public static MediaPlayer mMediaPlayer; // plays the background music, if any
     public static int mAudioPos; // index of current media to play
-//    public static Handler mAudioHandler; // used to update the slide show
 
 
     // constructor
@@ -83,13 +79,13 @@ public class AudioManager
         System.out.println("AudioManager / _stopAudio");
 
         // stop media player
-        if(AudioManager.mMediaPlayer != null) {
-            if (AudioManager.mMediaPlayer.isPlaying()) {
-                AudioManager.mMediaPlayer.pause();
-                AudioManager.mMediaPlayer.stop();
+        if(BackgroundAudioService.mMediaPlayer != null) {
+            if (BackgroundAudioService.mMediaPlayer.isPlaying()) {
+                BackgroundAudioService.mMediaPlayer.pause();
+                BackgroundAudioService.mMediaPlayer.stop();
             }
-            AudioManager.mMediaPlayer.release();
-            AudioManager.mMediaPlayer = null;
+            BackgroundAudioService.mMediaPlayer.release();
+            BackgroundAudioService.mMediaPlayer = null;
         }
 
         // stop handler and set flag to remove runnable

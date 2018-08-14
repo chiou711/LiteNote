@@ -66,7 +66,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 		if( AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE )
 			mUrlVerifyDialog.show();
 
-		AudioManager.mIsPrepared = false;
+		BackgroundAudioService.mIsPrepared = false;
 	}
 	 
 	@Override

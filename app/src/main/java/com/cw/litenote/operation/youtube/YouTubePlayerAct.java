@@ -28,6 +28,7 @@ import com.cw.litenote.db.DB_page;
 import com.cw.litenote.note.Note;
 import com.cw.litenote.note.NoteUi;
 import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
@@ -48,7 +49,7 @@ public class YouTubePlayerAct extends YouTubeFailureRecoveryActivity
         act = this;
 
         // stop audio in advance
-        if((AudioManager.mMediaPlayer != null) && (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP))
+        if((BackgroundAudioService.mMediaPlayer != null) && (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP))
             AudioManager.stopAudioPlayer();
 
 

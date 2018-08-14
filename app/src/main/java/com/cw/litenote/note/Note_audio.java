@@ -35,6 +35,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.audio.AudioManager;
 import com.cw.litenote.operation.audio.AudioPlayer_note;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
@@ -227,10 +228,10 @@ public class Note_audio
             @Override
             public void onStopTrackingTouch(SeekBar seekBar)
             {
-                if( AudioManager.mMediaPlayer != null  )
+                if( BackgroundAudioService.mMediaPlayer != null  )
                 {
                     int mPlayAudioPosition = (int) (((float)(mediaFileLength / 100)) * seekBar.getProgress());
-                    AudioManager.mMediaPlayer.seekTo(mPlayAudioPosition);
+                    BackgroundAudioService.mMediaPlayer.seekTo(mPlayAudioPosition);
                 }
                 else
                 {
@@ -282,9 +283,9 @@ public class Note_audio
             AudioPlayer_note.mAudioPos = NoteUi.getFocus_notePos();
 
             // new instance
-            if(AudioManager.mMediaPlayer == null)
+            if(BackgroundAudioService.mMediaPlayer == null)
                 MainAct.mPlaying_pageTableId = Pref.getPref_focusView_page_tableId(act);
-            else if((AudioManager.mMediaPlayer != null) &&
+            else if((BackgroundAudioService.mMediaPlayer != null) &&
                     (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE))// If Audio player is NOT at One time mode and media exists
                 AudioManager.stopAudioPlayer();
 
@@ -304,8 +305,8 @@ public class Note_audio
         SeekBar seekBar = (SeekBar) act.findViewById(R.id.pager_img_audio_seek_bar);
         int currentPos=0;
 
-        if(AudioManager.mMediaPlayer != null)
-            currentPos = AudioManager.mMediaPlayer.getCurrentPosition();
+        if(BackgroundAudioService.mMediaPlayer != null)
+            currentPos = BackgroundAudioService.mMediaPlayer.getCurrentPosition();
 
         int curHour = Math.round((float)(currentPos / 1000 / 60 / 60));
         int curMin = Math.round((float)((currentPos - curHour * 60 * 60 * 1000) / 1000 / 60));
