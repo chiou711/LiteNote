@@ -318,13 +318,13 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
             audioPlayer_page.page_runnable.run();
 
+            //todo Why dose this panel disappear?
             UtilAudio.updateAudioPanel(audioUi_page.audioPanel_play_button,
                                        audioUi_page.audio_panel_title_textView);
         }
 
         // set long click listener
         setLongClickListener();
-
     }
 
     @Override

@@ -95,10 +95,12 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             super.onPause();
             System.out.println("BackgroundAudioService / mMediaSessionCallback / _onPause");
 
-            if( (mMediaPlayer != null) && mMediaPlayer.isPlaying() ) {
+            if( mMediaPlayer != null  ) {
+                if(mMediaPlayer.isPlaying())
+                    mMediaPlayer.pause();
+
                 setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
 
-                mMediaPlayer.pause();
                 initMediaSessionMetadata();
                 showPausedNotification();
             }
