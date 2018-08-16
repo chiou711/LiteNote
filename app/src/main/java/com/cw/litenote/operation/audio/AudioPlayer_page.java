@@ -198,9 +198,9 @@ public class AudioPlayer_page
 
 	   		if( AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 1 )
 	   		{
-                // for incoming call case //todo need this?
-//                if(!isAudioPanelOn())
-//                    showAudioPanel(act,true);
+                // for incoming call case and after Key protection
+                if(!isAudioPanelOn())
+                    showAudioPanel(act,true);
 
                 if(!BackgroundAudioService.mIsPrepared)
 	   			{

@@ -88,6 +88,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             initMediaSessionMetadata();
             showPlayingNotification();
             mMediaPlayer.start();
+
+            // update panel status: play
+            TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
         }
 
         @Override
@@ -104,6 +107,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 initMediaSessionMetadata();
                 showPausedNotification();
             }
+
+            // update panel status: pause
+            TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_play);
         }
 
         @Override
