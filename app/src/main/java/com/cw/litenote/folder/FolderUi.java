@@ -24,7 +24,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +38,7 @@ import android.widget.TextView;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.drawer.Drawer;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.operation.import_export.Import_fileView;
 import com.cw.litenote.db.DB_drawer;
@@ -323,7 +322,7 @@ public class FolderUi
             {
                 // stop audio since the folder is deleted
                 if(BackgroundAudioService.mMediaPlayer != null)
-                    AudioManager.stopAudioPlayer();
+                    Audio_manager.stopAudioPlayer();
 
                 // update
                 if (foldersCount > 0)

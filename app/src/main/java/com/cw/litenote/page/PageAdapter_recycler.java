@@ -48,7 +48,7 @@ import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.note.Note;
 import com.cw.litenote.note.Note_edit;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.page.item_touch_helper.ItemTouchHelperAdapter;
@@ -267,7 +267,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 toggleNoteMarking(mAct,position);
 
                 // Stop if unmarked item is at playing state
-                if(AudioManager.mAudioPos == position) {
+                if(Audio_manager.mAudioPos == position) {
                     UtilAudio.stopAudioIfNeeded();
                 }
 
@@ -339,7 +339,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         holder.btnPlayAudio.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-                AudioManager.setAudioPlayMode(AudioManager.PAGE_PLAY_MODE);
+                Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
                 DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
                 int notesCount = db_page.getNotesCount(true);
                 if(position >= notesCount) //end of list
@@ -370,11 +370,11 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                             BackgroundAudioService.mMediaPlayer = null;
                         }
 
-                        AudioManager.setPlayerState(AudioManager.PLAYER_AT_PLAY);
+                        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 
                         // create new Intent to play audio
-                        AudioManager.mAudioPos = position;
-                        AudioManager.setAudioPlayMode(AudioManager.PAGE_PLAY_MODE);
+                        Audio_manager.mAudioPos = position;
+                        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
 
                         TabsHost.audioUi_page = new AudioUi_page(mAct, TabsHost.getCurrentPage().recyclerView);
                         TabsHost.audioUi_page.initAudioBlock(MainAct.mAct);
@@ -445,7 +445,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
                 if (position < count) {
                     if (Util.isYouTubeLink(linkStr)) {
-                        AudioManager.stopAudioPlayer();
+                        Audio_manager.stopAudioPlayer();
 
                         // apply native YouTube
                         Util.openLink_YouTube(mAct, linkStr);
@@ -484,9 +484,9 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         // show audio highlight if audio is not at Stop
         if( PageUi.isAudioPlayingPage() &&
-            (position == AudioManager.mAudioPos)  &&
-            (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) &&
-            (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE) 	)
+            (position == Audio_manager.mAudioPos)  &&
+            (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
+            (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) 	)
         {
 //            System.out.println("PageAdapter / _getView / show highlight / position = " + position);
             TabsHost.getCurrentPage().mHighlightPosition = position;
@@ -816,7 +816,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                 Page_recycler.mHighlightPosition++;
             }
 
-            AudioManager.mAudioPos = Page_recycler.mHighlightPosition;
+            Audio_manager.mAudioPos = Page_recycler.mHighlightPosition;
             AudioPlayer_page.prepareAudioInfo();
         }
 

@@ -20,7 +20,7 @@ package com.cw.litenote.config;
 import java.io.File;
 
 import com.cw.litenote.folder.FolderUi;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.BaseBackPressedListener;
@@ -502,7 +502,7 @@ public class Config extends Fragment
 
 			// stop audio player
 			if(BackgroundAudioService.mMediaPlayer != null)
-				AudioManager.stopAudioPlayer();
+				Audio_manager.stopAudioPlayer();
 
 			//set last tab Id to 0, otherwise TabId will not start from 0 when deleting all
 			//reset tab Index to 0
@@ -549,7 +549,7 @@ public class Config extends Fragment
 
 			// stop audio player
 			if(BackgroundAudioService.mMediaPlayer != null)
-				AudioManager.stopAudioPlayer();
+				Audio_manager.stopAudioPlayer();
 
 			//remove preference
 			clearSharedPreferencesForSettings(getActivity());

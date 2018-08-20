@@ -31,7 +31,7 @@ import com.cw.litenote.drawer.Drawer;
 import com.cw.litenote.folder.Folder;
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.note_add.Add_note_option;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.operation.delete.DeleteFolders;
@@ -251,7 +251,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 		    			System.out.println("MainAct / _onCreate /  FolderUi.getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
 		        	}
 	        	}
-                AudioManager.setPlayerState(AudioManager.PLAYER_AT_STOP);
+                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
 	        	UtilAudio.mIsCalledWhilePlayingAudio = false;
 	        }
             dB_drawer.close();
@@ -496,7 +496,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
        outState.putInt("Playing_pageId", mPlaying_pagePos);
        outState.putInt("Playing_folderPos", mPlaying_folderPos);
        outState.putInt("SeekBarProgress", AudioUi_page.mProgress);
-       outState.putInt("AudioInfo_state", AudioManager.getPlayerState());
+       outState.putInt("AudioInfo_state", Audio_manager.getPlayerState());
        outState.putBoolean("CalledWhilePlayingAudio", UtilAudio.mIsCalledWhilePlayingAudio);
        if(FolderUi.mHandler != null)
     	   FolderUi.mHandler.removeCallbacks(FolderUi.mTabsHostRun);
@@ -514,7 +514,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             FolderUi.setFocus_folderPos(savedInstanceState.getInt("NowFolderPosition"));
     		mPlaying_pagePos = savedInstanceState.getInt("Playing_pageId");
     		mPlaying_folderPos = savedInstanceState.getInt("Playing_folderPos");
-            AudioManager.setPlayerState(savedInstanceState.getInt("AudioInfo_state"));
+            Audio_manager.setPlayerState(savedInstanceState.getInt("AudioInfo_state"));
     		AudioUi_page.mProgress = savedInstanceState.getInt("SeekBarProgress");
     		UtilAudio.mIsCalledWhilePlayingAudio = savedInstanceState.getBoolean("CalledWhilePlayingAudio");
     	}
@@ -576,7 +576,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
         // stop audio player
         if(BackgroundAudioService.mMediaPlayer != null)
-            AudioManager.stopAudioPlayer();
+            Audio_manager.stopAudioPlayer();
 
 		super.onDestroy();
     }
@@ -1102,7 +1102,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         	case MenuId.OPEN_PLAY_SUBMENU:
         		// new play instance: stop button is off
         	    if( (BackgroundAudioService.mMediaPlayer != null) &&
-        	    	(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP))
+        	    	(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP))
         		{
        		    	// show Stop
            			playOrStopMusicButton.setTitle(R.string.menu_button_stop_audio);
@@ -1118,9 +1118,9 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
         	case MenuId.PLAY_OR_STOP_AUDIO:
         		if( (BackgroundAudioService.mMediaPlayer != null) &&
-        			(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP))
+        			(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP))
         		{
-                    AudioManager.stopAudioPlayer();
+                    Audio_manager.stopAudioPlayer();
 
                     // remove audio panel
                     TabsHost.audioPlayer_page.page_runnable.run();
@@ -1132,8 +1132,8 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         		}
         		else // play first audio
                 {
-                    AudioManager.setAudioPlayMode(AudioManager.PAGE_PLAY_MODE);
-                    AudioManager.mAudioPos = 0;
+                    Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
+                    Audio_manager.mAudioPos = 0;
 
                     Page_recycler page = TabsHost.getCurrentPage();
                     TabsHost.audioUi_page = new AudioUi_page(this,page.recyclerView);

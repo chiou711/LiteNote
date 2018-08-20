@@ -33,7 +33,7 @@ import android.widget.TextView;
 
 import com.cw.litenote.R;
 import com.cw.litenote.main.MainAct;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.AudioPlayer_note;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.util.ColorSet;
@@ -49,7 +49,7 @@ import static android.os.Build.VERSION_CODES.M;
  * Created by cw on 2017/10/26.
  */
 
-public class Note_audio
+public class AudioUi_note
 {
     private AppCompatActivity act;
     private TextView audio_title;
@@ -58,7 +58,7 @@ public class Note_audio
     private ViewPager mPager;
 
     // constructor
-    Note_audio(AppCompatActivity act,String audioUriInDB)
+    AudioUi_note(AppCompatActivity act, String audioUriInDB)
     {
         this.act = act;
         mAudioUriInDB = audioUriInDB;
@@ -148,7 +148,7 @@ public class Note_audio
         }
         catch(Exception e)
         {
-            System.out.println("Note_audio / _initAudioProgress / exception");
+            System.out.println("AudioUi_note / _initAudioProgress / exception");
         }
         // set audio file length
         int fileHour = Math.round((float)(mediaFileLength / 1000 / 60 / 60));
@@ -245,8 +245,8 @@ public class Note_audio
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // audio player is one time mode in pager
-                if(AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
-                    AudioManager.stopAudioPlayer();
+                if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+                    Audio_manager.stopAudioPlayer();
             }
 
             @Override
@@ -274,8 +274,8 @@ public class Note_audio
     // play audio in pager
     private static void playAudioInPager(AppCompatActivity act, String audioStr, ViewPager pager)
     {
-        if(AudioManager.getAudioPlayMode()  == AudioManager.PAGE_PLAY_MODE)
-            AudioManager.stopAudioPlayer();
+        if(Audio_manager.getAudioPlayMode()  == Audio_manager.PAGE_PLAY_MODE)
+            Audio_manager.stopAudioPlayer();
 
         if(UtilAudio.hasAudioExtension(audioStr) ||
            UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioStr, act)))
@@ -286,10 +286,10 @@ public class Note_audio
             if(BackgroundAudioService.mMediaPlayer == null)
                 MainAct.mPlaying_pageTableId = Pref.getPref_focusView_page_tableId(act);
             else if((BackgroundAudioService.mMediaPlayer != null) &&
-                    (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE))// If Audio player is NOT at One time mode and media exists
-                AudioManager.stopAudioPlayer();
+                    (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE))// If Audio player is NOT at One time mode and media exists
+                Audio_manager.stopAudioPlayer();
 
-            AudioManager.setAudioPlayMode(AudioManager.NOTE_PLAY_MODE);
+            Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
 
             AudioPlayer_note audioPlayer_note = new AudioPlayer_note(act,pager);
             AudioPlayer_note.prepareAudioInfo();
@@ -332,20 +332,20 @@ public class Note_audio
     {
         ImageView audio_play_btn = (ImageView) act.findViewById(R.id.pager_btn_audio_play);
 
-        if(AudioManager.getAudioPlayMode() != AudioManager.NOTE_PLAY_MODE)
+        if(Audio_manager.getAudioPlayMode() != Audio_manager.NOTE_PLAY_MODE)
             return;
 
         TextView audioTitle = (TextView) act.findViewById(R.id.pager_audio_title);
         // update playing state
-        if(AudioManager.getPlayerState() == AudioManager.PLAYER_AT_PLAY)
+        if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
         {
             audio_play_btn.setImageResource(R.drawable.ic_media_pause);
             showAudioName(act);
             audioTitle.setTextColor(ColorSet.getHighlightColor(act) );
             audioTitle.setSelected(true);
         }
-        else if( (AudioManager.getPlayerState() == AudioManager.PLAYER_AT_PAUSE) ||
-                (AudioManager.getPlayerState() == AudioManager.PLAYER_AT_STOP)    )
+        else if( (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE) ||
+                (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)    )
         {
             audio_play_btn.setImageResource(R.drawable.ic_media_play);
             showAudioName(act);

@@ -18,7 +18,7 @@ package com.cw.litenote.note;
 
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.operation.youtube.YouTubePlayerAct;
 import com.cw.litenote.tabs.TabsHost;
@@ -247,7 +247,7 @@ public class NoteUi
                                        new DialogInterface.OnClickListener(){
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                AudioManager.stopAudioPlayer();
+                                                Audio_manager.stopAudioPlayer();
 
                                                 UtilVideo.changeVideoState();
                                                 UtilVideo.playOrPauseVideo(pager,strPicture);
@@ -391,7 +391,7 @@ public class NoteUi
 							if(BackgroundAudioService.mMediaPlayer != null)
 							{
 								if(BackgroundAudioService.mMediaPlayer.isPlaying()) {
-									Note_audio.showAudioName(act);
+									AudioUi_note.showAudioName(act);
 									audio_title_text_view.setSelected(true);
 								}
 							}

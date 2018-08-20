@@ -20,7 +20,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.main.MainAct;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.page.PageAdapter_recycler;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.CustomWebView;
@@ -89,7 +89,7 @@ public class Note extends AppCompatActivity
 
     public AppCompatActivity act;
     public static int mPlayVideoPositionOfInstance;
-    public Note_audio note_audio;
+    public AudioUi_note audioUi_note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -183,8 +183,8 @@ public class Note extends AppCompatActivity
 
         if(UtilAudio.hasAudioExtension(mAudioUriInDB) ||
 		   UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(mAudioUriInDB, act))) {
-            note_audio = new Note_audio(this, mAudioUriInDB);
-            note_audio.init_audio_block();
+            audioUi_note = new AudioUi_note(this, mAudioUriInDB);
+            audioUi_note.init_audio_block();
         }
 
 
@@ -249,8 +249,8 @@ public class Note extends AppCompatActivity
 		@Override
 		public void onPageSelected(int nextPosition)
 		{
-			if(AudioManager.getAudioPlayMode()  == AudioManager.NOTE_PLAY_MODE)
-                AudioManager.stopAudioPlayer();
+			if(Audio_manager.getAudioPlayMode()  == Audio_manager.NOTE_PLAY_MODE)
+                Audio_manager.stopAudioPlayer();
 
 			NoteUi.setFocus_notePos(viewPager.getCurrentItem());
 			System.out.println("Note / _onPageSelected");
@@ -266,9 +266,9 @@ public class Note extends AppCompatActivity
 			System.out.println("Note / _onPageSelected / mAudioUriInDB = " + mAudioUriInDB);
 
 			if(UtilAudio.hasAudioExtension(mAudioUriInDB)) {
-                note_audio = new Note_audio(Note.this, mAudioUriInDB);
-                note_audio.init_audio_block();
-                note_audio.showAudioBlock();
+                audioUi_note = new AudioUi_note(Note.this, mAudioUriInDB);
+                audioUi_note.init_audio_block();
+                audioUi_note.showAudioBlock();
             }
 
 			// stop video when changing note
@@ -868,8 +868,8 @@ public class Note extends AppCompatActivity
 
 	public static void stopAV()
 	{
-		if(AudioManager.getAudioPlayMode() == AudioManager.NOTE_PLAY_MODE)
-            AudioManager.stopAudioPlayer();
+		if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
+            Audio_manager.stopAudioPlayer();
 
 		VideoPlayer.stopVideo();
 	}

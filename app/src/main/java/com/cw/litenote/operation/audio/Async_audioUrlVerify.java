@@ -17,7 +17,6 @@
 package com.cw.litenote.operation.audio;
 
 import com.cw.litenote.R;
-import com.cw.litenote.note.Note_audio;
 import com.cw.litenote.util.Util;
 
 import android.app.ProgressDialog;
@@ -63,7 +62,7 @@ class Async_audioUrlVerify extends AsyncTask<String,Integer,String>
 
 		// only for Page play mode
 		// show dialog will affect full screen at Note play mode
-		if( AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE )
+		if( Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE )
 			mUrlVerifyDialog.show();
 
 		BackgroundAudioService.mIsPrepared = false;

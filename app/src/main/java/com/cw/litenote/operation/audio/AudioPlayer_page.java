@@ -46,7 +46,7 @@ public class AudioPlayer_page
 {
 	private static final String TAG = "AUDIO_PLAYER"; // error logging tag
 	private static final int DURATION_1S = 1000; // 1 seconds per slide
-    private static AudioManager mAudioManager; // slide show being played
+    private static Audio_manager mAudioManager; // slide show being played
 	private static int mPlaybackTime; // time in miniSeconds from which media should play
 	private static int mAudio_tryTimes; // use to avoid useless looping in Continue mode
     private AppCompatActivity act;
@@ -68,7 +68,7 @@ public class AudioPlayer_page
      */
     public static void prepareAudioInfo()
     {
-        mAudioManager = new AudioManager();
+        mAudioManager = new Audio_manager();
         mAudioManager.updateAudioInfo();
     }
 
@@ -82,18 +82,18 @@ public class AudioPlayer_page
 		if(BackgroundAudioService.mMediaPlayer == null)
 		{
 		 	// show toast if Audio file is not found or No selection of audio file
-			if( (AudioManager.getAudioFilesCount() == 0) &&
-				(AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)        )
+			if( (Audio_manager.getAudioFilesCount() == 0) &&
+				(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)        )
 			{
 				Toast.makeText(act,R.string.audio_file_not_found,Toast.LENGTH_SHORT).show();
 			}
 			else			{
 				mPlaybackTime = 0;
-                AudioManager.setPlayerState(AudioManager.PLAYER_AT_PLAY);
+                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 				mAudio_tryTimes = 0;
 
 				//for 1st play
-				audioUrl_page = AudioManager.getAudioStringAt(AudioManager.mAudioPos);
+				audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
 				startNewAudio();
 
@@ -112,7 +112,7 @@ public class AudioPlayer_page
 				System.out.println("AudioPlayer_page / _runAudioState / play -> pause");
 				BackgroundAudioService.mMediaPlayer.pause();
 				mAudioHandler.removeCallbacks(page_runnable);
-                AudioManager.setPlayerState(AudioManager.PLAYER_AT_PAUSE);
+                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
 
                 //for pause
                 MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().pause();
@@ -123,10 +123,10 @@ public class AudioPlayer_page
                 mAudio_tryTimes = 0;
 
                 if( (mAudioHandler != null) &&
-			        (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE))
+			        (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE))
 					mAudioHandler.post(page_runnable);
 
-                AudioManager.setPlayerState(AudioManager.PLAYER_AT_PLAY);
+                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 
                 //for play
                 MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
@@ -150,14 +150,14 @@ public class AudioPlayer_page
                 audio_panel_title_textView.setVisibility(View.VISIBLE);
 
                 // set footer message with audio name
-                String audioStr = AudioManager.getAudioStringAt(AudioManager.mAudioPos);
+                String audioStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
                 audio_panel_title_textView.setText(Util.getDisplayNameByUriString(audioStr, act));
 
                 // show audio playing item number
                 TextView audioPanel_audio_number = (TextView) audio_panel.findViewById(R.id.audioPanel_audio_number);
                 String message = act.getResources().getString(R.string.menu_button_play) +
                         "#" +
-                        (AudioManager.mAudioPos +1);
+                        (Audio_manager.mAudioPos +1);
                 audioPanel_audio_number.setText(message);
 
                 seekBarProgress.setVisibility(View.VISIBLE);
@@ -185,18 +185,18 @@ public class AudioPlayer_page
 		public void run()
 		{
 //			System.out.println("AudioPlayer_page / _page_runnable");
-            if(!AudioManager.isRunnableOn_page)
+            if(!Audio_manager.isRunnableOn_page)
             {
                 stopHandler();
                 stopAsyncTask();
 
                 if((audioUi_page != null) &&
-                   (AudioManager.getPlayerState() == AudioManager.PLAYER_AT_STOP))
+                   (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP))
                     showAudioPanel(act,false);
                 return;
             }
 
-	   		if( AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 1 )
+	   		if( Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 1 )
 	   		{
                 // for incoming call case and after Key protection
                 if(!isAudioPanelOn())
@@ -205,7 +205,7 @@ public class AudioPlayer_page
                 if(!BackgroundAudioService.mIsPrepared)
 	   			{
 		    		// check if audio file exists or not
-   					audioUrl_page = AudioManager.getAudioStringAt(AudioManager.mAudioPos);
+   					audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
 					if(!Async_audioUrlVerify.mIsOkUrl)
 					{
@@ -237,7 +237,7 @@ public class AudioPlayer_page
 	   			else
 	   			{
 //	   				// keep looping, do not set post() here, it will affect slide show timing
-	   				if(mAudio_tryTimes < AudioManager.getAudioFilesCount())
+	   				if(mAudio_tryTimes < Audio_manager.getAudioFilesCount())
 	   				{
 						// update page audio seek bar
 						if(audioUi_page != null)
@@ -250,7 +250,7 @@ public class AudioPlayer_page
 	   				}
 	   			}
 	   		}
-	   		else if( (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0 ) )// for non-audio item
+	   		else if( (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0 ) )// for non-audio item
 	   		{
 //	   			System.out.println("AudioPlayer_page / page_runnable / for non-audio item");
 				nextAudio_player();
@@ -318,7 +318,7 @@ public class AudioPlayer_page
 					mPlaybackTime = 0;
 
 					// get next index
-					if(AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
+					if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
 					{
                         nextAudio_player();
 						TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
@@ -334,7 +334,7 @@ public class AudioPlayer_page
 				{
 					System.out.println("AudioPlayer_page / _setAudioPlayerListeners / _onPrepared 1");
 
-					if (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
+					if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
 					{
                         showAudioPanel(act,true);
 
@@ -370,7 +370,7 @@ public class AudioPlayer_page
                             BackgroundAudioService.mMediaPlayer.seekTo(mPlaybackTime);
 
 							// add for calling runnable
-							if (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
+							if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
 								mAudioHandler.postDelayed(page_runnable, Util.oneSecond / 4);
 						}
 					}
@@ -447,7 +447,7 @@ public class AudioPlayer_page
 		int firstVisibleNote_top = (v == null) ? 0 : v.getTop();
 //			System.out.println("---------------- firstVisibleNote_top = " + firstVisibleNote_top);
 
-//		System.out.println("---------------- AudioManager.mAudioPos = " + AudioManager.mAudioPos);
+//		System.out.println("---------------- Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
 
 		if(firstVisibleNote_top < 0)
 		{
@@ -457,20 +457,20 @@ public class AudioPlayer_page
 		}
 
 		boolean noScroll = false;
-		// base on AudioManager.mAudioPos to scroll
-		if(firstVisible_note_pos != AudioManager.mAudioPos)
+		// base on Audio_manager.mAudioPos to scroll
+		if(firstVisible_note_pos != Audio_manager.mAudioPos)
 		{
-			while ((firstVisible_note_pos != AudioManager.mAudioPos) && (!noScroll))
+			while ((firstVisible_note_pos != Audio_manager.mAudioPos) && (!noScroll))
 			{
 				int offset = itemHeight + dividerHeight;
 				// scroll forwards
-				if (firstVisible_note_pos > AudioManager.mAudioPos)
+				if (firstVisible_note_pos > Audio_manager.mAudioPos)
 				{
                     recyclerView.scrollBy(0,-offset);
 //						System.out.println("-----scroll forwards (to top)" + (-offset));
 				}
 				// scroll backwards
-				else if (firstVisible_note_pos < AudioManager.mAudioPos)
+				else if (firstVisible_note_pos < Audio_manager.mAudioPos)
 				{
 					// when real item height could be larger than visible item height, so
 					// scroll twice here in odder to do scroll successfully, otherwise scroll could fail
@@ -500,7 +500,7 @@ public class AudioPlayer_page
      */
     private void startNewAudio()
     {
-        System.out.println("AudioPlayer_page / _startNewAudio / AudioManager.mAudioPos = " + AudioManager.mAudioPos);
+        System.out.println("AudioPlayer_page / _startNewAudio / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
 
         // remove call backs to make sure next toast will appear soon
         if(mAudioHandler != null)
@@ -508,21 +508,21 @@ public class AudioPlayer_page
         mAudioHandler = null;
         mAudioHandler = new Handler();
 
-        AudioManager.isRunnableOn_page = true;
-        AudioManager.isRunnableOn_note = false;
+        Audio_manager.isRunnableOn_page = true;
+        Audio_manager.isRunnableOn_note = false;
         BackgroundAudioService.mMediaPlayer = null;
 
         // verify audio URL
         Async_audioUrlVerify.mIsOkUrl = false;
 
-        if( (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE) &&
-            (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0)          )
+        if( (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE) &&
+            (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0)          )
         {
             mAudioHandler.postDelayed(page_runnable,Util.oneSecond/4);
         }
         else
         {
-            mAudioUrlVerifyTask = new Async_audioUrlVerify(act, mAudioManager.getAudioStringAt(AudioManager.mAudioPos));
+            mAudioUrlVerifyTask = new Async_audioUrlVerify(act, mAudioManager.getAudioStringAt(Audio_manager.mAudioPos));
             mAudioUrlVerifyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"Searching media ...");
 
             while(!Async_audioUrlVerify.mIsOkUrl)
@@ -539,8 +539,8 @@ public class AudioPlayer_page
             if(Async_audioUrlVerify.mIsOkUrl)
             {
                 // launch handler
-                if( (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) &&
-                        (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)   )
+                if( (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
+                        (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)   )
                 {
                     mAudioHandler.postDelayed(page_runnable, Util.oneSecond / 4);
                 }
@@ -568,16 +568,16 @@ public class AudioPlayer_page
         mPlaybackTime = 0;
 
         // new audio index
-        AudioManager.mAudioPos++;
+        Audio_manager.mAudioPos++;
 
-		if(AudioManager.mAudioPos >= AudioManager.getPlayingPage_notesCount())
-            AudioManager.mAudioPos = 0; //back to first index
+		if(Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount())
+            Audio_manager.mAudioPos = 0; //back to first index
 
         // check try times,had tried or not tried yet, anyway the audio file is found
         System.out.println("AudioPlayer_page / check mTryTimes = " + mAudio_tryTimes);
-        if(mAudio_tryTimes < AudioManager.getAudioFilesCount() )
+        if(mAudio_tryTimes < Audio_manager.getAudioFilesCount() )
         {
-			audioUrl_page = AudioManager.getAudioStringAt(AudioManager.mAudioPos);
+			audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
             startNewAudio();
 
@@ -596,9 +596,9 @@ public class AudioPlayer_page
                 MainAct.mSubMenuItemAudio.setIcon(R.drawable.ic_menu_slideshow);
 
             // stop media player
-            AudioManager.stopAudioPlayer();
+            Audio_manager.stopAudioPlayer();
         }
-        System.out.println("AudioPlayer_page / _playNextAudio / AudioManager.mAudioPos = " + AudioManager.mAudioPos);
+        System.out.println("AudioPlayer_page / _playNextAudio / Audio_manager.mAudioPos = " + Audio_manager.mAudioPos);
     }
 
     private void update_audioPanel_progress(AudioUi_page audioUi_page)

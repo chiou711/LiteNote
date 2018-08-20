@@ -18,7 +18,7 @@ package com.cw.litenote.note;
 
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.uil.UilCommon;
 import com.cw.litenote.util.audio.UtilAudio;
@@ -497,15 +497,15 @@ public class Note_adapter extends FragmentStatePagerAdapter
 			if(UtilAudio.hasAudioExtension(audioUri) ||
                UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioUri, act)) )
 			{
-				Note_audio.initAudioProgress(act,audioUri,pager);
+				AudioUi_note.initAudioProgress(act,audioUri,pager);
 
-				if(AudioManager.getAudioPlayMode() == AudioManager.NOTE_PLAY_MODE)
+				if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE)
 				{
-					if (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)
-						Note_audio.updateAudioProgress(act);
+					if (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
+						AudioUi_note.updateAudioProgress(act);
 				}
 
-				Note_audio.updateAudioPlayState(act);
+				AudioUi_note.updateAudioPlayState(act);
 			}
 			else
 				audioBlock.setVisibility(View.GONE);

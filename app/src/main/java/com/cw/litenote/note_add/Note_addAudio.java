@@ -18,7 +18,7 @@ package com.cw.litenote.note_add;
 
 import java.io.File;
 
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
@@ -180,7 +180,7 @@ public class Note_addAudio extends AppCompatActivity {
 		        	{
 		        		Page_recycler.swap(Page_recycler.mDb_page);
 		        		//update playing focus
-						AudioManager.mAudioPos++;
+						Audio_manager.mAudioPos++;
 		        	}
 
 		        	if(!Util.isEmptyString(uriStr))
@@ -249,7 +249,7 @@ public class Note_addAudio extends AppCompatActivity {
                             {
                                 Page_recycler.swap(Page_recycler.mDb_page);
                                 //update playing focus
-                                AudioManager.mAudioPos++;
+                                Audio_manager.mAudioPos++;
                             }
 
                             // avoid showing empty toast

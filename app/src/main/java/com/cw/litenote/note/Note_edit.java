@@ -17,7 +17,7 @@
 package com.cw.litenote.note;
 
 import com.cw.litenote.note_common.Note_common;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
 import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.R;
@@ -176,7 +176,7 @@ public class Note_edit extends Activity
 
 								// update highlight position
 								if(position < Page_recycler.mHighlightPosition )
-									AudioManager.mAudioPos--;
+									Audio_manager.mAudioPos--;
 
 								finish();
 							}
@@ -392,7 +392,7 @@ public class Note_edit extends Activity
 //	    .setIcon(android.R.drawable.ic_menu_share)
 //	    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 //
-//	    menu.add(0, CHANGE_AUDIO, 1, R.string.note_audio )
+//	    menu.add(0, CHANGE_AUDIO, 1, R.string.audioUi_note )
 //	    .setIcon(R.drawable.ic_audio_unselected)
 //	    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 //

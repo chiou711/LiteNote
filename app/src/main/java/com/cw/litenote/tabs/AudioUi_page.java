@@ -30,7 +30,7 @@ import android.widget.TextView;
 
 import com.cw.litenote.R;
 import com.cw.litenote.main.MainAct;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.util.Util;
@@ -143,7 +143,7 @@ public class AudioUi_page {
         // show playing audio item message
         String message = mAct.getResources().getString(R.string.menu_button_play) +
                 "#" +
-                (AudioManager.mAudioPos +1);
+                (Audio_manager.mAudioPos +1);
         audioPanel_audio_number.setText(message);
 
         //
@@ -199,7 +199,7 @@ public class AudioUi_page {
                 // update status
                 UtilAudio.updateAudioPanel((ImageView)v, audio_panel_title_textView); // here v is audio play button
 
-                if(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)
+                if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
                     TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
 
                 TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
@@ -215,15 +215,15 @@ public class AudioUi_page {
             {
 
                 do {
-                    if(AudioManager.mAudioPos > 0)
-                        AudioManager.mAudioPos--;
-                    else if( (AudioManager.mAudioPos == 0) &&
-                             (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0 ) )
+                    if(Audio_manager.mAudioPos > 0)
+                        Audio_manager.mAudioPos--;
+                    else if( (Audio_manager.mAudioPos == 0) &&
+                             (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0 ) )
                     {
-                        AudioManager.mAudioPos = AudioManager.getPlayingPage_notesCount()-1;
+                        Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount()-1;
                     }
                 }
-                while (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0);
+                while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
 
                 nextAudio_panel();
             }
@@ -238,11 +238,11 @@ public class AudioUi_page {
 
                 do
                 {
-                    AudioManager.mAudioPos++;
-                    if( AudioManager.mAudioPos >= AudioManager.getPlayingPage_notesCount())
-                        AudioManager.mAudioPos = 0; //back to first index
+                    Audio_manager.mAudioPos++;
+                    if( Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount())
+                        Audio_manager.mAudioPos = 0; //back to first index
                 }
-                while (AudioManager.getCheckedAudio(AudioManager.mAudioPos) == 0);
+                while (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0);
 
                 nextAudio_panel();
             }
@@ -274,7 +274,7 @@ public class AudioUi_page {
         // update status
         UtilAudio.updateAudioPanel(audioPanel_play_button, audio_panel_title_textView);
 
-        if(AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)
+        if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
             TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
 
         TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();

@@ -40,7 +40,7 @@ import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.List_selectFolder;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.util.BaseBackPressedListener;
 import com.cw.litenote.util.Util;
@@ -254,9 +254,9 @@ public class DeleteFolders extends Fragment{
 
         if(BackgroundAudioService.mMediaPlayer != null)
         {
-            AudioManager.stopAudioPlayer();
-            AudioManager.mAudioPos = 0;
-            AudioManager.setPlayerState(AudioManager.PLAYER_AT_STOP);
+            Audio_manager.stopAudioPlayer();
+            Audio_manager.mAudioPos = 0;
+            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
         }
 
         list_selFolder = new List_selectFolder(act,rootView , mListView);

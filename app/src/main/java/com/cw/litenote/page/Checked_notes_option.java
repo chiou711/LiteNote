@@ -36,7 +36,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.main.MainAct;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
 import com.cw.litenote.operation.mail.MailNotes;
 import com.cw.litenote.tabs.TabsHost;
@@ -321,7 +321,7 @@ public class Checked_notes_option {
             String noteBody = mDb_page.getNoteBody(i,false);
             mDb_page.updateNote(rowId, noteTitle, pictureUri, audioUri, "", linkUri, noteBody , action, 0,false);// action 1:check all, 0:uncheck all
             // Stop if unmarked item is at playing state
-            if((AudioManager.mAudioPos == i) && (action == 0) )
+            if((Audio_manager.mAudioPos == i) && (action == 0) )
                 bStopAudio = true;
         }
         mDb_page.close();
@@ -357,7 +357,7 @@ public class Checked_notes_option {
             long marking = (mDb_page.getNoteMarking(i,false)==1)?0:1;
             mDb_page.updateNote(rowId, noteTitle, pictureUri, audioUri, "", linkUri, noteBody , marking, 0,false);// action 1:check all, 0:uncheck all
             // Stop if unmarked item is at playing state
-            if((AudioManager.mAudioPos == i) && (marking == 0) )
+            if((Audio_manager.mAudioPos == i) && (marking == 0) )
                 bStopAudio = true;
         }
         mDb_page.close();
@@ -507,7 +507,7 @@ public class Checked_notes_option {
                                 mDb_page.close();
 
                                 // Stop Play/Pause if current tab's item is played and is not at Stop state
-                                if(AudioManager.mAudioPos == Page_recycler.mHighlightPosition)
+                                if(Audio_manager.mAudioPos == Page_recycler.mHighlightPosition)
                                     UtilAudio.stopAudioIfNeeded();
 
                                 TabsHost.reloadCurrentPage();

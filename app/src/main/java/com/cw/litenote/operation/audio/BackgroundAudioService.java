@@ -273,7 +273,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
         metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 
-        String audioStr = com.cw.litenote.operation.audio.AudioManager.getAudioStringAt(com.cw.litenote.operation.audio.AudioManager.mAudioPos);
+        String audioStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
         String displayName = Util.getDisplayNameByUriString(audioStr, MainAct.mAct);
         String[] displayItems={"",""};
 

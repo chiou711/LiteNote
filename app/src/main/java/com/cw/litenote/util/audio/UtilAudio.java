@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.R;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.tabs.TabsHost;
@@ -50,13 +50,13 @@ public class UtilAudio {
     public static void stopAudioIfNeeded()
     {
 		if( ( (BackgroundAudioService.mMediaPlayer != null) &&
-              (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) ) &&
+              (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) ) &&
 			(MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
 			(TabsHost.getFocus_tabPos() == MainAct.mPlaying_pagePos)                           )
 		{
             if(BackgroundAudioService.mMediaPlayer != null){
-                AudioManager.stopAudioPlayer();
-                AudioManager.mAudioPos = 0;
+                Audio_manager.stopAudioPlayer();
+                Audio_manager.mAudioPos = 0;
             }
 
 			if(MainAct.mSubMenuItemAudio != null)
@@ -68,16 +68,16 @@ public class UtilAudio {
     // update audio panel
     public static void updateAudioPanel(ImageView playBtn, TextView titleTextView)
     {
-    	System.out.println("UtilAudio/ _updateAudioPanel / AudioManager.getPlayerState() = " + AudioManager.getPlayerState());
+    	System.out.println("UtilAudio/ _updateAudioPanel / Audio_manager.getPlayerState() = " + Audio_manager.getPlayerState());
 		titleTextView.setBackgroundColor(ColorSet.color_black);
-		if(AudioManager.getPlayerState() == AudioManager.PLAYER_AT_PLAY)
+		if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
 		{
 			titleTextView.setTextColor(ColorSet.getHighlightColor(MainAct.mAct));
 			titleTextView.setSelected(true);
 			playBtn.setImageResource(R.drawable.ic_media_pause);
 		}
-		else if( (AudioManager.getPlayerState() == AudioManager.PLAYER_AT_PAUSE) ||
-				 (AudioManager.getPlayerState() == AudioManager.PLAYER_AT_STOP)    )
+		else if( (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE) ||
+				 (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_STOP)    )
 		{
 			titleTextView.setSelected(false);
 			titleTextView.setTextColor(ColorSet.getPauseColor(MainAct.mAct));
@@ -136,11 +136,11 @@ public class UtilAudio {
             	System.out.println(" -> Incoming phone call:");
 
                 //from Play to Pause
-            	if(AudioManager.getPlayerState() == AudioManager.PLAYER_AT_PLAY)
+            	if(Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PLAY)
             	{
                     if( (BackgroundAudioService.mMediaPlayer != null) &&
 							BackgroundAudioService.mMediaPlayer.isPlaying() ) {
-                        AudioManager.setPlayerState(AudioManager.PLAYER_AT_PAUSE);
+                        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
 						BackgroundAudioService.mMediaPlayer.pause();
                     }
             		mIsCalledWhilePlayingAudio = true;
@@ -150,12 +150,12 @@ public class UtilAudio {
             {
             	System.out.println(" -> Not in phone call:");
                 // from Pause to Play
-            	if( (AudioManager.getPlayerState() == AudioManager.PLAYER_AT_PAUSE) &&
+            	if( (Audio_manager.getPlayerState() == Audio_manager.PLAYER_AT_PAUSE) &&
             		mIsCalledWhilePlayingAudio )	
             	{
                     if( (BackgroundAudioService.mMediaPlayer != null) &&
                         !BackgroundAudioService.mMediaPlayer.isPlaying() ) {
-                        AudioManager.setPlayerState(AudioManager.PLAYER_AT_PLAY);
+                        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 						BackgroundAudioService.mMediaPlayer.start();
                     }
                     mIsCalledWhilePlayingAudio = false;

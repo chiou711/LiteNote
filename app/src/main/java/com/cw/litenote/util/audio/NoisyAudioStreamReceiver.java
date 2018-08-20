@@ -21,8 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.cw.litenote.R;
-import com.cw.litenote.note.Note_audio;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.note.AudioUi_note;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.tabs.TabsHost;
 
@@ -38,20 +38,20 @@ public class NoisyAudioStreamReceiver extends BroadcastReceiver {
 				System.out.println("NoisyAudioStreamReceiver / play -> pause");
                 BackgroundAudioService.mMediaPlayer.pause();
 
-                AudioManager.setPlayerState(AudioManager.PLAYER_AT_PAUSE);
+                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
 
                 //update audio panel button in Page view
-                if(AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)
+                if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
                 {
                     UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,
                                                TabsHost.audioUi_page.audio_panel_title_textView);
                 }
 
 				//update audio play button in Note view
-				if( (Note_audio.mPager_audio_play_button != null) &&
-					Note_audio.mPager_audio_play_button.isShown()    )
+				if( (AudioUi_note.mPager_audio_play_button != null) &&
+					AudioUi_note.mPager_audio_play_button.isShown()    )
 				{
-					Note_audio.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
+					AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
 				}
 			}
         }

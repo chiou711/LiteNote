@@ -44,7 +44,7 @@ import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.page.Page_recycler;
@@ -203,7 +203,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             RecyclerView listView = page.recyclerView;
             if( !isDoingMarking &&
                 (listView != null) &&
-                (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)  )
+                (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
             {
                 audioPlayer_page.scrollHighlightAudioItemToVisible(listView);
             }
@@ -220,7 +220,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // set tab audio icon when audio playing
         if ( (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
-             (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) &&
+             (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
              (tab.getPosition() == audioPlayTabPos)                              )
         {
             if(tab.getCustomView() == null) {
@@ -293,7 +293,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         TabLayout.Tab tab =  mTabLayout.getTabAt(audioPlayTabPos);
         if(tab != null) {
             if( (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos()) &&
-                (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP)   )
+                (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)   )
             {
                 if(tab.getCustomView() == null)
                 {
@@ -311,8 +311,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // for incoming phone call case or after Key Protect
         if( (audioUi_page != null) &&
-            (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP) &&
-            (AudioManager.getAudioPlayMode() == AudioManager.PAGE_PLAY_MODE)   )
+            (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP) &&
+            (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)   )
         {
             audioUi_page.initAudioBlock(MainAct.mAct);
 
@@ -632,9 +632,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         {
             if(BackgroundAudioService.mMediaPlayer != null)
             {
-                AudioManager.stopAudioPlayer();
-                AudioManager.mAudioPos = 0;
-                AudioManager.setPlayerState(AudioManager.PLAYER_AT_STOP);
+                Audio_manager.stopAudioPlayer();
+                Audio_manager.mAudioPos = 0;
+                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
             }
         }
 

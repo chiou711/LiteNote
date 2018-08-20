@@ -17,7 +17,6 @@
 package com.cw.litenote.operation.youtube;
 
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +26,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.note.Note;
 import com.cw.litenote.note.NoteUi;
-import com.cw.litenote.operation.audio.AudioManager;
+import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
@@ -49,8 +48,8 @@ public class YouTubePlayerAct extends YouTubeFailureRecoveryActivity
         act = this;
 
         // stop audio in advance
-        if((BackgroundAudioService.mMediaPlayer != null) && (AudioManager.getPlayerState() != AudioManager.PLAYER_AT_STOP))
-            AudioManager.stopAudioPlayer();
+        if((BackgroundAudioService.mMediaPlayer != null) && (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP))
+            Audio_manager.stopAudioPlayer();
 
 
         // initial: control is seen

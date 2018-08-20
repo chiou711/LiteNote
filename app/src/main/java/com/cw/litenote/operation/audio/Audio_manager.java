@@ -24,7 +24,7 @@ import com.cw.litenote.main.MainAct;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
 
-public class AudioManager
+public class Audio_manager
 {
 	private static List<String> audioList;
 	private static List<Integer> audioList_checked;
@@ -43,7 +43,7 @@ public class AudioManager
 
 
     // constructor
-   AudioManager()
+   Audio_manager()
    {
       audioList = new ArrayList<>();
       audioList_checked = new ArrayList<>();
@@ -76,7 +76,7 @@ public class AudioManager
      */
     public static void stopAudioPlayer()
     {
-        System.out.println("AudioManager / _stopAudio");
+        System.out.println("Audio_manager / _stopAudio");
 
         // stop media player
         if(BackgroundAudioService.mMediaPlayer != null) {
@@ -90,11 +90,11 @@ public class AudioManager
 
         // stop handler and set flag to remove runnable
         if( AudioPlayer_page.mAudioHandler != null)
-            AudioManager.isRunnableOn_page = false;
+            Audio_manager.isRunnableOn_page = false;
         else if(AudioPlayer_note.mAudioHandler != null)
-            AudioManager.isRunnableOn_note = false;
+            Audio_manager.isRunnableOn_note = false;
 
-        AudioManager.setPlayerState(AudioManager.PLAYER_AT_STOP);
+        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
     }
 
 
