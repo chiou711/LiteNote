@@ -284,25 +284,6 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 		new EULA_dlg(this).show();
 
         isAddedOnNewIntent = false;
-
-        // Register Bluetooth device receiver
-        if(Build.VERSION.SDK_INT < 21)
-        {
-            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
-            this.registerReceiver(mReceiver, filter);
-        }
-        else // Build.VERSION.SDK_INT >= 21
-        {
-            // Media session: to receive media button event of bluetooth device
-            // new media browser instance and create BackgroundAudioService instance: support notification
-            mMediaBrowserCompat = new MediaBrowserCompat(mAct,
-                    new ComponentName(mAct, BackgroundAudioService.class),
-                    mMediaBrowserCompatConnectionCallback,
-                    mAct.getIntent().getExtras());
-            mMediaBrowserCompat.connect();
-            mCurrentState = STATE_PAUSED;
-        }
-
     }
 
 
@@ -531,6 +512,30 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
     protected void onResume() {
         super.onResume();
     	System.out.println("MainAct / _onResume");
+
+        // Register Bluetooth device receiver
+        if(Build.VERSION.SDK_INT < 21)
+        {
+            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+            this.registerReceiver(mReceiver, filter);
+        }
+        else // Build.VERSION.SDK_INT >= 21
+        {
+            // Media session: to receive media button event of bluetooth device
+            // new media browser instance and create BackgroundAudioService instance: support notification
+
+            if(mMediaBrowserCompat == null) {
+                mMediaBrowserCompat = new MediaBrowserCompat(mAct,
+                        new ComponentName(mAct, BackgroundAudioService.class),
+                        mMediaBrowserCompatConnectionCallback,
+                        mAct.getIntent().getExtras());
+            }
+
+            if(!mMediaBrowserCompat.isConnected())
+                mMediaBrowserCompat.connect();
+
+            mCurrentState = STATE_PAUSED;
+        }
     }
 
 
@@ -577,6 +582,12 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         // stop audio player
         if(BackgroundAudioService.mMediaPlayer != null)
             Audio_manager.stopAudioPlayer();
+
+        // disconnect: hide notification
+        if(mMediaBrowserCompat.isConnected())
+            mMediaBrowserCompat.disconnect();
+
+        mMediaBrowserCompat = null;
 
 		super.onDestroy();
     }

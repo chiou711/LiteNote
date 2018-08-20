@@ -277,6 +277,9 @@ public class AudioUi_note
         if(Audio_manager.getAudioPlayMode()  == Audio_manager.PAGE_PLAY_MODE)
             Audio_manager.stopAudioPlayer();
 
+        if(MainAct.mMediaBrowserCompat.isConnected())
+            MainAct.mMediaBrowserCompat.disconnect();
+
         if(UtilAudio.hasAudioExtension(audioStr) ||
            UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioStr, act)))
         {
