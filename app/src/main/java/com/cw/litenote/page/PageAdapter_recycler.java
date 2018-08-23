@@ -22,7 +22,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -257,156 +256,17 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
                     R.drawable.btn_check_off_holo_dark);
         }
 
-        // on mark note
-        holder.btnMarking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                System.out.println("PageAdapter / _getView / btnMarking / _onClick");
-                // toggle marking
-                toggleNoteMarking(mAct,position);
-
-                // Stop if unmarked item is at playing state
-                if(Audio_manager.mAudioPos == position) {
-                    UtilAudio.stopAudioIfNeeded();
-                }
-
-                //Toggle marking will resume page, so do Store v scroll
-                RecyclerView listView = TabsHost.mTabsPagerAdapter.fragmentList.get(TabsHost.getFocus_tabPos()).recyclerView;
-                TabsHost.store_listView_vScroll(listView);
-                TabsHost.isDoingMarking = true;
-
-                TabsHost.reloadCurrentPage();
-                TabsHost.showFooter(MainAct.mAct);
-
-                // update audio info
-                if(PageUi.isAudioPlayingPage()) {
-                    System.out.println("PageAdapter / _getView / btnMarking / is AudioPlayingPage");
-                    AudioPlayer_page.prepareAudioInfo();
-                }
-            }
-        });
-
         // show drag button
         if(pref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "no").equalsIgnoreCase("yes"))
             holder.btnDrag.setVisibility(View.VISIBLE);
         else
             holder.btnDrag.setVisibility(View.GONE);
 
-        // on view note
-        holder.btnViewNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TabsHost.getCurrentPage().mCurrPlayPosition = position;
-                DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
-                int count = db_page.getNotesCount(true);
-                if(position < count)
-                {
-                    // apply Note class
-                    Intent intent;
-                    intent = new Intent(mAct, Note.class);
-                    intent.putExtra("POSITION", position);
-                    mAct.startActivity(intent);
-                }
-            }
-        });
-
-        // on edit note
-        holder.btnEditNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(mAct, Note_edit.class);
-                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
-                Long rowId = db_page.getNoteId(position,true);
-                i.putExtra("list_view_position", position);
-                i.putExtra(DB_page.KEY_NOTE_ID, rowId);
-                i.putExtra(DB_page.KEY_NOTE_TITLE, db_page.getNoteTitle_byId(rowId));
-                i.putExtra(DB_page.KEY_NOTE_PICTURE_URI , db_page.getNotePictureUri_byId(rowId));
-                i.putExtra(DB_page.KEY_NOTE_AUDIO_URI , db_page.getNoteAudioUri_byId(rowId));
-                i.putExtra(DB_page.KEY_NOTE_LINK_URI , db_page.getNoteLinkUri_byId(rowId));
-                i.putExtra(DB_page.KEY_NOTE_BODY, db_page.getNoteBody_byId(rowId));
-                i.putExtra(DB_page.KEY_NOTE_CREATED, db_page.getNoteCreatedTime_byId(rowId));
-                mAct.startActivity(i);            }
-        });
-
         // show audio button
         if( !Util.isEmptyString(audioUri) && (marking == 1))
             holder.btnPlayAudio.setVisibility(View.VISIBLE);
         else
             holder.btnPlayAudio.setVisibility(View.GONE);
-
-		// on play audio
-        holder.btnPlayAudio.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-                Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
-                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
-                int notesCount = db_page.getNotesCount(true);
-                if(position >= notesCount) //end of list
-                    return ;
-
-                int marking = db_page.getNoteMarking(position,true);
-                String uriString = db_page.getNoteAudioUri(position,true);
-
-                boolean isAudioUri = false;
-                if( !Util.isEmptyString(uriString) && (marking == 1))
-                    isAudioUri = true;
-
-                if(position < notesCount) // avoid footer error
-                {
-                    if(isAudioUri)
-                    {
-                        // cancel playing
-                        if(BackgroundAudioService.mMediaPlayer != null)
-                        {
-                            if(BackgroundAudioService.mMediaPlayer.isPlaying())
-                                BackgroundAudioService.mMediaPlayer.pause();
-
-                            if((AudioPlayer_page.mAudioHandler != null) &&
-                               (TabsHost.audioPlayer_page != null)        ){
-                                AudioPlayer_page.mAudioHandler.removeCallbacks(TabsHost.audioPlayer_page.page_runnable);
-                            }
-                            BackgroundAudioService.mMediaPlayer.release();
-                            BackgroundAudioService.mMediaPlayer = null;
-                        }
-
-                        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
-
-                        // create new Intent to play audio
-                        Audio_manager.mAudioPos = position;
-                        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
-
-                        TabsHost.audioUi_page = new AudioUi_page(mAct, TabsHost.getCurrentPage().recyclerView);
-                        TabsHost.audioUi_page.initAudioBlock(MainAct.mAct);
-
-                        TabsHost.audioPlayer_page = new AudioPlayer_page(mAct,TabsHost.audioUi_page);
-                        AudioPlayer_page.prepareAudioInfo();
-                        TabsHost.audioPlayer_page.runAudioState();
-
-                        // update audio play position
-                        TabsHost.audioPlayTabPos = page_pos;
-                        TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
-
-                        // update audio panel
-                        UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,
-                                TabsHost.audioUi_page.audio_panel_title_textView);
-
-                        // update playing page position
-                        MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
-
-                        // update playing page table Id
-                        MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
-
-                        // update playing folder position
-                        MainAct.mPlaying_folderPos = FolderUi.getFocus_folderPos();
-
-                        // update playing folder table Id
-                        DB_drawer dB_drawer = new DB_drawer(mAct);
-                        MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
-                    }
-                }
-            }
-		});
 
         // show/hide play YouTube button, on play Web button
         if(!Util.isEmptyString(linkUri) &&
@@ -430,41 +290,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             holder.btnPlayYouTube.setVisibility(View.GONE);
             holder.btnPlayWeb.setVisibility(View.GONE);
         }
-
-        // on play YouTube
-        holder.btnPlayYouTube.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                TabsHost.getCurrentPage().mCurrPlayPosition = position;
-                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
-                db_page.open();
-                int count = db_page.getNotesCount(false);
-                String linkStr = db_page.getNoteLinkUri(position, false);
-                db_page.close();
-
-                if (position < count) {
-                    if (Util.isYouTubeLink(linkStr)) {
-                        Audio_manager.stopAudioPlayer();
-
-                        // apply native YouTube
-                        Util.openLink_YouTube(mAct, linkStr);
-                    }
-                }
-            }
-        });
-
-        // on play Web
-        holder.btnPlayWeb.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v) {
-                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
-                linkUri = db_page.getNoteLinkUri(position, true);
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkUri));
-                MainAct.mAct.startActivity(intent);
-            }
-        });
 
         // set audio name
         String audio_name = null;
@@ -700,17 +525,210 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             holder.textTime.setVisibility(View.GONE);
 	  	}
 
+        setBindViewHolder_listeners(holder,position);
+    }
+
+
+    /**
+     * Set bind view holder listeners
+     * @param viewHolder
+     * @param position
+     */
+    void setBindViewHolder_listeners(ViewHolder viewHolder, final int position)
+    {
+
+        System.out.println("PageAdapter_recycler / setBindViewHolder_listeners / position = " + position);
+
+        /**
+         *  control block
+         */
+        // on mark note
+        viewHolder.btnMarking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                System.out.println("PageAdapter / _getView / btnMarking / _onClick");
+                // toggle marking
+                toggleNoteMarking(mAct,position);
+
+                // Stop if unmarked item is at playing state
+                if(Audio_manager.mAudioPos == position) {
+                    UtilAudio.stopAudioIfNeeded();
+                }
+
+                //Toggle marking will resume page, so do Store v scroll
+                RecyclerView listView = TabsHost.mTabsPagerAdapter.fragmentList.get(TabsHost.getFocus_tabPos()).recyclerView;
+                TabsHost.store_listView_vScroll(listView);
+                TabsHost.isDoingMarking = true;
+
+                TabsHost.reloadCurrentPage();
+                TabsHost.showFooter(MainAct.mAct);
+
+                // update audio info
+                if(PageUi.isAudioPlayingPage()) {
+                    System.out.println("PageAdapter / _getView / btnMarking / is AudioPlayingPage");
+                    AudioPlayer_page.prepareAudioInfo();
+                }
+            }
+        });
+
+        // on view note
+        viewHolder.btnViewNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TabsHost.getCurrentPage().mCurrPlayPosition = position;
+                DB_page db_page = new DB_page(mAct,TabsHost.getCurrentPageTableId());
+                int count = db_page.getNotesCount(true);
+                if(position < count)
+                {
+                    // apply Note class
+                    Intent intent;
+                    intent = new Intent(mAct, Note.class);
+                    intent.putExtra("POSITION", position);
+                    mAct.startActivity(intent);
+                }
+            }
+        });
+
+        // on edit note
+        viewHolder.btnEditNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(mAct, Note_edit.class);
+                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+                Long rowId = db_page.getNoteId(position,true);
+                i.putExtra("list_view_position", position);
+                i.putExtra(DB_page.KEY_NOTE_ID, rowId);
+                i.putExtra(DB_page.KEY_NOTE_TITLE, db_page.getNoteTitle_byId(rowId));
+                i.putExtra(DB_page.KEY_NOTE_PICTURE_URI , db_page.getNotePictureUri_byId(rowId));
+                i.putExtra(DB_page.KEY_NOTE_AUDIO_URI , db_page.getNoteAudioUri_byId(rowId));
+                i.putExtra(DB_page.KEY_NOTE_LINK_URI , db_page.getNoteLinkUri_byId(rowId));
+                i.putExtra(DB_page.KEY_NOTE_BODY, db_page.getNoteBody_byId(rowId));
+                i.putExtra(DB_page.KEY_NOTE_CREATED, db_page.getNoteCreatedTime_byId(rowId));
+                mAct.startActivity(i);            }
+        });
+
+        // on play audio
+        viewHolder.btnPlayAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TabsHost.reloadCurrentPage();// after Drag and drop: this is needed to update thumb nail and title
+
+                Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
+                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+                int notesCount = db_page.getNotesCount(true);
+                if(position >= notesCount) //end of list
+                    return ;
+
+                int marking = db_page.getNoteMarking(position,true);
+                String uriString = db_page.getNoteAudioUri(position,true);
+
+                boolean isAudioUri = false;
+                if( !Util.isEmptyString(uriString) && (marking == 1))
+                    isAudioUri = true;
+
+                if(position < notesCount) // avoid footer error
+                {
+                    if(isAudioUri)
+                    {
+                        // cancel playing
+                        if(BackgroundAudioService.mMediaPlayer != null)
+                        {
+                            if(BackgroundAudioService.mMediaPlayer.isPlaying())
+                                BackgroundAudioService.mMediaPlayer.pause();
+
+                            if((AudioPlayer_page.mAudioHandler != null) &&
+                                    (TabsHost.audioPlayer_page != null)        ){
+                                AudioPlayer_page.mAudioHandler.removeCallbacks(TabsHost.audioPlayer_page.page_runnable);
+                            }
+                            BackgroundAudioService.mMediaPlayer.release();
+                            BackgroundAudioService.mMediaPlayer = null;
+                        }
+
+                        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
+
+                        // create new Intent to play audio
+                        Audio_manager.mAudioPos = position;
+                        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
+
+                        TabsHost.audioUi_page = new AudioUi_page(mAct, TabsHost.getCurrentPage().recyclerView);
+                        TabsHost.audioUi_page.initAudioBlock(MainAct.mAct);
+
+                        TabsHost.audioPlayer_page = new AudioPlayer_page(mAct,TabsHost.audioUi_page);
+                        AudioPlayer_page.prepareAudioInfo();
+                        TabsHost.audioPlayer_page.runAudioState();
+
+                        // update audio play position
+                        TabsHost.audioPlayTabPos = page_pos;
+                        TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
+
+                        // update audio panel
+                        UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,
+                                TabsHost.audioUi_page.audio_panel_title_textView);
+
+                        // update playing page position
+                        MainAct.mPlaying_pagePos = TabsHost.getFocus_tabPos();
+
+                        // update playing page table Id
+                        MainAct.mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
+
+                        // update playing folder position
+                        MainAct.mPlaying_folderPos = FolderUi.getFocus_folderPos();
+
+                        // update playing folder table Id
+                        DB_drawer dB_drawer = new DB_drawer(mAct);
+                        MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
+                    }
+                }
+            }
+        });
+
+        // on play YouTube
+        viewHolder.btnPlayYouTube.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                TabsHost.getCurrentPage().mCurrPlayPosition = position;
+                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+                db_page.open();
+                int count = db_page.getNotesCount(false);
+                String linkStr = db_page.getNoteLinkUri(position, false);
+                db_page.close();
+
+                if (position < count) {
+                    if (Util.isYouTubeLink(linkStr)) {
+                        Audio_manager.stopAudioPlayer();
+
+                        // apply native YouTube
+                        Util.openLink_YouTube(mAct, linkStr);
+                    }
+                }
+            }
+        });
+
+        // on play Web
+        viewHolder.btnPlayWeb.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                DB_page db_page = new DB_page(mAct, TabsHost.getCurrentPageTableId());
+                linkUri = db_page.getNoteLinkUri(position, true);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkUri));
+                MainAct.mAct.startActivity(intent);
+            }
+        });
+
         // Start a drag whenever the handle view it touched
-        holder.btnDrag.setOnTouchListener(new View.OnTouchListener() {
+        viewHolder.btnDrag.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(holder);
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    mDragStartListener.onStartDrag(viewHolder);
+                    System.out.println("PageAdapter_recycler / onTouch / ACTION_DOWN");
                 }
                 return false;
             }
         });
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -822,7 +840,16 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         // update footer
         TabsHost.showFooter(mAct);
-
         return true;
+    }
+
+    @Override
+    public void onItemMoved(RecyclerView.ViewHolder sourceViewHolder, int fromPos, RecyclerView.ViewHolder targetViewHolder, int toPos) {
+        System.out.println("PageAdapter_recycler / _onItemMoved");
+        ((TextView)sourceViewHolder.itemView.findViewById(R.id.row_id)).setText(String.valueOf(toPos+1));
+        ((TextView)targetViewHolder.itemView.findViewById(R.id.row_id)).setText(String.valueOf(fromPos+1));
+
+        setBindViewHolder_listeners((ViewHolder)sourceViewHolder,toPos);
+        setBindViewHolder_listeners((ViewHolder)targetViewHolder,fromPos);
     }
 }

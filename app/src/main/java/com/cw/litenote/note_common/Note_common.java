@@ -129,7 +129,7 @@ public class Note_common {
         progressBar = (ProgressBar) act.findViewById(R.id.edit_progress_bar);
         progressBarExpand = (ProgressBar) act.findViewById(R.id.edit_progress_bar_expand);
 
-		DB_folder dbFolder = new DB_folder(act, TabsHost.getCurrentPageTableId());
+		DB_folder dbFolder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(act));
 		style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
 
 		enlargedImage = (TouchImageView)act.findViewById(R.id.expanded_image);

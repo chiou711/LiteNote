@@ -79,6 +79,12 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     }
 
     @Override
+    public void onMoved(RecyclerView recyclerView, RecyclerView.ViewHolder sourceViewHolder, int fromPos, RecyclerView.ViewHolder targetViewHolder, int toPos, int x, int y) {
+        super.onMoved(recyclerView, sourceViewHolder, fromPos, targetViewHolder, toPos, x, y);
+        mAdapter.onItemMoved(sourceViewHolder,fromPos,targetViewHolder,toPos);
+    }
+
+    @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
         // Notify the adapter of the dismissal
         mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
