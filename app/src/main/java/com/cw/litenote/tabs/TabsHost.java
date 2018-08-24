@@ -201,7 +201,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
             (page.itemAdapter != null) )
         {
             RecyclerView listView = page.recyclerView;
-            if( !isDoingMarking &&
+            if( (audioPlayer_page != null) &&
+                !isDoingMarking &&
                 (listView != null) &&
                 (Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)  )
             {
