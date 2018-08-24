@@ -16,6 +16,8 @@
 
 package com.cw.litenote.operation.audio;
 
+import android.support.v4.app.NotificationManagerCompat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +97,12 @@ public class Audio_manager
             Audio_manager.isRunnableOn_note = false;
 
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+
+        // disconnect: hide notification
+        if(MainAct.mMediaBrowserCompat.isConnected())
+            MainAct.mMediaBrowserCompat.disconnect();
+
+        NotificationManagerCompat.from(MainAct.mAct).cancel(1);
     }
 
 

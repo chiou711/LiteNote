@@ -80,6 +80,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -586,6 +587,8 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         // disconnect: hide notification
         if(mMediaBrowserCompat.isConnected())
             mMediaBrowserCompat.disconnect();
+
+        NotificationManagerCompat.from(MainAct.mAct).cancel(1);
 
         mMediaBrowserCompat = null;
 

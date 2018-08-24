@@ -22,6 +22,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -271,7 +272,7 @@ public class AudioUi_note
 
     }
 
-    // play audio in pager
+    //  play audio in pager
     private static void playAudioInPager(AppCompatActivity act, String audioStr, ViewPager pager)
     {
         if(Audio_manager.getAudioPlayMode()  == Audio_manager.PAGE_PLAY_MODE)
@@ -279,6 +280,8 @@ public class AudioUi_note
 
         if(MainAct.mMediaBrowserCompat.isConnected())
             MainAct.mMediaBrowserCompat.disconnect();
+
+        NotificationManagerCompat.from(MainAct.mAct).cancel(1);
 
         if(UtilAudio.hasAudioExtension(audioStr) ||
            UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioStr, act)))

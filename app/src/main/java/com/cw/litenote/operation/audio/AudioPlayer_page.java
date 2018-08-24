@@ -87,7 +87,8 @@ public class AudioPlayer_page
 			{
 				Toast.makeText(act,R.string.audio_file_not_found,Toast.LENGTH_SHORT).show();
 			}
-			else			{
+			else
+			{
 				mPlaybackTime = 0;
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 				mAudio_tryTimes = 0;
