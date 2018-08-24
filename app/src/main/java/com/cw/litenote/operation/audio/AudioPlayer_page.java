@@ -39,6 +39,7 @@ import com.cw.litenote.main.MainAct;
 import com.cw.litenote.tabs.AudioUi_page;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
+import com.cw.litenote.util.audio.UtilAudio;
 
 import java.util.Locale;
 
@@ -79,7 +80,7 @@ public class AudioPlayer_page
 	{
 	   	System.out.println("AudioPlayer_page / _runAudioState ");
 	   	// if media player is null, set new fragment
-		if(BackgroundAudioService.mMediaPlayer == null)
+		if(BackgroundAudioService.mMediaPlayer == null)//for first
 		{
 		 	// show toast if Audio file is not found or No selection of audio file
 			if( (Audio_manager.getAudioFilesCount() == 0) &&
@@ -95,14 +96,27 @@ public class AudioPlayer_page
 
 				//for 1st play
 				audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
+				while (Util.isEmptyString(audioUrl_page) || !UtilAudio.hasAudioExtension(audioUrl_page)) {
+                    Audio_manager.mAudioPos++;
+                    audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
-				startNewAudio();
+                    if(Audio_manager.mAudioPos >= TabsHost.getCurrentPage().getNotesCountInPage(MainAct.mAct))
+                        break;
+				}
 
-                MediaControllerCompat.getMediaController(MainAct.mAct)
-                        .getTransportControls()
-                        .playFromUri(Uri.parse(audioUrl_page),null);
+				if(!Util.isEmptyString(audioUrl_page) && UtilAudio.hasAudioExtension(audioUrl_page) ) {
+                    startNewAudio();
 
-                MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+                    MediaControllerCompat.getMediaController(MainAct.mAct)
+                            .getTransportControls()
+                            .playFromUri(Uri.parse(audioUrl_page), null);
+
+                    MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+                }
+                else
+                {
+                    Toast.makeText(act,R.string.audio_file_not_found,Toast.LENGTH_SHORT).show();
+                }
 			}
 		}
 		else

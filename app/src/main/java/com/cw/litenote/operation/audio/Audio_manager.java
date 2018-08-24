@@ -98,10 +98,7 @@ public class Audio_manager
 
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
 
-        // disconnect: hide notification
-        if(MainAct.mMediaBrowserCompat.isConnected())
-            MainAct.mMediaBrowserCompat.disconnect();
-
+        //hide notification
         NotificationManagerCompat.from(MainAct.mAct).cancel(1);
     }
 

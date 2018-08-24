@@ -584,10 +584,11 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         if(BackgroundAudioService.mMediaPlayer != null)
             Audio_manager.stopAudioPlayer();
 
-        // disconnect: hide notification
+        // disconnect MediaBrowserCompat
         if(mMediaBrowserCompat.isConnected())
             mMediaBrowserCompat.disconnect();
 
+        //hide notification
         NotificationManagerCompat.from(MainAct.mAct).cancel(1);
 
         mMediaBrowserCompat = null;
@@ -1146,8 +1147,28 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         		}
         		else // play first audio
                 {
+                    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
+
                     Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
                     Audio_manager.mAudioPos = 0;
+
+                    // cancel playing
+                    if(BackgroundAudioService.mMediaPlayer != null)
+                    {
+                        if(BackgroundAudioService.mMediaPlayer.isPlaying())
+                            BackgroundAudioService.mMediaPlayer.pause();
+
+                        if((AudioPlayer_page.mAudioHandler != null) &&
+                                (TabsHost.audioPlayer_page != null)        ){
+                            AudioPlayer_page.mAudioHandler.removeCallbacks(TabsHost.audioPlayer_page.page_runnable);
+                        }
+                        BackgroundAudioService.mMediaPlayer.release();
+                        BackgroundAudioService.mMediaPlayer = null;
+                    }
+
+                    // initial
+                    BackgroundAudioService.mMediaPlayer = null;//for first
+                    BackgroundAudioService.mIsPrepared = false;
 
                     Page_recycler page = TabsHost.getCurrentPage();
                     TabsHost.audioUi_page = new AudioUi_page(this,page.recyclerView);
