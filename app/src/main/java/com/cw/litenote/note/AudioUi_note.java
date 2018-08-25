@@ -287,16 +287,11 @@ public class AudioUi_note
            UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioStr, act)))
         {
             AudioPlayer_note.mAudioPos = NoteUi.getFocus_notePos();
-
-            // new instance
-            if(BackgroundAudioService.mMediaPlayer == null)
-                MainAct.mPlaying_pageTableId = Pref.getPref_focusView_page_tableId(act);
-            else if((BackgroundAudioService.mMediaPlayer != null) &&
-                    (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE))// If Audio player is NOT at One time mode and media exists
-                Audio_manager.stopAudioPlayer();
+            MainAct.mPlaying_pageTableId = Pref.getPref_focusView_page_tableId(act);
 
             Audio_manager.setAudioPlayMode(Audio_manager.NOTE_PLAY_MODE);
 
+            // new instance
             AudioPlayer_note audioPlayer_note = new AudioPlayer_note(act,pager);
             AudioPlayer_note.prepareAudioInfo();
             audioPlayer_note.runAudioState();

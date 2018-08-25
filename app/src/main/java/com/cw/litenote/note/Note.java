@@ -21,6 +21,7 @@ import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.audio.Audio_manager;
+import com.cw.litenote.operation.audio.BackgroundAudioService;
 import com.cw.litenote.page.PageAdapter_recycler;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.CustomWebView;
@@ -269,6 +270,8 @@ public class Note extends AppCompatActivity
                 audioUi_note = new AudioUi_note(Note.this, mAudioUriInDB);
                 audioUi_note.init_audio_block();
                 audioUi_note.showAudioBlock();
+
+				BackgroundAudioService.mIsPrepared = false;
             }
 
 			// stop video when changing note

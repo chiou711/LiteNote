@@ -69,8 +69,9 @@ public class AudioPlayer_note
     public void runAudioState()
 	{
 	   	System.out.println("AudioPlayer_note / _runAudioState ");
-	   	// if media player is null, set new fragment
-		if(BackgroundAudioService.mMediaPlayer == null)
+
+	   	// if media player is not prepared, start new one
+        if(!BackgroundAudioService.mIsPrepared)
 		{
             mPlaybackTime = 0;
             if(!AudioUi_note.isPausedAtSeekerAnchor)
@@ -119,7 +120,7 @@ public class AudioPlayer_note
                 return;
             }
 
-	   		if(BackgroundAudioService.mMediaPlayer == null)
+            if(!BackgroundAudioService.mIsPrepared)
 	   		{
 	   			String audioStr = Audio_manager.getAudioStringAt(mAudioPos);
 	   			if(Async_audioUrlVerify.mIsOkUrl)
@@ -236,10 +237,8 @@ public class AudioPlayer_note
         {
             System.out.println("AudioPlayer_note / _setAudioPlayerListeners / _onCompletion");
 
-            if(BackgroundAudioService.mMediaPlayer != null)
-                BackgroundAudioService.mMediaPlayer.release();
+            BackgroundAudioService.mIsPrepared = false;
 
-            BackgroundAudioService.mMediaPlayer = null;
             mPlaybackTime = 0;
 
             if(Audio_manager.getAudioPlayMode() == Audio_manager.NOTE_PLAY_MODE) // one time mode
@@ -341,14 +340,13 @@ public class AudioPlayer_note
      */
     private void playNextAudio()
     {
-//		Toast.makeText(act,"Can not open file, try next one.",Toast.LENGTH_SHORT).show();
         System.out.println("AudioPlayer_note / _playNextAudio");
         Audio_manager.stopAudioPlayer();
 
         // new audio index
         mAudioPos++;
 
-        if(mAudioPos >= Audio_manager.getPlayingPage_notesCount())
+        if(mAudioPos >= NoteUi.getNotesCnt())
             mAudioPos = 0; //back to first index
 
         mPlaybackTime = 0;
