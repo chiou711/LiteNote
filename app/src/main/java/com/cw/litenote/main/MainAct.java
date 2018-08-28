@@ -285,6 +285,8 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 		new EULA_dlg(this).show();
 
         isAddedOnNewIntent = false;
+
+        mMediaBrowserCompat = null;
     }
 
 
@@ -333,7 +335,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
                 return true;
 
             case KeyEvent.KEYCODE_BACK:
-                doBackKeyEvent();//todo How to handle device back key?
+                onBackPressed();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
@@ -586,7 +588,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
         // disconnect MediaBrowserCompat
         if(mMediaBrowserCompat.isConnected())
-            mMediaBrowserCompat.disconnect();
+            mMediaBrowserCompat.disconnect();//todo Why always exception?
 
         //hide notification
         NotificationManagerCompat.from(MainAct.mAct).cancel(1);
@@ -1427,7 +1429,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
 
     // callback: media browser connection
-    private MediaBrowserCompat.ConnectionCallback mMediaBrowserCompatConnectionCallback = new MediaBrowserCompat.ConnectionCallback() {
+    public static MediaBrowserCompat.ConnectionCallback mMediaBrowserCompatConnectionCallback = new MediaBrowserCompat.ConnectionCallback() {
         @Override
         public void onConnected() {
             super.onConnected();
@@ -1445,7 +1447,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
     };
 
     // callback: media controller
-    private MediaControllerCompat.Callback mMediaControllerCompatCallback = new MediaControllerCompat.Callback() {
+    public static MediaControllerCompat.Callback mMediaControllerCompatCallback = new MediaControllerCompat.Callback() {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);

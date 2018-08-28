@@ -110,6 +110,8 @@ public class AudioUi_note
     {
         SeekBar seekBar = (SeekBar) act.findViewById(R.id.pager_img_audio_seek_bar);
         ImageView mPager_audio_play_button = (ImageView) act.findViewById(R.id.pager_btn_audio_play);
+
+        // set audio block listeners
         setAudioBlockListener(act,audioUriInDB,_pager);
 
         mProgress = 0;
@@ -219,6 +221,12 @@ public class AudioUi_note
                     UtilAudio.setPhoneListener(act);
 
                 isPausedAtSeekerAnchor = false;
+
+                if( (Audio_manager.isRunnableOn_page)||
+                    (BackgroundAudioService.mMediaPlayer == null) ) {
+                    // use this flag to determine new play or not in note
+                    BackgroundAudioService.mIsPrepared = false;
+                }
                 playAudioInPager(act,audioStr,_pager);
             }
         });

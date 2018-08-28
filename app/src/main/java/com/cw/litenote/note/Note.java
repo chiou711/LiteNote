@@ -37,17 +37,25 @@ import com.cw.litenote.util.uil.UilCommon;
 import com.cw.litenote.util.Util;
 
 import android.R.color;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -92,6 +100,10 @@ public class Note extends AppCompatActivity
     public static int mPlayVideoPositionOfInstance;
     public AudioUi_note audioUi_note;
 
+	public static int mCurrentState;
+	public final static int STATE_PAUSED = 0;
+	public final static int STATE_PLAYING = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
@@ -107,7 +119,11 @@ public class Note extends AppCompatActivity
 		mPlayVideoPositionOfInstance = 0;
 		AsyncTaskVideoBitmapPager.mRotationStr = null;
 
+		Audio_manager.isRunnableOn_note = false;
+
 		act = this;
+
+        MainAct.mMediaBrowserCompat = null;
 
 	} //onCreate end
 
@@ -137,6 +153,68 @@ public class Note extends AppCompatActivity
 		if (hasFocus && isPictureMode() )
 			Util.setFullScreen(act);
 	}
+
+	// key event: 1 from bluetooth device 2 when notification bar dose not shown
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		int newPos;
+		System.out.println("Note / _onKeyDown / keyCode = " + keyCode);
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
+				if(viewPager.getCurrentItem() == 0)
+					newPos = 0;
+				else
+					newPos = NoteUi.getFocus_notePos()-1;
+
+				NoteUi.setFocus_notePos(newPos);
+				viewPager.setCurrentItem(newPos);
+
+				BackgroundAudioService.mIsPrepared = false;
+				BackgroundAudioService.mMediaPlayer = null;
+				Audio_manager.isRunnableOn_page = false;
+				findViewById(R.id.pager_btn_audio_play).performClick();
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_NEXT: //87
+				if(viewPager.getCurrentItem() == (mPagerAdapter.getCount() - 1))
+					newPos = 0;
+				else
+					newPos = NoteUi.getFocus_notePos() + 1;
+
+				NoteUi.setFocus_notePos(newPos);
+				viewPager.setCurrentItem(newPos);
+
+				BackgroundAudioService.mIsPrepared = false;
+				BackgroundAudioService.mMediaPlayer = null;
+				Audio_manager.isRunnableOn_page = false;
+				AudioUi_note.mPager_audio_play_button.performClick();
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_PLAY: //126
+				AudioUi_note.mPager_audio_play_button.performClick();
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
+				AudioUi_note.mPager_audio_play_button.performClick();
+				return true;
+
+			case KeyEvent.KEYCODE_BACK:
+                onBackPressed();
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_REWIND:
+				return true;
+
+			case KeyEvent.KEYCODE_MEDIA_STOP:
+				return true;
+		}
+		return false;
+	}
+
+
 
 	void setLayoutView()
 	{
@@ -191,7 +269,7 @@ public class Note extends AppCompatActivity
 
 		// Note: if viewPager.getCurrentItem() is not equal to mEntryPosition, _onPageSelected will
 		//       be called again after rotation
-		viewPager.setOnPageChangeListener(onPageChangeListener);
+		viewPager.setOnPageChangeListener(onPageChangeListener);//todo deprecated
 
 		// edit note button
 		editButton = (Button) findViewById(R.id.view_edit);
@@ -255,8 +333,8 @@ public class Note extends AppCompatActivity
 
 			NoteUi.setFocus_notePos(viewPager.getCurrentItem());
 			System.out.println("Note / _onPageSelected");
-			System.out.println("    NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
-			System.out.println("    nextPosition = " + nextPosition);
+//			System.out.println("    NoteUi.getFocus_notePos() = " + NoteUi.getFocus_notePos());
+//			System.out.println("    nextPosition = " + nextPosition);
 
 			mIsViewModeChanged = false;
 
@@ -270,8 +348,6 @@ public class Note extends AppCompatActivity
                 audioUi_note = new AudioUi_note(Note.this, mAudioUriInDB);
                 audioUi_note.init_audio_block();
                 audioUi_note.showAudioBlock();
-
-				BackgroundAudioService.mIsPrepared = false;
             }
 
 			// stop video when changing note
@@ -432,6 +508,30 @@ public class Note extends AppCompatActivity
             Note.setViewAllMode();
 
 		setOutline(act);
+
+		// Register Bluetooth device receiver
+		if(Build.VERSION.SDK_INT < 21)
+		{
+			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+			this.registerReceiver(mReceiver, filter);
+		}
+		else // Build.VERSION.SDK_INT >= 21
+		{
+			// Media session: to receive media button event of bluetooth device
+			// new media browser instance and create BackgroundAudioService instance: support notification
+
+			if(MainAct.mMediaBrowserCompat == null) {
+				MainAct.mMediaBrowserCompat = new MediaBrowserCompat(act,
+						new ComponentName(act, BackgroundAudioService.class),
+						MainAct.mMediaBrowserCompatConnectionCallback,
+						act.getIntent().getExtras());
+			}
+
+			if(!MainAct.mMediaBrowserCompat.isConnected())
+				MainAct.mMediaBrowserCompat.connect();
+
+			MainAct.mCurrentState = MainAct.STATE_PAUSED;
+		}
 	}
 	
 	@Override
@@ -479,6 +579,16 @@ public class Note extends AppCompatActivity
 	protected void onDestroy() {
 		super.onDestroy();
 		System.out.println("Note / _onDestroy");
+
+		if(Audio_manager.isRunnableOn_note) {
+			BackgroundAudioService.mIsPrepared = false;
+			BackgroundAudioService.mMediaPlayer = null;
+			Audio_manager.isRunnableOn_note = false;
+		}
+
+        // disconnect MediaBrowserCompat
+        if(MainAct.mMediaBrowserCompat.isConnected())
+            MainAct.mMediaBrowserCompat.disconnect();//todo Why always exception??
 	}
 
 	// avoid exception: has leaked window android.widget.ZoomButtonsController
@@ -612,9 +722,6 @@ public class Note extends AppCompatActivity
                 // will do nothing.
 				NoteUi.setFocus_notePos(NoteUi.getFocus_notePos()+1);
             	viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-            	
-            	//TO
-//            	mMP.setVolume(0,0);
                 return true;
         }
 
@@ -901,4 +1008,25 @@ public class Note extends AppCompatActivity
         else
             return false;
     }
+
+	//The BroadcastReceiver that listens for bluetooth broadcasts
+	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			System.out.println("MainAct / _BroadcastReceiver / onReceive");
+			String action = intent.getAction();
+			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+			if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+				//Device is now connected
+				Toast.makeText(getApplicationContext(), "ACTION_ACL_CONNECTED: device is " + device, Toast.LENGTH_LONG).show();
+			}
+
+			Intent intentReceive = intent;
+			KeyEvent keyEvent = (KeyEvent) intentReceive.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+			if(keyEvent != null)
+				onKeyDown( keyEvent.getKeyCode(),keyEvent);
+		}
+	};
+
 }
