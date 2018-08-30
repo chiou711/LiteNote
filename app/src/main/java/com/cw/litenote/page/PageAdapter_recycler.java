@@ -84,7 +84,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 	private Cursor cursor;
 	private int count;
 	private String linkUri;
-	private int style;
+	private static int style;
 	private int page_pos;
     private final OnStartDragListener mDragStartListener;
 
@@ -108,6 +108,9 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         mAct = MainAct.mAct;
 
         mDragStartListener = dragStartListener;
+
+        DB_folder dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
+        style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
     }
 
     /**
@@ -172,7 +175,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         @Override
         public void onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY);
+//            itemView.setBackgroundColor(Color.LTGRAY);
+//            itemView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
         }
 
         @Override
@@ -198,8 +202,6 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
 
         // style
-        DB_folder dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
-        int style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
         ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
 
@@ -723,7 +725,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(viewHolder);
+                    mDragStartListener.onStartDrag(viewHolder);//todo Why background color is changed?
                     System.out.println("PageAdapter_recycler / onTouch / ACTION_DOWN");
                 }
                 return false;
@@ -852,4 +854,5 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         setBindViewHolder_listeners((ViewHolder)sourceViewHolder,toPos);
         setBindViewHolder_listeners((ViewHolder)targetViewHolder,fromPos);
     }
+
 }

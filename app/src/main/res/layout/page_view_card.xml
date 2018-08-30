@@ -103,7 +103,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:contentDescription="@string/note_audio"
-                android:src="@drawable/ic_audio_info"/>
+                android:src="@drawable/ic_jog_dial_sound_on"/> <!-- ic_audio_info -->
 
             <!-- play YouTube -->
             <ImageView

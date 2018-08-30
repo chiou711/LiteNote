@@ -598,7 +598,7 @@ public class AudioPlayer_page
 
 			MediaControllerCompat.getMediaController(MainAct.mAct)
 					.getTransportControls()
-					.playFromUri(Uri.parse(audioUrl_page),null);
+					.playFromUri(Uri.parse(audioUrl_page),null);//todo Fix: You must specify a non-empty Uri for playFromUri.
 			MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
 
         }

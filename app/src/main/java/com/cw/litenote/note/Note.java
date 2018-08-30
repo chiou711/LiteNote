@@ -588,7 +588,7 @@ public class Note extends AppCompatActivity
 
         // disconnect MediaBrowserCompat
         if(MainAct.mMediaBrowserCompat.isConnected())
-            MainAct.mMediaBrowserCompat.disconnect();//todo Why always exception??
+            MainAct.mMediaBrowserCompat.disconnect();
 	}
 
 	// avoid exception: has leaked window android.widget.ZoomButtonsController
