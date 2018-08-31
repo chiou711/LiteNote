@@ -176,12 +176,12 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         @Override
         public void onItemSelected() {
 //            itemView.setBackgroundColor(Color.LTGRAY);
-//            itemView.setBackgroundColor(ColorSet.mBG_ColorArray[style]);
+            ((CardView)itemView).setCardBackgroundColor(MainAct.mAct.getResources().getColor(R.color.button_color));
         }
 
         @Override
         public void onItemClear() {
-            itemView.setBackgroundColor(0);
+            ((CardView)itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
         }
     }
 
