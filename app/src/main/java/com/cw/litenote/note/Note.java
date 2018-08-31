@@ -162,7 +162,7 @@ public class Note extends AppCompatActivity
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
 				if(viewPager.getCurrentItem() == 0)
-					newPos = 0;
+                    newPos = mPagerAdapter.getCount() - 1;//back to last one
 				else
 					newPos = NoteUi.getFocus_notePos()-1;
 

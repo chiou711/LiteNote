@@ -217,8 +217,7 @@ public class AudioUi_page {
                 do {
                     if(Audio_manager.mAudioPos > 0)
                         Audio_manager.mAudioPos--;
-                    else if( (Audio_manager.mAudioPos == 0) &&
-                             (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0 ) )
+                    else if( Audio_manager.mAudioPos == 0)
                     {
                         Audio_manager.mAudioPos = Audio_manager.getPlayingPage_notesCount()-1;
                     }
