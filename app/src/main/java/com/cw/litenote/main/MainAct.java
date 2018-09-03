@@ -121,7 +121,6 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 	public static Folder mFolder;
     public static MainUi mMainUi;
     public static Toolbar mToolbar;
-    public static MediaSessionCompat audioSession;
 
     public static MediaBrowserCompat mMediaBrowserCompat;
     public static MediaControllerCompat mMediaControllerCompat;
@@ -296,15 +295,18 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         {
             // Media session: to receive media button event of bluetooth device
             // new media browser instance and create BackgroundAudioService instance: support notification
-            mMediaBrowserCompat = new MediaBrowserCompat(mAct,
-                    new ComponentName(mAct, BackgroundAudioService.class),
-                    mMediaBrowserCompatConnectionCallback,
-                    mAct.getIntent().getExtras());
+            if(mMediaBrowserCompat == null)
+            {
+                mMediaBrowserCompat = new MediaBrowserCompat(mAct,
+                        new ComponentName(mAct, BackgroundAudioService.class),
+                        mMediaBrowserCompatConnectionCallback,
+                        mAct.getIntent().getExtras());
 
-            if(!mMediaBrowserCompat.isConnected() )
-                mMediaBrowserCompat.connect();//cf: https://stackoverflow.com/questions/43169875/mediabrowser-subscribe-doesnt-work-after-i-get-back-to-activity-1-from-activity
+                if (!mMediaBrowserCompat.isConnected())
+                    mMediaBrowserCompat.connect();//cf: https://stackoverflow.com/questions/43169875/mediabrowser-subscribe-doesnt-work-after-i-get-back-to-activity-1-from-activity
 
-            mCurrentState = STATE_PAUSED;
+                mCurrentState = STATE_PAUSED;
+            }
         }
 
     }

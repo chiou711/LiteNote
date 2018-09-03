@@ -41,6 +41,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     public static MediaPlayer mMediaPlayer;
     public static MediaSessionCompat mMediaSessionCompat;
     public static boolean mIsPrepared;
+    static int id = 999;
 
     private BroadcastReceiver mNoisyReceiver = new BroadcastReceiver() {
         @Override
@@ -175,7 +176,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         audioManager.abandonAudioFocus(this);
         unregisterReceiver(mNoisyReceiver);
         mMediaSessionCompat.release();
-        NotificationManagerCompat.from(this).cancel(1);
+        NotificationManagerCompat.from(this).cancel(id);//1
     }
 
     private void initMediaPlayer() {
@@ -205,7 +206,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
         builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
         builder.setSmallIcon(R.drawable.ic_launcher);
-        NotificationManagerCompat.from(BackgroundAudioService.this).notify(1, builder.build());
+        NotificationManagerCompat.from(BackgroundAudioService.this).notify(id, builder.build());//1
     }
 
     private void showPausedNotification() {
@@ -226,7 +227,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
         builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
         builder.setSmallIcon(R.drawable.ic_launcher);
-        NotificationManagerCompat.from(this).notify(1, builder.build());
+        NotificationManagerCompat.from(this).notify(id, builder.build());//1
     }
 
 
