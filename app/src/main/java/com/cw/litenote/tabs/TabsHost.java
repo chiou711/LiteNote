@@ -492,7 +492,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         editText1.setTextColor(Color.BLACK);
 
         //update tab info
-        AlertDialog.Builder builder = new AlertDialog.Builder(mTabLayout.getContext());
+//        AlertDialog.Builder builder = new AlertDialog.Builder(mTabLayout.getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainAct.mAct);
         builder.setTitle(R.string.edit_page_tab_title)
                 .setMessage(R.string.edit_page_tab_message)
                 .setView(editText1)
@@ -557,6 +558,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // android.R.id.button3 for neutral: delete
         ((Button)d1.findViewById(android.R.id.button3))
                 .setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_delete, 0, 0, 0);
+
     }
 
     /**
