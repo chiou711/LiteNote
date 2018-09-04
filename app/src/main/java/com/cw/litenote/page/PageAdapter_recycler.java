@@ -539,7 +539,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
     void setBindViewHolder_listeners(ViewHolder viewHolder, final int position)
     {
 
-        System.out.println("PageAdapter_recycler / setBindViewHolder_listeners / position = " + position);
+//        System.out.println("PageAdapter_recycler / setBindViewHolder_listeners / position = " + position);
 
         /**
          *  control block

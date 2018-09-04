@@ -153,7 +153,8 @@ public class AudioPlayer_page
 	// set list view footer audio control
 	private void showAudioPanel(AppCompatActivity act,boolean enable)
 	{
-		System.out.println("AudioPlayer_page / _showAudioPanel / enable = " + enable);
+//		System.out.println("AudioPlayer_page / _showAudioPanel / enable = " + enable);
+
 		View audio_panel = act.findViewById(R.id.audio_panel);
         if(audio_panel != null) {
             TextView audio_panel_title_textView = (TextView) audio_panel.findViewById(R.id.audio_panel_title);
@@ -347,7 +348,9 @@ public class AudioPlayer_page
 			{	@Override
 				public void onPrepared(MediaPlayer mp)
 				{
-					System.out.println("AudioPlayer_page / _setAudioPlayerListeners / _onPrepared 1");
+					System.out.println("AudioPlayer_page / _setAudioPlayerListeners / _onPrepared");
+
+					BackgroundAudioService.mIsPrepared = true;
 
 					if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
 					{
@@ -379,15 +382,12 @@ public class AudioPlayer_page
 							TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
                         }
 
-						{
-                            BackgroundAudioService.mIsPrepared = true;
 
-                            BackgroundAudioService.mMediaPlayer.seekTo(mPlaybackTime);
+						BackgroundAudioService.mMediaPlayer.seekTo(mPlaybackTime);
 
-							// add for calling runnable
-							if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
-								mAudioHandler.postDelayed(page_runnable, Util.oneSecond / 4);
-						}
+						// add for calling runnable
+						if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+							mAudioHandler.postDelayed(page_runnable, Util.oneSecond / 4);
 					}
 				}
 			});
