@@ -589,7 +589,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             mMediaBrowserCompat.disconnect();
 
         //hide notification
-        NotificationManagerCompat.from(MainAct.mAct).cancel(1);
+        NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.id);
 
         mMediaBrowserCompat = null;
 

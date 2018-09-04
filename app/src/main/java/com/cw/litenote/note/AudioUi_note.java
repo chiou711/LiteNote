@@ -289,7 +289,7 @@ public class AudioUi_note
         if(MainAct.mMediaBrowserCompat.isConnected())
             MainAct.mMediaBrowserCompat.disconnect();
 
-        NotificationManagerCompat.from(MainAct.mAct).cancel(1);
+        NotificationManagerCompat.from(MainAct.mAct).cancel(BackgroundAudioService.id);
 
         if(UtilAudio.hasAudioExtension(audioStr) ||
            UtilAudio.hasAudioExtension(Util.getDisplayNameByUriString(audioStr, act)))

@@ -6,8 +6,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,13 +27,16 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cw.litenote.R;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class BackgroundAudioService extends MediaBrowserServiceCompat implements MediaPlayer.OnCompletionListener, AudioManager.OnAudioFocusChangeListener  {
@@ -41,7 +46,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     public static MediaPlayer mMediaPlayer;
     public static MediaSessionCompat mMediaSessionCompat;
     public static boolean mIsPrepared;
-    static int id = 999;
+    final public static int id = 99;
 
     private BroadcastReceiver mNoisyReceiver = new BroadcastReceiver() {
         @Override
@@ -206,6 +211,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
         builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
         builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setShowWhen(false);
         NotificationManagerCompat.from(BackgroundAudioService.this).notify(id, builder.build());//1
     }
 
@@ -227,6 +233,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
                 MediaButtonReceiver.buildMediaButtonPendingIntent(this, PlaybackStateCompat.ACTION_SKIP_TO_NEXT)));
         builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
         builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setShowWhen(false);
         NotificationManagerCompat.from(this).notify(id, builder.build());//1
     }
 
@@ -271,8 +278,8 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         System.out.println("BackgroundAudioService / _initMediaSessionMetadata");
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
         //Notification icon in card
-        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+//        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+//        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 
         String audioStr = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
         String displayName = Util.getDisplayNameByUriString(audioStr, MainAct.mAct);
@@ -283,8 +290,29 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         else
             displayItems[0] = displayName;
 
+        // prepare bit map
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        Bitmap bitmap = null;
+        try
+        {
+            mmr.setDataSource(MainAct.mAct,Uri.parse(audioStr));
+
+            byte[] artBytes =  mmr.getEmbeddedPicture();
+            if(artBytes != null)
+            {
+                InputStream is = new ByteArrayInputStream(mmr.getEmbeddedPicture());
+                bitmap = BitmapFactory.decodeStream(is);
+            }
+            mmr.release();
+        }
+        catch(Exception e)
+        {
+            Log.e("BackgroundAudioService", "setDataSource / illegal argument");
+        }
+
         //lock screen icon for pre lollipop
-        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, BitmapFactory.decodeResource(MainAct.mAct.getResources(), R.drawable.ic_launcher));
+//        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, BitmapFactory.decodeResource(MainAct.mAct.getResources(), R.drawable.ic_launcher));
+        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bitmap);
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, displayItems[0]);
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, displayItems[1]);
         metadataBuilder.putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, 1);
