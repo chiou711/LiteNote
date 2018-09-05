@@ -118,9 +118,9 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 	public static SharedPreferences mPref_show_note_attribute;
 	OnBackPressedListener onBackPressedListener;
     public Drawer drawer;
-	public static Folder mFolder;
+	public static Folder mFolder;//TODO static issue
     public static MainUi mMainUi;
-    public static Toolbar mToolbar;
+    public static Toolbar mToolbar;//TODO static issue
 
     public static MediaBrowserCompat mMediaBrowserCompat;
     public static MediaControllerCompat mMediaControllerCompat;
