@@ -118,9 +118,9 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 	public static SharedPreferences mPref_show_note_attribute;
 	OnBackPressedListener onBackPressedListener;
     public Drawer drawer;
-	public static Folder mFolder;//TODO static issue
+	public static Folder mFolder;
     public static MainUi mMainUi;
-    public static Toolbar mToolbar;//TODO static issue
+    public static Toolbar mToolbar;
 
     public static MediaBrowserCompat mMediaBrowserCompat;
     public static MediaControllerCompat mMediaControllerCompat;
@@ -585,7 +585,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             Audio_manager.stopAudioPlayer();
 
         // disconnect MediaBrowserCompat
-        if(mMediaBrowserCompat.isConnected())
+        if( (mMediaBrowserCompat != null) && mMediaBrowserCompat.isConnected())
             mMediaBrowserCompat.disconnect();
 
         //hide notification
