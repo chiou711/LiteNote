@@ -191,6 +191,7 @@ public class AudioUi_page {
             @Override
             public void onClick(View v)
             {
+//                System.out.println("AudioUi_page / _initAudioBlock / audioPanel_play_button / _onClick");
 
                 initAudioBlock(MainAct.mAct);
 

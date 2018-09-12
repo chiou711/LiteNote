@@ -46,7 +46,6 @@ import com.cw.litenote.util.DeleteFileAlarmReceiver;
 import com.cw.litenote.operation.import_export.Export_toSDCardFragment;
 import com.cw.litenote.operation.import_export.Import_filesList;
 import com.cw.litenote.db.DB_drawer;
-import com.cw.litenote.util.audio.NoisyAudioStreamReceiver;
 import com.cw.litenote.util.audio.UtilAudio;
 import com.cw.litenote.operation.gallery.GalleryGridAct;
 import com.cw.litenote.operation.slideshow.SlideshowInfo;
@@ -83,7 +82,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -109,8 +107,6 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
     public About mAboutFragment;
     public static Menu mMenu;
     public static List<String> mFolderTitles;
-	static NoisyAudioStreamReceiver noisyAudioStreamReceiver;
-	static IntentFilter intentFilter;
     public static AppCompatActivity mAct;//TODO static issue
 	public static FragmentManager mFragmentManager;
 	public static FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener;
@@ -270,14 +266,6 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 	        mFragmentManager = getSupportFragmentManager();
 			mOnBackStackChangedListener = this;
 	        mFragmentManager.addOnBackStackChangedListener(mOnBackStackChangedListener);
-
-			// register an audio stream receiver for earphone jack connection on/off
-			if(noisyAudioStreamReceiver == null)
-			{
-				noisyAudioStreamReceiver = new NoisyAudioStreamReceiver();
-				intentFilter = new IntentFilter(android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-				registerReceiver(noisyAudioStreamReceiver, intentFilter);
-			}
 		}
 
 		// Show license dialog
@@ -289,7 +277,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         if(Build.VERSION.SDK_INT < 21)
         {
             IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
-            this.registerReceiver(mReceiver, filter);
+            this.registerReceiver(bluetooth_device_receiver, filter);
         }
         else // Build.VERSION.SDK_INT >= 21
         {
@@ -314,7 +302,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
     Intent intentReceive;
     //The BroadcastReceiver that listens for bluetooth broadcasts
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver bluetooth_device_receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             System.out.println("MainAct / _BroadcastReceiver / onReceive");
@@ -340,20 +328,26 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         System.out.println("MainAct / _onKeyDown / keyCode = " + keyCode);
         switch (keyCode) {
             case KeyEvent.KEYCODE_MEDIA_PREVIOUS: //88
-                TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
+                if(TabsHost.audioUi_page != null)
+                    TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_NEXT: //87
-                TabsHost.audioUi_page.audioPanel_next_btn.performClick();
+                if(TabsHost.audioUi_page != null)
+                    TabsHost.audioUi_page.audioPanel_next_btn.performClick();
 
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PLAY: //126
-                TabsHost.audioUi_page.audioPanel_play_button.performClick();
+                if(TabsHost.audioUi_page != null)
+                    TabsHost.audioUi_page.audioPanel_play_button.performClick();
+                else
+                    playFirstAudio();
                 return true;
 
             case KeyEvent.KEYCODE_MEDIA_PAUSE: //127
-                TabsHost.audioUi_page.audioPanel_play_button.performClick();
+                if(TabsHost.audioUi_page != null)
+                    TabsHost.audioUi_page.audioPanel_play_button.performClick();
                 return true;
 
             case KeyEvent.KEYCODE_BACK:
@@ -529,7 +523,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
     @Override
     protected void onPause() {
     	super.onPause();
-//        mReceiver.abortBroadcast();//todo better place?
+//        bluetooth_device_receiver.abortBroadcast();//todo better place?
         System.out.println("MainAct / _onPause");
     }
 
@@ -567,18 +561,17 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             mgr.listen(UtilAudio.phoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
 
-		// unregister an audio stream receiver
-		if(noisyAudioStreamReceiver != null)
-		{
-			try
-			{
-				unregisterReceiver(noisyAudioStreamReceiver);
-			}
-			catch (Exception e)
-			{
-			}
-			noisyAudioStreamReceiver = null;
-		}
+        if(bluetooth_device_receiver != null)
+        {
+            try
+            {
+                unregisterReceiver(bluetooth_device_receiver);
+            }
+            catch (Exception e)
+            {
+            }
+            bluetooth_device_receiver = null;
+        }
 
         // stop audio player
         if(BackgroundAudioService.mMediaPlayer != null)
@@ -1147,54 +1140,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         		}
         		else // play first audio
                 {
-                    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
-
-                    Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
-                    Audio_manager.mAudioPos = 0;
-
-                    // cancel playing
-                    if(BackgroundAudioService.mMediaPlayer != null)
-                    {
-                        if(BackgroundAudioService.mMediaPlayer.isPlaying())
-                            BackgroundAudioService.mMediaPlayer.pause();
-
-                        if((AudioPlayer_page.mAudioHandler != null) &&
-                                (TabsHost.audioPlayer_page != null)        ){
-                            AudioPlayer_page.mAudioHandler.removeCallbacks(TabsHost.audioPlayer_page.page_runnable);
-                        }
-                        BackgroundAudioService.mMediaPlayer.release();
-                        BackgroundAudioService.mMediaPlayer = null;
-                    }
-
-                    // initial
-                    BackgroundAudioService.mMediaPlayer = null;//for first
-                    BackgroundAudioService.mIsPrepared = false;
-
-                    Page_recycler page = TabsHost.getCurrentPage();
-                    TabsHost.audioUi_page = new AudioUi_page(this,page.recyclerView);
-                    TabsHost.audioUi_page.initAudioBlock(this);
-
-                    TabsHost.audioPlayer_page = new AudioPlayer_page(this,TabsHost.audioUi_page);
-                    TabsHost.audioPlayer_page.prepareAudioInfo();
-                    TabsHost.audioPlayer_page.runAudioState();
-
-                    // update audio play position
-                    TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
-                    TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
-
-                    UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,
-                                               TabsHost.audioUi_page.audio_panel_title_textView);
-
-                    // update playing page position
-                    mPlaying_pagePos = TabsHost.getFocus_tabPos();
-
-                    // update playing page table Id
-                    mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
-
-                    // update playing folder position
-                    mPlaying_folderPos = FolderUi.getFocus_folderPos();
-
-                    MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
+                    playFirstAudio();
                 }
         		return true;
 
@@ -1403,6 +1349,59 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    void playFirstAudio()
+    {
+        Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
+
+        Audio_manager.setAudioPlayMode(Audio_manager.PAGE_PLAY_MODE);
+        Audio_manager.mAudioPos = 0;
+
+        // cancel playing
+        if(BackgroundAudioService.mMediaPlayer != null)
+        {
+            if(BackgroundAudioService.mMediaPlayer.isPlaying())
+                BackgroundAudioService.mMediaPlayer.pause();
+
+            if((AudioPlayer_page.mAudioHandler != null) &&
+                    (TabsHost.audioPlayer_page != null)        ){
+                AudioPlayer_page.mAudioHandler.removeCallbacks(TabsHost.audioPlayer_page.page_runnable);
+            }
+            BackgroundAudioService.mMediaPlayer.release();
+            BackgroundAudioService.mMediaPlayer = null;
+        }
+
+        // initial
+        BackgroundAudioService.mMediaPlayer = null;//for first
+        BackgroundAudioService.mIsPrepared = false;
+
+        Page_recycler page = TabsHost.getCurrentPage();
+        TabsHost.audioUi_page = new AudioUi_page(this,page.recyclerView);
+        TabsHost.audioUi_page.initAudioBlock(this);
+
+        TabsHost.audioPlayer_page = new AudioPlayer_page(this,TabsHost.audioUi_page);
+        TabsHost.audioPlayer_page.prepareAudioInfo();
+        TabsHost.audioPlayer_page.runAudioState();
+
+        // update audio play position
+        TabsHost.audioPlayTabPos = TabsHost.getFocus_tabPos();
+        TabsHost.mTabsPagerAdapter.notifyDataSetChanged();
+
+        UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,
+                TabsHost.audioUi_page.audio_panel_title_textView);
+
+        // update playing page position
+        mPlaying_pagePos = TabsHost.getFocus_tabPos();
+
+        // update playing page table Id
+        mPlaying_pageTableId = TabsHost.getCurrentPageTableId();
+
+        // update playing folder position
+        mPlaying_folderPos = FolderUi.getFocus_folderPos();
+
+        DB_drawer dB_drawer = new DB_drawer(this);
+        MainAct.mPlaying_folderTableId = dB_drawer.getFolderTableId(MainAct.mPlaying_folderPos,true);
     }
 
     // configure layout view

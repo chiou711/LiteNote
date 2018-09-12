@@ -31,8 +31,10 @@ import android.util.Log;
 
 import com.cw.litenote.R;
 import com.cw.litenote.main.MainAct;
+import com.cw.litenote.note.AudioUi_note;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
+import com.cw.litenote.util.audio.UtilAudio;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -48,13 +50,43 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     public static boolean mIsPrepared;
     final public static int id = 99;
 
-    private BroadcastReceiver mNoisyReceiver = new BroadcastReceiver() {
+    BroadcastReceiver audioNoisyReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            System.out.println("BackgroundAudioService / _onReceive");
-            if( mMediaPlayer != null && mMediaPlayer.isPlaying() ) {
-                mMediaPlayer.pause();
+        public void onReceive(Context context, Intent intent)
+        {
+
+            if (android.media.AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction()))
+            {
+                if((BackgroundAudioService.mMediaPlayer != null) && BackgroundAudioService.mMediaPlayer.isPlaying() )
+                {
+                    System.out.println("BackgroundAudioService / audioNoisyReceiver / _onReceive / play -> pause");
+
+                    if( mMediaPlayer != null  ) {
+                        if(mMediaPlayer.isPlaying())
+                            mMediaPlayer.pause();
+
+                        setMediaPlaybackState(PlaybackStateCompat.STATE_PAUSED);
+
+                        initMediaSessionMetadata();
+                        showPausedNotification();
+                    }
+
+                    // update panel status: pause
+                    Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
+
+                    //update audio panel button in Page view
+                    if(Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
+                        UtilAudio.updateAudioPanel(TabsHost.audioUi_page.audioPanel_play_button,TabsHost.audioUi_page.audio_panel_title_textView);
+
+                    //update audio play button in Note view
+                    if( (AudioUi_note.mPager_audio_play_button != null) &&
+                         AudioUi_note.mPager_audio_play_button.isShown()    )
+                    {
+                        AudioUi_note.mPager_audio_play_button.setImageResource(R.drawable.ic_media_play);
+                    }
+                }
             }
+
         }
     };
 
@@ -74,6 +106,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         public void onSkipToPrevious() {
             super.onSkipToPrevious();
 
+            System.out.println("BackgroundAudioService / mMediaSessionCallback / _onSkipToPrevious");
             setMediaPlaybackState(PlaybackStateCompat.STATE_SKIPPING_TO_PREVIOUS);
             mMediaSessionCompat.setActive(true);
             TabsHost.audioUi_page.audioPanel_previous_btn.performClick();
@@ -96,6 +129,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             mMediaPlayer.start();
 
             // update panel status: play
+            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
             TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_pause);
         }
 
@@ -115,6 +149,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
             }
 
             // update panel status: pause
+            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
             TabsHost.audioUi_page.audioPanel_play_button.setImageResource(R.drawable.ic_media_play);
         }
 
@@ -169,7 +204,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     private void initNoisyReceiver() {
         //Handles headphones coming unplugged. cannot be done through a manifest receiver
         IntentFilter filter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
-        registerReceiver(mNoisyReceiver, filter);
+        registerReceiver(audioNoisyReceiver, filter);
     }
 
     @Override
@@ -179,9 +214,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         super.onDestroy();
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(this);
-        unregisterReceiver(mNoisyReceiver);
+        unregisterReceiver(audioNoisyReceiver);
         mMediaSessionCompat.release();
-        NotificationManagerCompat.from(this).cancel(id);//1
+        NotificationManagerCompat.from(this).cancel(id);
     }
 
     private void initMediaPlayer() {
@@ -195,7 +230,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
     private void showPlayingNotification() {
         System.out.println("BackgroundAudioService / _showPlayingNotification");
 
-        NotificationCompat.Builder builder = MediaStyleHelper.from(BackgroundAudioService.this, mMediaSessionCompat);
+        NotificationCompat.Builder builder = MediaStyleHelper.from(this, mMediaSessionCompat);
         if( builder == null ) {
             return;
         }
@@ -212,7 +247,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
         builder.setSmallIcon(R.drawable.ic_launcher);
         builder.setShowWhen(false);
-        NotificationManagerCompat.from(BackgroundAudioService.this).notify(id, builder.build());//1
+        NotificationManagerCompat.from(this).notify(id, builder.build());
     }
 
     private void showPausedNotification() {
@@ -234,7 +269,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
         builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0).setMediaSession(mMediaSessionCompat.getSessionToken()));
         builder.setSmallIcon(R.drawable.ic_launcher);
         builder.setShowWhen(false);
-        NotificationManagerCompat.from(this).notify(id, builder.build());//1
+        NotificationManagerCompat.from(this).notify(id, builder.build());
     }
 
 
@@ -276,7 +311,9 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
     private void initMediaSessionMetadata() {
         System.out.println("BackgroundAudioService / _initMediaSessionMetadata");
+
         MediaMetadataCompat.Builder metadataBuilder = new MediaMetadataCompat.Builder();
+
         //Notification icon in card
 //        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
 //        metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
