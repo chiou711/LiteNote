@@ -57,9 +57,9 @@
                 android:src="@drawable/btn_check_off_holo_light"
                 android:contentDescription="img_check"/>
 
-            <!-- dragger -->
-            <ImageView
-                android:id="@+id/img_dragger"
+            <!-- drag button -->
+            <com.cw.litenote.page.ImageViewCustom
+                android:id="@+id/btn_drag"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_marginStart="3dp"

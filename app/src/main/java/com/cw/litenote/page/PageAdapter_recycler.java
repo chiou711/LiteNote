@@ -130,7 +130,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 		TextView textTitle;
 		TextView textBody;
 		TextView textTime;
-		ImageView btnDrag;
+        ImageViewCustom btnDrag;
 		View thumbBlock;
 		ImageView thumbPicture;
 		ImageView thumbAudio;
@@ -162,7 +162,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             thumbPicture = (ImageView) v.findViewById(R.id.thumb_picture);
             thumbAudio = (ImageView) v.findViewById(R.id.thumb_audio);
             thumbWeb = (CustomWebView) v.findViewById(R.id.thumb_web);
-            btnDrag = (ImageView) v.findViewById(R.id.img_dragger);
+            btnDrag = (ImageViewCustom) v.findViewById(R.id.btn_drag);
             progressBar = (ProgressBar) v.findViewById(R.id.thumb_progress);
             textTitle = (TextView) v.findViewById(R.id.row_title);
             textBody = (TextView) v.findViewById(R.id.row_body);
@@ -724,12 +724,20 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         viewHolder.btnDrag.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(viewHolder);
-                    System.out.println("PageAdapter_recycler / onTouch / ACTION_DOWN");
+                switch (event.getActionMasked())
+                {
+                    case MotionEvent.ACTION_DOWN:
+                        mDragStartListener.onStartDrag(viewHolder);
+                        System.out.println("PageAdapter_recycler / onTouch / ACTION_DOWN");
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        v.performClick();
+                        return true;
                 }
                 return false;
             }
+
+
         });
     }
 
