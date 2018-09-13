@@ -259,7 +259,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
         }
 
         // show drag button
-        if(pref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "no").equalsIgnoreCase("yes"))
+        if(pref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "yes").equalsIgnoreCase("yes"))
             holder.btnDrag.setVisibility(View.VISIBLE);
         else
             holder.btnDrag.setVisibility(View.GONE);
@@ -725,7 +725,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(viewHolder);//todo Why background color is changed?
+                    mDragStartListener.onStartDrag(viewHolder);
                     System.out.println("PageAdapter_recycler / onTouch / ACTION_DOWN");
                 }
                 return false;

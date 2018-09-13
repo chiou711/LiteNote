@@ -822,7 +822,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
      ****************************************************/
     @Override
     public boolean onPrepareOptionsMenu(android.view.Menu menu) {
-//        System.out.println("MainAct / _onPrepareOptionsMenu");
+        System.out.println("MainAct / _onPrepareOptionsMenu");
 
         if((drawer == null) || (drawer.drawerLayout == null))
             return false;
@@ -836,8 +836,19 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         // If the navigation drawer is open, hide action items related to the content view
         if(drawer.isDrawerOpen())
         {
-            if(Util.isLandscapeOrientation(mAct))
+            // for landscape: the layout file contains folder menu
+            if(Util.isLandscapeOrientation(mAct)) {
                 mMenu.setGroupVisible(R.id.group_folders, true);
+                // set icon for folder draggable: landscape
+                if(MainAct.mPref_show_note_attribute != null)
+                {
+                    if (MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
+                            .equalsIgnoreCase("yes"))
+                        mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_on_holo_light);
+                    else
+                        mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_off_holo_light);
+                }
+            }
 
 //            mMenu.findItem(R.id.DELETE_FOLDERS).setVisible(foldersCnt >0);
 //            mMenu.findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setVisible(foldersCnt >1);
@@ -940,7 +951,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
 		// enable drag note
 		mPref_show_note_attribute = getSharedPreferences("show_note_attribute", 0);
-		if(mPref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "no").equalsIgnoreCase("yes"))
+		if(mPref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "yes").equalsIgnoreCase("yes"))
 			menu.findItem(R.id.ENABLE_NOTE_DRAG_AND_DROP)
 					.setIcon(R.drawable.btn_check_on_holo_light)
 					.setTitle(R.string.drag_note) ;
@@ -1239,7 +1250,7 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
 
 			case MenuId.ENABLE_NOTE_DRAG_AND_DROP:
 				mPref_show_note_attribute = mContext.getSharedPreferences("show_note_attribute", 0);
-				if(mPref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "no").equalsIgnoreCase("yes")) {
+				if(mPref_show_note_attribute.getString("KEY_ENABLE_DRAGGABLE", "yes").equalsIgnoreCase("yes")) {
                     mPref_show_note_attribute.edit().putString("KEY_ENABLE_DRAGGABLE", "no").apply();
                     Toast.makeText(this,getResources().getString(R.string.drag_note)+
                                         ": " +

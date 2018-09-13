@@ -31,6 +31,7 @@ import com.cw.litenote.db.DB_drawer;
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.delete.DeleteFolders;
+import com.cw.litenote.util.Util;
 import com.mobeta.android.dslv.DragSortListView;
 
 /**
@@ -53,6 +54,15 @@ public class Drawer {
         mNavigationView = (NavigationView) activity.findViewById(R.id.nav_view);
         mNavigationView.setItemIconTintList(null);// use original icon color
 
+        // set icon for folder draggable: portrait
+        if(!Util.isLandscapeOrientation(MainAct.mAct) && (MainAct.mPref_show_note_attribute != null)) {
+            if (MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
+                    .equalsIgnoreCase("yes"))
+                mNavigationView.getMenu().findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_on_holo_light);
+            else
+                mNavigationView.getMenu().findItem(R.id.ENABLE_FOLDER_DRAG_AND_DROP).setIcon(R.drawable.btn_check_off_holo_light);
+        }
+
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -68,6 +78,7 @@ public class Drawer {
                         if(MainAct.mPref_show_note_attribute.getString("KEY_ENABLE_FOLDER_DRAGGABLE", "no")
                                 .equalsIgnoreCase("yes"))
                         {
+                            menuItem.setIcon(R.drawable.btn_check_off_holo_light);
                             MainAct.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","no")
                                     .apply();
                             DragSortListView listView = (DragSortListView) act.findViewById(R.id.drawer_listview);
@@ -79,6 +90,7 @@ public class Drawer {
                         }
                         else
                         {
+                            menuItem.setIcon(R.drawable.btn_check_on_holo_light);
                             MainAct.mPref_show_note_attribute.edit().putString("KEY_ENABLE_FOLDER_DRAGGABLE","yes")
                                     .apply();
                             DragSortListView listView = (DragSortListView) act.findViewById(R.id.drawer_listview);

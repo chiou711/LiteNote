@@ -391,7 +391,7 @@ public class BackgroundAudioService extends MediaBrowserServiceCompat implements
 
         switch( focusChange ) {
             case AudioManager.AUDIOFOCUS_LOSS: {
-                if( mMediaPlayer.isPlaying() ) {
+                if( (mMediaPlayer != null) && mMediaPlayer.isPlaying() ) {
                     mMediaPlayer.stop();
                 }
                 break;
