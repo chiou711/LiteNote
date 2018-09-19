@@ -42,6 +42,7 @@ import android.widget.TextView;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.db.DB_page;
+import com.cw.litenote.define.Define;
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.audio.Audio_manager;
@@ -52,6 +53,9 @@ import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
 import com.cw.litenote.util.preferences.Pref;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.ArrayList;
@@ -93,10 +97,18 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         View rootView;
 
         // set layout by orientation
-        if (Util.isLandscapeOrientation(MainAct.mAct))
-            rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
-        else
-            rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
+        if (Util.isLandscapeOrientation(MainAct.mAct)) {
+            if(Define.CODE_MODE == Define.DEBUG_MODE)
+                rootView = inflater.inflate(R.layout.tabs_host_landscape_test, container, false);
+            else
+                rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
+        }
+        else {
+            if(Define.CODE_MODE == Define.DEBUG_MODE)
+                rootView = inflater.inflate(R.layout.tabs_host_portrait_test, container, false);
+            else
+                rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
+        }
 
         // view pager
         mViewPager = (ViewPager) rootView.findViewById(R.id.tabs_pager);
@@ -136,6 +148,19 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         mFooterMessage = (TextView) rootView.findViewById(R.id.footerText);
         mFooterMessage.setBackgroundColor(Color.BLUE);
         mFooterMessage.setVisibility(View.VISIBLE);
+
+
+        // AdMob support
+        // test app id
+        if(Define.CODE_MODE == Define.DEBUG_MODE)
+            MobileAds.initialize(getActivity(),getActivity().getResources().getString(R.string.ad_mob_app_id_test));
+        else // real app id
+            MobileAds.initialize(getActivity(),getActivity().getResources().getString(R.string.ad_mob_app_id));
+
+        // Load an ad into the AdMob banner view.
+        AdView adView = (AdView) rootView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         return rootView;
     }
