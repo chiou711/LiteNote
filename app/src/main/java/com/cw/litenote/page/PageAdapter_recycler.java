@@ -85,20 +85,20 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 	private int count;
 	private String linkUri;
 	private static int style;
+    DB_folder dbFolder;
 	private int page_pos;
     private final OnStartDragListener mDragStartListener;
 
     PageAdapter_recycler(Cursor _cursor, int _page_pos, OnStartDragListener dragStartListener) {
         cursor = _cursor;
         page_pos = _page_pos;
-        style = Util.getCurrentPageStyle(_page_pos);
 
         if(_cursor != null)
             count = _cursor.getCount();
         else
             count = 0;
 
-        System.out.println("PageAdapter_recycler / _constructor / count = " + count);
+//        System.out.println("PageAdapter_recycler / _constructor / count = " + count);
         System.out.println("PageAdapter_recycler / _constructor / page_pos = " + page_pos);
 
         // add this for fixing java.lang.IllegalStateException: attempt to re-open an already-closed object
@@ -109,8 +109,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
         mDragStartListener = dragStartListener;
 
-        DB_folder dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
-        style = dbFolder.getPageStyle(TabsHost.getFocus_tabPos(), true);
+        dbFolder = new DB_folder(mAct,Pref.getPref_focusView_folder_tableId(mAct));
     }
 
     /**
@@ -202,6 +201,8 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 //        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
 
         // style
+        style = dbFolder.getPageStyle(page_pos, true);
+
         ((CardView)holder.itemView).setCardBackgroundColor(ColorSet.mBG_ColorArray[style]);
 
 

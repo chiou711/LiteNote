@@ -78,7 +78,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-		System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
+//		System.out.println("Page_recycler / _onCreateView / page_tableId = " + page_tableId);
         View rootView = inflater.inflate(R.layout.recycler_view_frag, container, false);
         act = MainAct.mAct;
 
@@ -114,10 +114,10 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
 
     @Override
     public void onResume() {
-        System.out.println("Page_recycler / _onResume / page_tableId = " + page_tableId);
+//        System.out.println("Page_recycler / _onResume / page_tableId = " + page_tableId);
         super.onResume();
         if(Pref.getPref_focusView_page_tableId(MainAct.mAct) == page_tableId) {
-            System.out.println("Page_recycler / _onResume / resume_listView_vScroll");
+//            System.out.println("Page_recycler / _onResume / resume_listView_vScroll");
             TabsHost.resume_listView_vScroll(recyclerView);
         }
     }
