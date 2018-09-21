@@ -27,4 +27,12 @@
         android:scrollbars="vertical"
         android:scrollbarThumbVertical="@android:color/holo_blue_dark"
         android:scrollbarSize="5dp"/>
+    <TextView
+        android:id="@+id/blankPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/blank_page"
+        android:textSize="25sp"
+        />
 </LinearLayout>

@@ -45,8 +45,10 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		getActionBar().hide();
+
+		if(getActionBar() != null)
+			getActionBar().hide();
+
 		setContentView(R.layout.gallery_pager);
 
 		Bundle bundle = getIntent().getExtras();

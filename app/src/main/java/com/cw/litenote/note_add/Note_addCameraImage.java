@@ -446,7 +446,8 @@ public class Note_addCameraImage extends Activity {
 			else if (resultCode == RESULT_CANCELED)
 			{
 				// hide action bar
-				getActionBar().hide();
+				if(getActionBar() != null)
+					getActionBar().hide();
 				
 				// set action bar to transparent
 //				getActionBar().setIcon(new ColorDrawable(getResources().getColor(android.R.color.transparent)));

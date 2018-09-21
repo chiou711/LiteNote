@@ -336,7 +336,8 @@ public class Note_addCameraVideo extends Activity {
 			else if (resultCode == RESULT_CANCELED)
 			{
 				// hide action bar
-				getActionBar().hide();
+				if(getActionBar() != null)
+					getActionBar().hide();
 				
 				// set background to transparent
 				getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

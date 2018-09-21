@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
@@ -83,6 +84,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
         act = MainAct.mAct;
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        TextView blankView = rootView.findViewById(R.id.blankPage);
 
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
@@ -108,6 +110,15 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(itemAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
+        if(itemAdapter.getItemCount() ==0) {
+            blankView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            blankView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
 
         return rootView;
     }
