@@ -49,6 +49,7 @@
             android:background="@drawable/bg_gray_border" />
 
         <!-- view for AdMob Banner Ad -->
+        <!--if ENABLE_ADMOB = true, enable the following-->
         <com.google.android.gms.ads.AdView
             xmlns:ads="http://schemas.android.com/apk/res-auto"
             android:id="@+id/adView"

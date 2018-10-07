@@ -22,11 +22,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.cw.litenote.folder.FolderUi;
-import com.cw.litenote.main.MainAct;
-import com.cw.litenote.define.Define;
-import com.cw.litenote.util.preferences.Pref;
-
 import java.util.Date;
 
 /**

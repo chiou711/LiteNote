@@ -20,7 +20,6 @@ import com.cw.litenote.note_common.Note_common;
 import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
-import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.util.ColorSet;
 
 import android.app.Activity;

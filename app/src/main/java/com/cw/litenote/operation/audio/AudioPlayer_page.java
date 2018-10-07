@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.litenote.R;
+import com.cw.litenote.db.DB_page;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.tabs.AudioUi_page;
 import com.cw.litenote.tabs.TabsHost;
@@ -54,6 +55,7 @@ public class AudioPlayer_page
     private Async_audioUrlVerify mAudioUrlVerifyTask;
 	private AudioUi_page audioUi_page;
     public static Handler mAudioHandler;
+    int notesCount;
 
 	public AudioPlayer_page(AppCompatActivity act, AudioUi_page audioUi_page){
 		this.act = act;
@@ -62,6 +64,10 @@ public class AudioPlayer_page
 		System.out.println("AudioPlayer_page / constructor ");
 		// start a new handler
         mAudioHandler = new Handler();
+
+        int playingPageTableId = TabsHost.mTabsPagerAdapter.getItem(TabsHost.getFocus_tabPos()).page_tableId;
+        DB_page db_page = new DB_page(MainAct.mAct, playingPageTableId);
+        notesCount =  db_page.getNotesCount(true);
 	}
 
     /**
@@ -79,6 +85,7 @@ public class AudioPlayer_page
     public void runAudioState()
 	{
 	   	System.out.println("AudioPlayer_page / _runAudioState ");
+
 	   	// if media player is null, set new fragment
 		if(BackgroundAudioService.mMediaPlayer == null)//for first
 		{
@@ -107,11 +114,30 @@ public class AudioPlayer_page
 				if(!Util.isEmptyString(audioUrl_page) && UtilAudio.hasAudioExtension(audioUrl_page) ) {
                     startNewAudio();
 
-                    MediaControllerCompat.getMediaController(MainAct.mAct)
-                            .getTransportControls()
-                            .playFromUri(Uri.parse(audioUrl_page), null);
+                    if(Build.VERSION.SDK_INT >= 21) {
+                        MediaControllerCompat.getMediaController(MainAct.mAct)
+                                .getTransportControls()
+                                .playFromUri(Uri.parse(audioUrl_page), null);
 
-                    MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+                        MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+                    }
+                    else {
+                        BackgroundAudioService.mMediaPlayer = new MediaPlayer();
+                        BackgroundAudioService.mMediaPlayer.reset();
+                        setMediaPlayerListeners();
+                        try
+                        {
+                            BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(audioUrl_page));
+
+                            // prepare the MediaPlayer to play, this will delay system response
+                            BackgroundAudioService.mMediaPlayer.prepare();
+                        }
+                        catch(Exception e)
+                        {
+                            Toast.makeText(act,R.string.audio_message_could_not_open_file,Toast.LENGTH_SHORT).show();
+                            Audio_manager.stopAudioPlayer();
+                        }
+                    }
                 }
                 else
                 {
@@ -130,7 +156,10 @@ public class AudioPlayer_page
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PAUSE);
 
                 //for pause
-                MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().pause();
+                if(Build.VERSION.SDK_INT >= 21)
+                    MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().pause();
+                else
+                    BackgroundAudioService.mMediaPlayer.pause();
 			}
 			else // from pause to play
 			{
@@ -144,7 +173,10 @@ public class AudioPlayer_page
                 Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_PLAY);
 
                 //for play
-                MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+                if(Build.VERSION.SDK_INT >= 21)
+                    MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+                else
+                    BackgroundAudioService.mMediaPlayer.start();
 			}
 		}
 	}
@@ -218,53 +250,48 @@ public class AudioPlayer_page
                 if(!isAudioPanelOn())
                     showAudioPanel(act,true);
 
-                if(!BackgroundAudioService.mIsPrepared)
-	   			{
-		    		// check if audio file exists or not
-   					audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
+                // check if audio file exists or not
+                audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
-					if(!Async_audioUrlVerify.mIsOkUrl)
-					{
-						mAudio_tryTimes++;
-						nextAudio_player();
-					}
-					else
-   					{
-                        // set listeners
-                        if(BackgroundAudioService.mMediaPlayer != null)
-                            setMediaPlayerListeners();
+                if(!Async_audioUrlVerify.mIsOkUrl)
+                {
+                    mAudio_tryTimes++;
+                    nextAudio_player();
+                    return;
+                }
+                else
+                {
+                    // set listeners
+                    if(BackgroundAudioService.mMediaPlayer != null)
+                        setMediaPlayerListeners();
 
-	   					AudioUi_page.mProgress = 0;
+                    AudioUi_page.mProgress = 0;
 
-						// for network stream buffer change
-                        if(BackgroundAudioService.mMediaPlayer != null) {
-                            BackgroundAudioService.mMediaPlayer.setOnBufferingUpdateListener(new OnBufferingUpdateListener() {
-                                @Override
-                                public void onBufferingUpdate(MediaPlayer mp, int percent) {
-                                    if (TabsHost.getCurrentPage().seekBarProgress != null)
-                                        TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
-                                }
-                            });
-                        }
+                    // for network stream buffer change
+                    if(BackgroundAudioService.mMediaPlayer != null) {
+                        BackgroundAudioService.mMediaPlayer.setOnBufferingUpdateListener(new OnBufferingUpdateListener() {
+                            @Override
+                            public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                                if (TabsHost.getCurrentPage().seekBarProgress != null)
+                                    TabsHost.getCurrentPage().seekBarProgress.setSecondaryProgress(percent);
+                            }
+                        });
+                    }
 
-                        showAudioPanel(act,true);
-   					}
+                    showAudioPanel(act,true);
 	   			}
-	   			else
-	   			{
-//	   				// keep looping, do not set post() here, it will affect slide show timing
-	   				if(mAudio_tryTimes < Audio_manager.getAudioFilesCount())
-	   				{
-						// update page audio seek bar
-						if(audioUi_page != null)
-	   						update_audioPanel_progress(audioUi_page);
 
-						if(mAudio_tryTimes == 0)
-							mAudioHandler.postDelayed(page_runnable,DURATION_1S);
-						else
-							mAudioHandler.postDelayed(page_runnable,DURATION_1S/10);
-	   				}
-	   			}
+                if(mAudio_tryTimes < Audio_manager.getAudioFilesCount())
+                {
+                    // update page audio seek bar
+                    if(audioUi_page != null)
+                        update_audioPanel_progress(audioUi_page);
+
+                    if(mAudio_tryTimes == 0)
+                        mAudioHandler.postDelayed(page_runnable,DURATION_1S);
+                    else
+                        mAudioHandler.postDelayed(page_runnable,DURATION_1S/10);
+                }
 	   		}
 	   		else if( (Audio_manager.getCheckedAudio(Audio_manager.mAudioPos) == 0 ) )// for non-audio item
 	   		{
@@ -350,11 +377,19 @@ public class AudioPlayer_page
 				{
 					System.out.println("AudioPlayer_page / _setAudioPlayerListeners / _onPrepared");
 
-					BackgroundAudioService.mIsPrepared = true;
-
 					if (Audio_manager.getAudioPlayMode() == Audio_manager.PAGE_PLAY_MODE)
 					{
                         showAudioPanel(act,true);
+
+
+                        if(Build.VERSION.SDK_INT < 21) {
+                            if (BackgroundAudioService.mMediaPlayer != null) {
+                                if (!BackgroundAudioService.mMediaPlayer.isPlaying()) {
+                                    BackgroundAudioService.mMediaPlayer.start();
+                                }
+                                BackgroundAudioService.mMediaPlayer.setVolume(1.0f, 1.0f);
+                            }
+                        }
 
 						// media file length
 						media_file_length = BackgroundAudioService.mMediaPlayer.getDuration(); // gets the song length in milliseconds from URL
@@ -585,7 +620,7 @@ public class AudioPlayer_page
         // new audio index
         Audio_manager.mAudioPos++;
 
-		if(Audio_manager.mAudioPos >= Audio_manager.getPlayingPage_notesCount())
+        if(Audio_manager.mAudioPos >= notesCount)
             Audio_manager.mAudioPos = 0; //back to first index
 
         // check try times,had tried or not tried yet, anyway the audio file is found
@@ -594,12 +629,34 @@ public class AudioPlayer_page
         {
 			audioUrl_page = Audio_manager.getAudioStringAt(Audio_manager.mAudioPos);
 
-            startNewAudio();
+			startNewAudio();
 
-			MediaControllerCompat.getMediaController(MainAct.mAct)
-					.getTransportControls()
-					.playFromUri(Uri.parse(audioUrl_page),null);//todo Fix: You must specify a non-empty Uri for playFromUri.
-			MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+            if(Build.VERSION.SDK_INT >= 21) {
+                if (!Util.isEmptyString(audioUrl_page))
+                {
+                    MediaControllerCompat.getMediaController(MainAct.mAct)
+                            .getTransportControls()
+                            .playFromUri(Uri.parse(audioUrl_page), null);
+                    MediaControllerCompat.getMediaController(MainAct.mAct).getTransportControls().play();
+                }
+            }
+            else {
+                BackgroundAudioService.mMediaPlayer = new MediaPlayer();
+                BackgroundAudioService.mMediaPlayer.reset();
+                setMediaPlayerListeners();
+                try
+                {
+                    BackgroundAudioService.mMediaPlayer.setDataSource(act, Uri.parse(audioUrl_page));
+
+                    // prepare the MediaPlayer to play, this will delay system response
+                    BackgroundAudioService.mMediaPlayer.prepare();
+                }
+                catch(Exception e)
+                {
+                    Toast.makeText(act,R.string.audio_message_could_not_open_file,Toast.LENGTH_SHORT).show();
+                    Audio_manager.stopAudioPlayer();
+                }
+            }
 
         }
         else // try enough times: still no audio file is found

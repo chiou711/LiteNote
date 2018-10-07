@@ -98,14 +98,22 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // set layout by orientation
         if (Util.isLandscapeOrientation(MainAct.mAct)) {
-            if(Define.CODE_MODE == Define.DEBUG_MODE)
-                rootView = inflater.inflate(R.layout.tabs_host_landscape_test, container, false);
+            if(Define.ENABLE_ADMOB) {
+                if (Define.CODE_MODE == Define.DEBUG_MODE)
+                    rootView = inflater.inflate(R.layout.tabs_host_landscape_test, container, false);
+                else
+                    rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
+            }
             else
                 rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
         }
         else {
-            if(Define.CODE_MODE == Define.DEBUG_MODE)
-                rootView = inflater.inflate(R.layout.tabs_host_portrait_test, container, false);
+            if(Define.ENABLE_ADMOB) {
+                if (Define.CODE_MODE == Define.DEBUG_MODE)
+                    rootView = inflater.inflate(R.layout.tabs_host_portrait_test, container, false);
+                else
+                    rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
+            }
             else
                 rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
         }
@@ -151,17 +159,19 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
 
         // AdMob support
+        // if ENABLE_ADMOB = true, enable the following
         // test app id
-        if(Define.CODE_MODE == Define.DEBUG_MODE)
-            MobileAds.initialize(getActivity(),getActivity().getResources().getString(R.string.ad_mob_app_id_test));
-        else // real app id
-            MobileAds.initialize(getActivity(),getActivity().getResources().getString(R.string.ad_mob_app_id));
+        if(Define.ENABLE_ADMOB) {
+            if (Define.CODE_MODE == Define.DEBUG_MODE)
+                MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id_test));
+            else // real app id
+                MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id));
 
-        // Load an ad into the AdMob banner view.
-        AdView adView = (AdView) rootView.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-
+            // Load an ad into the AdMob banner view.
+            AdView adView = (AdView) rootView.findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
         return rootView;
     }
 

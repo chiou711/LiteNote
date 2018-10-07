@@ -21,7 +21,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -42,7 +41,6 @@ import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.BaseBackPressedListener;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.R;
-import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
 
 public class Export_toSDCardFragment extends Fragment {

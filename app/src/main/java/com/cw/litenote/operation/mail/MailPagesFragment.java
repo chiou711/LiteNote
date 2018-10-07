@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -44,7 +43,6 @@ import com.cw.litenote.main.MainAct;
 import com.cw.litenote.R;
 import com.cw.litenote.operation.List_selectPage;
 import com.cw.litenote.util.BaseBackPressedListener;
-import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
 
 import java.util.ArrayList;
