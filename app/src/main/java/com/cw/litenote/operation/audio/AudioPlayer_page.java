@@ -632,6 +632,8 @@ public class AudioPlayer_page
 
         // set current progress
         AudioUi_page.mProgress = (int)(((float)currentPos/ media_file_length)*100);
-        audioUi_page.seekBarProgress.setProgress(AudioUi_page.mProgress); // This math construction give a percentage of "was playing"/"media length"
+
+        if(media_file_length > 0 )
+            audioUi_page.seekBarProgress.setProgress(AudioUi_page.mProgress); // This math construction give a percentage of "was playing"/"media length"
     }
 }
