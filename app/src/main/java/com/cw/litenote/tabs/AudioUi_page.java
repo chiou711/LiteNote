@@ -197,10 +197,11 @@ public class AudioUi_page {
                 // update status
                 UtilAudio.updateAudioPanel((ImageView)v, audio_panel_title_textView); // here v is audio play button
 
-                if(Audio_manager.getPlayerState() != Audio_manager.PLAYER_AT_STOP)
+                if(AudioPlayer_page.isOnAudioPlayingPage())
+                {
                     TabsHost.audioPlayer_page.scrollHighlightAudioItemToVisible(TabsHost.getCurrentPage().recyclerView);
-
-                TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+                    TabsHost.getCurrentPage().itemAdapter.notifyDataSetChanged();
+                }
             }
         });
 
