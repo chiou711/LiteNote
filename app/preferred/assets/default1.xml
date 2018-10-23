@@ -2,13 +2,13 @@
 <LiteNote>
 
     <page>
-        <page_name>Link</page_name>
+        <page_name>Photo</page_name>
         <note>
-            <title>[n]公共電視 網路直播 PTS Live</title>
+            <title>[n]loca image file</title>
             <body></body>
-            <picture></picture>
+            <picture>file:///storage/emulated/0/LiteNotes/local1.jpg</picture>
             <audio></audio>
-            <link>https://youtu.be/zjGR32QyTkQ</link>
+            <link></link>
         </note>
     </page>
 
@@ -18,18 +18,7 @@
             <title>[n]local audio file</title>
             <body></body>
             <picture></picture>
-            <audio>file:///storage/emulated/0/LiteNote/local1.mp3</audio>
-            <link></link>
-        </note>
-    </page>
-
-    <page>
-        <page_name>Photo</page_name>
-        <note>
-            <title>[n]loca image file</title>
-            <body></body>
-            <picture>file:///storage/emulated/0/LiteNote/local1.jpg</picture>
-            <audio></audio>
+            <audio>file:///storage/emulated/0/LiteNotes/local1.mp3</audio>
             <link></link>
         </note>
     </page>
@@ -39,9 +28,20 @@
         <note>
             <title>[s]local video file</title>
             <body></body>
-            <picture>file:///storage/emulated/0/LiteNote/local1.mp4</picture>
+            <picture>file:///storage/emulated/0/LiteNotes/local1.mp4</picture>
             <audio></audio>
             <link></link>
+        </note>
+    </page>
+
+    <page>
+        <page_name>Link</page_name>
+        <note>
+            <title>[n]公共電視 網路直播 PTS Live</title>
+            <body></body>
+            <picture></picture>
+            <audio></audio>
+            <link>https://youtu.be/zjGR32QyTkQ</link>
         </note>
     </page>
 
