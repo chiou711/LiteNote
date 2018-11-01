@@ -47,6 +47,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+//todo uses unchecked or unsafe operations.
 public class Import_filesList extends ListFragment
 {
     private List<String> filePathArray = null;
@@ -275,7 +276,7 @@ public class Import_filesList extends ListFragment
             tv.setText(fileNames.get(position));
             if(fileNames.get(position).equalsIgnoreCase("sdcard")   ||
                fileNames.get(position).equalsIgnoreCase(appName)    ||
-               fileNames.get(position).equalsIgnoreCase("LiteNote") ||
+               fileNames.get(position).equalsIgnoreCase("LiteNote") || //todo need to change for different app name
                fileNames.get(position).equalsIgnoreCase("Download")   )
                 tv.setTypeface(null, Typeface.BOLD);
             else
