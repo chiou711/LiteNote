@@ -29,6 +29,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.db.DB_drawer;
 import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
+import com.cw.litenote.util.preferences.Pref;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -509,6 +510,11 @@ public class Config extends Fragment
 			//fix: select tab over next import amount => clean all => import => export => error
 			TabsHost.setFocus_tabPos(0);
 			FolderUi.setFocus_folderPos(0);
+
+			// remove focus view folder table Id key
+			Pref.removePref_focusView_folder_tableId_key(getActivity());
+
+			//todo Add initial condition?
 
 			dialog.dismiss();
 
