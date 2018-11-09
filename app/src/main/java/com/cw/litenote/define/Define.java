@@ -58,7 +58,6 @@ public class Define {
      * - true : un-mark preferred/assets/ line in build.gradle file
      * - false:    mark preferred/assets/ line in build.gradle file
      *
-     *
      * android {
      * ...
      *    sourceSets {
@@ -83,14 +82,14 @@ public class Define {
      * - page count: 1
      */
     // initial table count
-    public static int INITIAL_FOLDERS_COUNT = 3;  // Folder1, Folder2
-    public static int INITIAL_PAGES_COUNT = 4;// Page1_1
+    public static int INITIAL_FOLDERS_COUNT = 2;  // Folder1, Folder2
+    public static int INITIAL_PAGES_COUNT = 1;// Page1_1
 
     /***************************************************************************
      * Enable AdMob at page bottom
      *
      ***************************************************************************/
-    public static boolean ENABLE_ADMOB = true;
+    public static boolean ENABLE_ADMOB = true; //true; //false;
 
 
     // Apply system default for picture path
