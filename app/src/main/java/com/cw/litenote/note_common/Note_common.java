@@ -22,7 +22,6 @@ import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
-import com.cw.litenote.note.Note_editDrawing;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.image.TouchImageView;
 import com.cw.litenote.util.image.UtilImage_bitmapLoader;
@@ -232,10 +231,10 @@ public class Note_common {
 						openSetPictureDialog();
 					else if(!Util.isEmptyString(drawingUriInDB))
 					{
-						Intent i = new Intent(act, Note_editDrawing.class);
-						i.putExtra("drawing_uri", drawingUriInDB);
+						Intent i = new Intent(act, Note_drawing.class);
 						i.putExtra("drawing_id",noteId);
-						act.startActivityForResult(i,Util.EDIT_DRAWING);
+						i.putExtra("drawing_mode",Util.DRAWING_EDIT);
+						act.startActivityForResult(i,Util.DRAWING_EDIT);
 					}
 				}
                 return false;
