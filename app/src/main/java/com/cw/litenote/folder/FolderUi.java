@@ -40,7 +40,6 @@ import com.cw.litenote.db.DB_page;
 import com.cw.litenote.drawer.Drawer;
 import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
-import com.cw.litenote.operation.import_export.Import_fileView;
 import com.cw.litenote.db.DB_drawer;
 import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.main.MainAct;
@@ -542,10 +541,10 @@ public class FolderUi
         {
         	System.out.println("FolderUi / mTabsHostRun");
 
-            TabsHost fragment = new TabsHost();
+            TabsHost tabsHost = new TabsHost();
 
         	FragmentTransaction fragmentTransaction = MainAct.mFragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.content_frame, fragment).commit();
+            fragmentTransaction.replace(R.id.content_frame, tabsHost).commit();
         	MainAct.mFragmentManager.executePendingTransactions();
         }
     };

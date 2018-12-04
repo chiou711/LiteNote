@@ -43,6 +43,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.db.DB_folder;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.define.Define;
+import com.cw.litenote.drawer.Drawer;
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.operation.audio.Audio_manager;
@@ -53,6 +54,7 @@ import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
 import com.cw.litenote.util.preferences.Pref;
+//if(Define.ENABLE_ADMOB)
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -126,7 +128,10 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 //        mTabsPagerAdapter = new TabsPagerAdapter(MainAct.mAct,getChildFragmentManager());
 
         // add pages to mTabsPagerAdapter
-        int pageCount = addPages(mTabsPagerAdapter);
+        int pageCount = 0;
+        if(Drawer.getFolderCount() > 0) {
+            pageCount = addPages(mTabsPagerAdapter);
+        }
 
         // show blank folder if no page exists
         if(pageCount == 0) {
@@ -313,6 +318,9 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         super.onResume();
         // default
         setFocus_tabPos(0);
+
+        if(Drawer.getFolderCount() == 0)
+            return;//todo Check again
 
         // restore focus view page
         int pageCount = mTabsPagerAdapter.dbFolder.getPagesCount(true);
