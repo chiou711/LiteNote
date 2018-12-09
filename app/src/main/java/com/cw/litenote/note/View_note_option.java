@@ -17,6 +17,7 @@
 package com.cw.litenote.note;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
@@ -33,15 +34,14 @@ import android.widget.Toast;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.operation.mail.MailNotes;
-import com.cw.litenote.operation.youtube.SearchYouTubeByKeyword;
+import com.cw.litenote.operation.youtube.SearchYouTube;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
-import com.google.api.services.youtube.model.SearchResult;
+
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 /**
  * Created by cw on 2017/10/7.
@@ -194,15 +194,13 @@ public class View_note_option {
             {
                 dlgAddNew.dismiss();
 
-                Executors.newSingleThreadExecutor().submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        DB_page dB_page = new DB_page(act, TabsHost.getCurrentPageTableId());
-                        String keyWord = dB_page.getNoteTitle_byId(noteId);
-                        List<SearchResult> searchResult =  new SearchYouTubeByKeyword().main(keyWord);
-                    }
-                });
+                DB_page dB_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+                String keyWord = dB_page.getNoteTitle_byId(noteId);
+                Intent intent = new Intent(act,SearchYouTube.class);
+                intent.putExtra("search_title", keyWord );
+                act.startActivity(intent);
             }
+
             break;
 
             case ID_OPTION_BACK:
