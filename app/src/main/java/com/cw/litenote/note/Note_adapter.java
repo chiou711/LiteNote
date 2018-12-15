@@ -77,7 +77,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
     	act = activity;
         inflater = act.getLayoutInflater();
         mLastPosition = -1;
-		db_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+	    db_page = new DB_page(act, Pref.getPref_focusView_page_tableId(act));
         System.out.println("Note_adapter / constructor / mLastPosition = " + mLastPosition);
     }
     
