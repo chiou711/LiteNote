@@ -19,7 +19,7 @@ package com.cw.litenote.note;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
 import com.cw.litenote.operation.audio.Audio_manager;
-import com.cw.litenote.tabs.TabsHost;
+import com.cw.litenote.util.preferences.Pref;
 import com.cw.litenote.util.uil.UilCommon;
 import com.cw.litenote.util.audio.UtilAudio;
 import com.cw.litenote.util.image.AsyncTaskAudioBitmap;

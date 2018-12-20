@@ -152,10 +152,10 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
         /***
          * Set APP build mode
          */
-        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_INITIAL);   // 1 debug, initial
+//        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_INITIAL);   // 1 debug, initial
 //        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_ASSETS);    // 2 debug, assets
 //        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_DOWNLOAD);  // 3 debug, download
-//        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_INITIAL); // 4 release, initial
+        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_INITIAL); // 4 release, initial
 //        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_ASSETS);  // 5 release, assets
 //        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_DOWNLOAD);// 6 release, download
 
@@ -613,10 +613,10 @@ public class MainAct extends AppCompatActivity implements OnBackStackChangedList
     {
 
         /**
-         * LiteNotes_default_content.xml
+         * LiteNote_default_content.xml
          * Unit: folder
          */
-        // LiteNotes_default_content.xml
+        // LiteNote_default_content.xml
         String srcUrl = "https://drive.google.com/uc?authuser=0&id=1qAfMUJ9DMsciVkb7hEQAwLrmcyfN95sF&export=download";
 
         Async_default_byDownload async = new Async_default_byDownload(mAct,srcUrl);

@@ -82,13 +82,13 @@ class Async_default_byDownload extends AsyncTask<String,Integer,String>
 
 //		String srcUrl =   "https://drive.google.com/uc?authuser=0&id=1qAfMUJ9DMsciVkb7hEQAwLrmcyfN95sF&export=download";
 
-		String targetUrl = "file://" + "/storage/emulated/0/LiteNotes" + "/default_content_by_download.xml";
+		String targetUrl = "file://" + "/storage/emulated/0/LiteNote" + "/default_content_by_download.xml";
 
 		DownloadManager downloadmanager = (DownloadManager) act.getSystemService(Context.DOWNLOAD_SERVICE);
 		Uri uri = Uri.parse(srcUrl);
 
 		DownloadManager.Request request = new DownloadManager.Request(uri);
-		request.setTitle("LiteNotes download");
+		request.setTitle("LiteNote download");
 		request.setDescription("Downloading");
 //                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 //                    request.setVisibleInDownloadsUi(true);

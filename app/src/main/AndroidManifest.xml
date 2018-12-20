@@ -90,6 +90,12 @@
         <activity android:name=".operation.gallery.GalleryPagerAct"/>
       	<activity android:name=".operation.slideshow.SlideshowPlayer"
                   android:theme="@android:style/Theme.NoTitleBar"/>
+        <activity android:name=".operation.searchyoutube.SY_MainActivity"
+                  android:windowSoftInputMode="adjustPan"
+                  android:theme="@style/MyTheme" ></activity>
+        <activity android:name=".operation.searchyoutube.PlayerActivity"
+                  ></activity>
+        <!--receiver       -->
         <receiver
             android:name=".util.DeleteFileAlarmReceiver"
             android:enabled="true" />
