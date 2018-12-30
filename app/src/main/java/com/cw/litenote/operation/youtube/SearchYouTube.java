@@ -42,10 +42,12 @@ import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Thumbnail;
+import com.google.api.services.youtube.model.VideoListResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -79,6 +81,9 @@ public class SearchYouTube extends ListActivity {
     List<String> listTitles;
     List<String> listImages;
     List<String> listIDs;
+    List<String> listDurations;
+
+    SearchYouTubeAdapter fileListAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,7 +108,6 @@ public class SearchYouTube extends ListActivity {
         });
 
         UilCommon.init();
-
     }
 
 
@@ -157,6 +161,7 @@ public class SearchYouTube extends ListActivity {
 
             // Define the API request for retrieving search results.
             YouTube.Search.List search = youtube.search().list("id,snippet");
+//            YouTube.Search.List search = youtube.search().list("id,snippet,contentDetails");
 
             // Set your developer key from the {{ Google Cloud Console }} for
             // non-authenticated requests. See:
@@ -173,6 +178,7 @@ public class SearchYouTube extends ListActivity {
             // To increase efficiency, only retrieve the fields that the
             // application uses.
             search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
+//            search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url,contentDetails/duration)");
             search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
 
             // Call the API and print results.
@@ -199,12 +205,11 @@ public class SearchYouTube extends ListActivity {
 
             getSearchResult(searchResultList.iterator());
 
-            SearchYouTubeAdapter fileListAdapter = new SearchYouTubeAdapter(this,
+            fileListAdapter = new SearchYouTubeAdapter(this,
                     R.layout.search_youtube_list_row,
                     listTitles);
 
             setListAdapter(fileListAdapter);
-
             searchResultList = null;
         }
         catch (GoogleJsonResponseException e)
@@ -219,12 +224,62 @@ public class SearchYouTube extends ListActivity {
         }
     }
 
+    boolean isGotDurations;
+    public void getDurations() {
+        System.out.println("SearchYouTube / _getDuration");
+
+        // Call the API and print results.
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HashMap<String, String> parameters = new HashMap<>();
+                    parameters.put("part", "contentDetails");
+                    String stringsList = null;
+
+                    for (int i=0;i< listIDs.size();i++)
+                        stringsList += ("," + listIDs.get(i));
+
+                    parameters.put("id", stringsList );
+
+                    YouTube.Videos.List videosListMultipleIdsRequest = youtube.videos().list(parameters.get("part").toString());
+                    videosListMultipleIdsRequest.setKey(YouTubeDeveloperKey.DEVELOPER_KEY);
+                    if (parameters.containsKey("id") && parameters.get("id") != "") {
+                        videosListMultipleIdsRequest.setId(parameters.get("id").toString());
+                    }
+
+                    VideoListResponse response = videosListMultipleIdsRequest.execute();
+
+                    for (int i=0;i< listIDs.size();i++) {
+                        String duration = response.getItems().get(i).getContentDetails().getDuration();
+                        duration = YouTubeTimeConvert.convertYouTubeDuration(duration);
+                        System.out.println("SearchYouTube / _getDurations / runnable / duration" + "(" + i + ") = " + duration);
+//                        duration = duration.replace("PT","");
+//                        duration = duration.replace("H" , ":");
+//                        duration = duration.replace("M" , ":");
+//                        duration = duration.replace("S","");
+                        listDurations.add(duration);
+                    }
+
+                    isGotDurations = true;
+                } catch (GoogleJsonResponseException e) {
+                    e.printStackTrace();
+                    System.err.println("There was a service error: " + e.getDetails().getCode() + " : " + e.getDetails().getMessage());
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        });
+    }
+
+
     // Get search result
-    private void getSearchResult(Iterator<SearchResult> iteratorSearchResults) {
+    private void getSearchResult(Iterator<SearchResult> iteratorSearchResults) throws InterruptedException {
 
         listTitles = new ArrayList<>();
         listIDs = new ArrayList<>();
         listImages = new ArrayList<>();
+        listDurations = new ArrayList<>();
 
         if (!iteratorSearchResults.hasNext()) {
             System.out.println(" There aren't any results for your query.");
@@ -238,13 +293,13 @@ public class SearchYouTube extends ListActivity {
             // item will not contain a video ID.
             if (rId.getKind().equals("youtube#video")) {
 
-                // System.out.println(" Thumbnail: " + thumbnail.getUrl());
-                Thumbnail thumbnail = singleVideo.getSnippet().getThumbnails().getDefault();
-                listImages.add(thumbnail.getUrl());
-
                 // System.out.println(" Video Id" + rId.getVideoId());
                 String videoId = rId.getVideoId();
                 listIDs.add(videoId);
+
+                // System.out.println(" Thumbnail: " + thumbnail.getUrl());
+                Thumbnail thumbnail = singleVideo.getSnippet().getThumbnails().getDefault();
+                listImages.add(thumbnail.getUrl());
 
                 // System.out.println(" Title: " + title);
                 String title = singleVideo.getSnippet().getTitle();
@@ -252,6 +307,18 @@ public class SearchYouTube extends ListActivity {
 
                 // System.out.println(" URL = https://youtu.be/" + rId.getVideoId());
             }
+        }
+
+        // base on Ids to query duration
+        isGotDurations = false;
+        getDurations();
+
+        //wait for buffering
+        int time_out_count = 0;
+        while ((!isGotDurations) && time_out_count< 5)
+        {
+            Thread.sleep(1000);
+            time_out_count++;
         }
     }
 
@@ -288,6 +355,18 @@ public class SearchYouTube extends ListActivity {
             // title
             TextView tv = (TextView)convertView.findViewById(R.id.searched_keyword);
             tv.setText((position+1) + ". " + listTitles.get(position));
+
+            // duration
+            TextView durationTv = (TextView)convertView.findViewById(R.id.searched_duration);
+
+            if( (listDurations != null) && (listDurations.size() >0)) {
+                durationTv.setText(listDurations.get(position));
+                durationTv.setVisibility(View.VISIBLE);
+            }
+            else {
+                durationTv.setText("duration");
+                durationTv.setVisibility(View.VISIBLE);
+            }
 
             // item listener
             convertView.setOnClickListener(new View.OnClickListener() {
