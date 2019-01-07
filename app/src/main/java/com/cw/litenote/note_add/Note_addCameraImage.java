@@ -24,9 +24,9 @@ import com.cw.litenote.note_common.Note_common;
 import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.R;
 import com.cw.litenote.db.DB_page;
+import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.image.UtilImage;
 import com.cw.litenote.util.Util;
-import com.cw.litenote.util.preferences.Pref;
 
 import android.Manifest;
 import android.app.Activity;
@@ -125,7 +125,7 @@ public class Note_addCameraImage extends Activity {
 				(Long) savedInstanceState.getSerializable(DB_page.KEY_NOTE_ID);
 
 		// get picture Uri in DB if instance is not null
-        dB = new DB_page(this, Pref.getPref_focusView_page_tableId(this));
+        dB = new DB_page(this, TabsHost.getCurrentPageTableId());
 		if(savedInstanceState != null)
 		{
 			System.out.println("Note_addCameraImage / onCreate / noteId =  " + noteId);
