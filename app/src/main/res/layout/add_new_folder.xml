@@ -45,7 +45,8 @@
 		android:text="@string/edit_folder_message"
 		/>
 
-	<com.cw.litenote.util.TouchableEditText android:id="@+id/new_folder_name"
+	<com.cw.litenote.util.TouchableEditText
+        android:id="@+id/new_folder_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType=""

@@ -45,12 +45,10 @@ import com.google.api.services.youtube.model.Thumbnail;
 import com.google.api.services.youtube.model.VideoListResponse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.Executors;
 
 

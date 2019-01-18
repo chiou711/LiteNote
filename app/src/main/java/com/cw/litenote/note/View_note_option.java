@@ -39,7 +39,6 @@ import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -29,7 +29,6 @@ import com.cw.litenote.util.image.TouchImageView;
 import com.cw.litenote.util.image.UtilImage;
 import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
-import com.cw.litenote.util.preferences.Pref;
 
 import android.app.ActionBar;
 import android.app.Activity;

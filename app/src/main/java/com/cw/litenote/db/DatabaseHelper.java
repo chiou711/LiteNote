@@ -22,12 +22,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 // Data Base Helper 
 class DatabaseHelper extends SQLiteOpenHelper
-{  
+{
     static final String DB_NAME = "litenote.db";//todo change with app name
     private static int DB_VERSION = 1;
     
     DatabaseHelper(Context context)
-    {  
+    {
         super(context, DB_NAME , null, DB_VERSION);
     }
 

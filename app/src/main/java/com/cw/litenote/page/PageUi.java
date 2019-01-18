@@ -44,7 +44,6 @@ import com.cw.litenote.define.Define;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.TouchableEditText;
 import com.cw.litenote.util.Util;
-
 import com.cw.litenote.util.preferences.Pref;
 
 import java.lang.reflect.Field;

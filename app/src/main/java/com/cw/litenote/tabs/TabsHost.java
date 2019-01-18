@@ -58,7 +58,6 @@ import com.cw.litenote.util.preferences.Pref;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.mobeta.android.dslv.DragSortListView;
 
 import java.util.ArrayList;
 

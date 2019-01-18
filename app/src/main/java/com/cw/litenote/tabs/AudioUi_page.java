@@ -16,10 +16,6 @@
 
 package com.cw.litenote.tabs;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
@@ -29,7 +25,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.cw.litenote.R;
-
 import com.cw.litenote.operation.audio.Audio_manager;
 import com.cw.litenote.operation.audio.AudioPlayer_page;
 import com.cw.litenote.operation.audio.BackgroundAudioService;
@@ -37,8 +32,6 @@ import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
 
 import java.util.Locale;
-
-import static android.os.Build.VERSION_CODES.M;
 
 /**
  * Created by cw on 2017/10/21.
