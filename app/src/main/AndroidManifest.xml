@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cw.litenote"
-    android:versionCode="20309"
-    android:versionName="2.03.09" >
+    android:versionCode="20310"
+    android:versionName="2.03.10" >
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -54,6 +54,7 @@
         </activity>
 
         <activity android:name=".note_add.Note_addText"
+                  android:theme="@style/MyTheme"
                   android:windowSoftInputMode="adjustPan"
                   android:parentActivityName=".main.MainAct">
             <meta-data
