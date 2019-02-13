@@ -353,7 +353,7 @@ public class Note_addText extends AppCompatActivity {
 					Util.isEmptyString(linkUri)         )
 			{
 				// delete
-				System.out.println("Note_common / _saveStateInDB / delete");
+				System.out.println("Note_edit_ui / _saveStateInDB / delete");
 				deleteNote(rowId);
 				rowId = null;
 			}
