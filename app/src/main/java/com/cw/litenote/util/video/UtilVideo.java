@@ -41,12 +41,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.ProgressBar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 public class UtilVideo 
 {
@@ -471,7 +472,7 @@ public class UtilVideo
     } 
     
     // Set video player listeners
-	static void setVideoPlayerListeners(final ViewPager pager,final String picString)
+	static void setVideoPlayerListeners(final ViewPager pager, final String picString)
 	{
 		// on complete listener
 		mVideoView.setOnCompletionListener(new OnCompletionListener()

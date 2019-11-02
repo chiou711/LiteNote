@@ -17,7 +17,6 @@
 package com.cw.litenote.operation.import_export;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -28,6 +27,8 @@ import com.cw.litenote.util.Util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by cw on 2017/9/16.

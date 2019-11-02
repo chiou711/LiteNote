@@ -16,7 +16,6 @@
 
 package com.cw.litenote.page.item_touch_helper;
 
-import android.support.v7.widget.helper.ItemTouchHelper;
 
 /**
  * Interface to notify an item ViewHolder of relevant callbacks from {@link

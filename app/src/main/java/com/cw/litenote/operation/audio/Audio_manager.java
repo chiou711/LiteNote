@@ -16,7 +16,6 @@
 
 package com.cw.litenote.operation.audio;
 
-import android.support.v4.app.NotificationManagerCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,8 @@ import com.cw.litenote.db.DB_page;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.tabs.TabsHost;
 import com.cw.litenote.util.Util;
+
+import androidx.core.app.NotificationManagerCompat;
 
 public class Audio_manager
 {

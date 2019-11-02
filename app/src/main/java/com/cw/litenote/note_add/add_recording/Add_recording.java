@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cw.litenote.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+
+import androidx.fragment.app.Fragment;
 
 public class Add_recording extends Fragment {
     //Recording controls

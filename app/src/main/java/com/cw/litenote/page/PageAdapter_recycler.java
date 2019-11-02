@@ -22,9 +22,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,6 +62,10 @@ import com.cw.litenote.util.image.UtilImage_bitmapLoader;
 import com.cw.litenote.util.preferences.Pref;
 import com.cw.litenote.util.uil.UilCommon;
 import com.cw.litenote.util.video.UtilVideo;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.cw.litenote.db.DB_page.KEY_NOTE_AUDIO_URI;
 import static com.cw.litenote.db.DB_page.KEY_NOTE_BODY;

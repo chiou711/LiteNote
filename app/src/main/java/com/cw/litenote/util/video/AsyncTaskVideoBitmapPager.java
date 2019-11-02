@@ -27,9 +27,10 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 // pager video async task
 public class AsyncTaskVideoBitmapPager extends AsyncTask<String,Integer,String>

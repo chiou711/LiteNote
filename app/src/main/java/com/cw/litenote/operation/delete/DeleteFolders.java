@@ -22,8 +22,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,8 +44,11 @@ import com.cw.litenote.util.BaseBackPressedListener;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
-public class DeleteFolders extends Fragment{
+
+public class DeleteFolders extends Fragment {
 	Context mContext;
 	TextView title;
 	CheckedTextView mCheckTvSelAll;

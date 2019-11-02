@@ -39,9 +39,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -60,6 +57,11 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 public class Note_adapter extends FragmentStatePagerAdapter
 {
@@ -315,7 +317,7 @@ public class Note_adapter extends FragmentStatePagerAdapter
     }
 
 	@Override
-	public android.support.v4.app.Fragment getItem(int position) {
+	public Fragment getItem(int position) {
 		return null;
 	}
 

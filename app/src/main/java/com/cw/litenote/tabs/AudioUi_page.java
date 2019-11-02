@@ -16,8 +16,6 @@
 
 package com.cw.litenote.tabs;
 
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,6 +30,9 @@ import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
 
 import java.util.Locale;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by cw on 2017/10/21.

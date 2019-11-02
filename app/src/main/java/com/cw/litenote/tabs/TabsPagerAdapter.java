@@ -16,9 +16,6 @@
 
 package com.cw.litenote.tabs;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 
 import com.cw.litenote.db.DB_folder;
@@ -26,6 +23,10 @@ import com.cw.litenote.page.Page_recycler;
 import com.cw.litenote.util.preferences.Pref;
 
 import java.util.ArrayList;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * Created by cw on 2018/3/20.

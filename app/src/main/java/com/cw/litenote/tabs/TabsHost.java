@@ -22,15 +22,15 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,10 +54,13 @@ import com.cw.litenote.util.ColorSet;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
 import com.cw.litenote.util.preferences.Pref;
+
 //if(Define.ENABLE_ADMOB)
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdView;
+//import com.google.android.gms.ads.MobileAds;
+
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
@@ -175,17 +178,17 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // AdMob support
         // if ENABLE_ADMOB = true, enable the following
         // test app id
-        if(Define.ENABLE_ADMOB) {
-            if (Define.CODE_MODE == Define.DEBUG_MODE)
-                MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id_test));
-            else // real app id
-                MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id));
-
-            // Load an ad into the AdMob banner view.
-            AdView adView = (AdView) rootView.findViewById(R.id.adView);
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
-        }
+//        if(Define.ENABLE_ADMOB) {
+//            if (Define.CODE_MODE == Define.DEBUG_MODE)
+//                MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id_test));
+//            else // real app id
+//                MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id));
+//
+//            // Load an ad into the AdMob banner view.
+//            AdView adView = (AdView) rootView.findViewById(R.id.adView);
+//            AdRequest adRequest = new AdRequest.Builder().build();
+//            adView.loadAd(adRequest);
+//        }
         return rootView;
     }
 

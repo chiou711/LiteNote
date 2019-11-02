@@ -23,7 +23,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,6 +32,7 @@ import com.cw.litenote.R;
 import com.cw.litenote.main.MainAct;
 import com.cw.litenote.util.BaseBackPressedListener;
 
+import androidx.fragment.app.Fragment;
 import de.psdev.licensesdialog.LicensesDialogFragment;
 
 public class About extends Fragment

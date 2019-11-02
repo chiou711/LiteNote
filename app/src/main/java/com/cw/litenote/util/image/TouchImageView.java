@@ -33,9 +33,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.support.v7.widget.AppCompatImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 public class TouchImageView extends AppCompatImageView {
 	

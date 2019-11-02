@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -48,7 +47,9 @@ import com.cw.litenote.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MailPagesFragment extends Fragment{
+import androidx.fragment.app.Fragment;
+
+public class MailPagesFragment extends Fragment {
 	Context mContext;
 	TextView title;
 	Intent mEMailIntent;

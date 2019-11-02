@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -40,6 +39,8 @@ import com.cw.litenote.util.drawing.Note_drawingAct;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by cw on 2017/10/7.
@@ -76,7 +77,7 @@ public class Add_note_option {
     private final static int ID_NEW_BACK = 11;
     private final static int ID_NEW_SETTING = 12;
 
-    public static void createSelection(AppCompatActivity act,boolean permitted)
+    public static void createSelection(AppCompatActivity act, boolean permitted)
     {
 
         System.out.println("Add_note_option / _createSelection");

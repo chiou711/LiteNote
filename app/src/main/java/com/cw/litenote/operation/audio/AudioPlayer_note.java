@@ -23,8 +23,6 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.cw.litenote.R;
@@ -34,6 +32,9 @@ import com.cw.litenote.note.NoteUi;
 import com.cw.litenote.note.Note_adapter;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 public class AudioPlayer_note
 {

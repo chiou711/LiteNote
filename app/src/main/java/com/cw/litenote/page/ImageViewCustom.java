@@ -1,9 +1,10 @@
 package com.cw.litenote.page;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 // used for removing Accessibility warning: has setOnTouchListener called on it but does not override performClick
 public class ImageViewCustom extends AppCompatImageView

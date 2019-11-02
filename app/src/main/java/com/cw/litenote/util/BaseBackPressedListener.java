@@ -16,7 +16,8 @@
 
 package com.cw.litenote.util;
 
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by CW on 2016/6/3.

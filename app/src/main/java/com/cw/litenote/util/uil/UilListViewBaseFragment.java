@@ -17,11 +17,12 @@
 package com.cw.litenote.util.uil;
 
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.MenuItem;
 
 import com.mobeta.android.dslv.DragSortListView;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+
+import androidx.fragment.app.ListFragment;
 
 public class UilListViewBaseFragment extends UilBaseListFragment {
 

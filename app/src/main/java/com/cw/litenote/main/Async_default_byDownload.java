@@ -22,7 +22,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 
 import com.cw.litenote.db.DB_drawer;
 import com.cw.litenote.db.DB_folder;
@@ -32,6 +31,8 @@ import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
 
 import java.io.File;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Download task

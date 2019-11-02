@@ -21,7 +21,6 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -47,6 +46,8 @@ import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
 
 import java.lang.reflect.Field;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 // implement lambda expressions
 public class PageUi

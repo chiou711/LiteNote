@@ -23,9 +23,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -41,6 +38,10 @@ import com.cw.litenote.util.Util;
 import com.cw.litenote.util.audio.UtilAudio;
 
 import java.util.Locale;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class AudioPlayer_page
 {

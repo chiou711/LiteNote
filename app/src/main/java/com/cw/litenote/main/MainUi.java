@@ -20,7 +20,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -38,6 +37,8 @@ import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
 
 import java.util.Date;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by cw on 2017/10/7.

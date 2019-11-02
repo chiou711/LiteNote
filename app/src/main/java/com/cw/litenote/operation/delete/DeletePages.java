@@ -20,8 +20,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,7 +42,10 @@ import com.cw.litenote.util.BaseBackPressedListener;
 import com.cw.litenote.util.Util;
 import com.cw.litenote.util.preferences.Pref;
 
-public class DeletePages extends Fragment{
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+public class DeletePages extends Fragment {
     TextView title;
 	CheckedTextView mCheckTvSelAll;
 	Button btnSelPageOK;

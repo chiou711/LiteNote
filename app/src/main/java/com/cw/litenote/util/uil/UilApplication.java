@@ -20,13 +20,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
-import android.support.multidex.MultiDexApplication;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+
+import androidx.multidex.MultiDexApplication;
 
 //refer https://stackoverflow.com/questions/27698287/noclassdeffounderror-with-android-studio-on-android-4
 public class UilApplication extends MultiDexApplication {

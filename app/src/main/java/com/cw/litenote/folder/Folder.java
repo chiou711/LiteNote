@@ -19,7 +19,6 @@ package com.cw.litenote.folder;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -30,6 +29,8 @@ import com.cw.litenote.util.preferences.Pref;
 import com.mobeta.android.dslv.DragSortController;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by CW on 2016/8/23.
