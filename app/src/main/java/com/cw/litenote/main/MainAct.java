@@ -159,7 +159,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_INITIAL);
 
         /** 2 debug, assets */
-        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_ASSETS);
+//        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_ASSETS);
 
         /** 3 debug, download */
 //        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_DOWNLOAD);
@@ -168,7 +168,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 //        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_INITIAL);
 
         /** 5 release, assets */
-//        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_ASSETS);
+        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_ASSETS);
 
         /** 6 release, download */
 //        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_DOWNLOAD);

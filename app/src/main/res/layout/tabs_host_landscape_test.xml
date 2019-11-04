@@ -58,7 +58,7 @@
 
         <!-- view for AdMob Banner Ad -->
         <!--if ENABLE_ADMOB = true, enable the following-->
-<!--        <com.google.android.gms.ads.AdView
+        <com.google.android.gms.ads.AdView
             xmlns:ads="http://schemas.android.com/apk/res-auto"
             android:id="@+id/adView"
             android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:layout_gravity="center"
             android:background="#4f4f4f"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id_test"/>-->
+            ads:adUnitId="@string/banner_ad_unit_id_test"/>
     </LinearLayout>
     <include
         layout="@layout/audio_panel_landscape"
