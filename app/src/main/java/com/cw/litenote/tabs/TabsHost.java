@@ -151,7 +151,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // set tab layout
         mTabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
-        mTabLayout.setOnTabSelectedListener(this);
+        mTabLayout.addOnTabSelectedListener(this);
         mTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 //        mTabLayout.setTabMode(TabLayout.MODE_FIXED);
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
