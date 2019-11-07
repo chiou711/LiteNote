@@ -112,6 +112,7 @@ public class Note_addAudio extends AppCompatActivity {
 
 	public void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent)
 	{
+		super.onActivityResult(requestCode,resultCode,imageReturnedIntent);
 //		System.out.println("Note_addAudio / onActivityResult");
 		if (resultCode == Activity.RESULT_OK)
 		{

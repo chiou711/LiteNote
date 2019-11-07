@@ -87,12 +87,12 @@ public class FolderUi
         final TouchableEditText editFolderName = (TouchableEditText) rootView.findViewById(R.id.new_folder_name);
 
         // set cursor
-        try {
-            Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
-            f.setAccessible(true);
-            f.set(editFolderName, R.drawable.cursor);
-        } catch (Exception ignored) {
-        }
+//        try {
+//            Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
+//            f.setAccessible(true);
+//            f.set(editFolderName, R.drawable.cursor);
+//        } catch (Exception ignored) {
+//        }
 
         // set hint
         editFolderName.setOnFocusChangeListener(new View.OnFocusChangeListener() {

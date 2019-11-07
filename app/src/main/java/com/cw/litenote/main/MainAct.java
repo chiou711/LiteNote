@@ -1036,9 +1036,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     int count;
     String countStr;
     String nextLinkTitle;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode,resultCode,data);
         System.out.println("MainAct / _onActivityResult ");
         String stringFileName[] = null;
 

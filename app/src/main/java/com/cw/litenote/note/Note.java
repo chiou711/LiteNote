@@ -374,6 +374,7 @@ public class Note extends AppCompatActivity
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		super.onActivityResult(requestCode,resultCode,data);
 		System.out.println("Note / _onActivityResult ");
         if((requestCode==EDIT_CURRENT_VIEW) || (requestCode==MAIL_CURRENT_VIEW))
         {
