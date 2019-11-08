@@ -119,7 +119,9 @@ public class RecordingService extends Service {
             Long noteId;
             String audioUriInDB;
             Toast.makeText(this, getString(R.string.toast_recording_finish) + " " + mFilePath, Toast.LENGTH_SHORT).show();
+
             dB = new DB_page(this, TabsHost.getCurrentPageTableId());
+
             noteId = null; // set null for Insert
             audioUriInDB = "file://" + mFilePath;
             if( !Util.isEmptyString(audioUriInDB))

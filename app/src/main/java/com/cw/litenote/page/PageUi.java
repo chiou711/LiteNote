@@ -483,6 +483,8 @@ public class PageUi
 		// commit: final page viewed
 		Pref.setPref_focusView_page_tableId(act, newTblId);
 
+		updateFinalPageViewed(act);
+
 	    // set scroll X
 		final int scrollX = (tabTotalCount) * 60 * 5; //over the last scroll X
 
@@ -566,8 +568,10 @@ public class PageUi
 		// get final view tab index of focus
 		for(int i = 0; i<dbFolder.getPagesCount(false); i++)
 		{
-			if(tableId == dbFolder.getPageTableId(i, false))
+			if(tableId == dbFolder.getPageTableId(i, false)) {
 				TabsHost.setFocus_tabPos(i);
+				TabsHost.setCurrentPageTableId(tableId);
+			}
 			
 	    	if(	dbFolder.getPageId(i, false)== TabsHost.getFirstPos_pageId())
 	    		Pref.setPref_focusView_page_tableId(act, dbFolder.getPageTableId(i, false) );
@@ -577,7 +581,7 @@ public class PageUi
 
     public static boolean isAudioPlayingPage()
     {
-	    return ( (MainAct.mPlaying_pageTableId == TabsHost.mFocusPageTableId)&&//mNow_pageTableId) &&
+	    return ( (MainAct.mPlaying_pageTableId == TabsHost.getCurrentPageTableId())&&//mNow_pageTableId) &&
 			     (MainAct.mPlaying_pagePos == TabsHost.getFocus_tabPos()) &&
 	     	     (MainAct.mPlaying_folderPos == FolderUi.getFocus_folderPos())  );
     }

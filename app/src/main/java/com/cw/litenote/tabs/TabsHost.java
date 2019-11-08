@@ -251,7 +251,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         Pref.setPref_focusView_page_tableId(MainAct.mAct, pageTableId);
 
         // current page table Id
-        mFocusPageTableId = pageTableId;
+        setCurrentPageTableId(pageTableId);
 
         // refresh list view of selected page
         Page_recycler page = mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
@@ -337,7 +337,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
             if(pageTableId == Pref.getPref_focusView_page_tableId(MainAct.mAct)) {
                 setFocus_tabPos(i);
-                mFocusPageTableId = pageTableId;
+                setCurrentPageTableId(pageTableId);
             }
         }
 
@@ -460,6 +460,13 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     {
         return mTabsPagerAdapter.fragmentList.get(getFocus_tabPos());
     }
+
+
+    public static void setCurrentPageTableId(int id)
+    {
+        mFocusPageTableId = id;
+    }
+
 
     public static int getCurrentPageTableId()
     {
