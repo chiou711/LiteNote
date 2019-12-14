@@ -201,7 +201,9 @@ public class SearchYouTube extends ListActivity {
 
 
             while (searchResultList == null)
-            {}
+            {
+                Thread.sleep(1);
+            }
 
             getSearchResult(searchResultList.iterator());
 
