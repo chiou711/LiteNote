@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.cw.litenote"
-    android:versionCode="20404"
-    android:versionName="2.04.04" >
+    android:versionCode="20405"
+    android:versionName="2.04.05">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -29,6 +30,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning"
         android:usesCleartextTraffic="true"
         >
 
@@ -111,7 +113,7 @@
         <receiver
             android:name=".util.DeleteFileAlarmReceiver"
             android:enabled="true" />
-        <receiver android:name="android.support.v4.media.session.MediaButtonReceiver" >
+        <receiver android:name="androidx.media.session.MediaButtonReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.media.AUDIO_BECOMING_NOISY" />
