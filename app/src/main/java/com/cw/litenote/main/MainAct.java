@@ -860,14 +860,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     protected void onResume() {
         super.onResume();
     	System.out.println("MainAct / _onResume");
-
-    	mAct = this;
-
-        configLayoutView(); //createAssetsFile inside
+        mAct = this;
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        if(bEULA_accepted)
+        if(bEULA_accepted) {
+            configLayoutView(); //createAssetsFile inside
             drawer.drawerToggle.syncState();
+        }
     }
 
 
