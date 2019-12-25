@@ -499,6 +499,7 @@ public class PageUi
 
 		MainAct.mAct.invalidateOptionsMenu();
 		//todo For first folder, first page: tab is not seen
+		TabsHost.setFocus_tabPos(0);
 	}
 
 	/* 

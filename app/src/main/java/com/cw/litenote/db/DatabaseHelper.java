@@ -19,11 +19,13 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.cw.litenote.define.Define;
+
 
 // Data Base Helper 
 class DatabaseHelper extends SQLiteOpenHelper
 {
-    static final String DB_NAME = "litenote.db";
+    static final String DB_NAME = Define.DB_FILE_NAME;
     private static int DB_VERSION = 1;
     
     DatabaseHelper(Context context)

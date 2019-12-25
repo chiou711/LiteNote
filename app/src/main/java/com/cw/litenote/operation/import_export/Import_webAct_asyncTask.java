@@ -109,7 +109,11 @@ class Import_webAct_asyncTask extends AsyncTask<Void, Integer, Void> {
             importObject = new ParseXmlToDB(fileInputStream, act);
             importObject.enableInsertDB(enableInsertDB);
             importObject.handleXML();
-            while (importObject.isParsing) ;
+            while (importObject.isParsing)
+            {
+                System.out.println("----parsing");
+                try { Thread.sleep(1000); } catch (InterruptedException e) {}
+            };
         }
     }
 }

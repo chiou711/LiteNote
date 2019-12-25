@@ -46,7 +46,36 @@ public class Define {
     public final static int RELEASE_DEFAULT_BY_INITIAL = 3;
     public final static int RELEASE_DEFAULT_BY_ASSETS = 4;
     public final static int RELEASE_DEFAULT_BY_DOWNLOAD = 5;
+    public final static String  DB_FILE_NAME = "litenote.db";
 
+    public static void setAppBuildMode()
+    {
+        /**
+         * Set APP build mode
+         * Note:
+         *  1. for AdMob: it works after Google Play store release
+         *  2. for assets mode: need to enable build.gradle assets.srcDirs = ['preferred/assets/']
+         */
+         /** 1 debug, initial */
+//        int mode = DEBUG_DEFAULT_BY_INITIAL;
+
+        /** 2 debug, assets */
+//        int mode  = DEBUG_DEFAULT_BY_ASSETS;
+
+        /** 3 debug, download */
+//        int mode  =  DEBUG_DEFAULT_BY_DOWNLOAD;
+
+        /** 4 release, initial */
+//        int mode  =  Define.RELEASE_DEFAULT_BY_INITIAL;
+
+        /** 5 release, assets */
+        int mode  =  RELEASE_DEFAULT_BY_ASSETS;
+
+        /** 6 release, download */
+//        int mode  =  RELEASE_DEFAULT_BY_DOWNLOAD;
+
+        setAppBuildMode(mode);
+    }
 
     public static void setAppBuildMode(int appBuildMode) {
         app_build_mode = appBuildMode;

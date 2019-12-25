@@ -148,30 +148,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         ///
 
         super.onCreate(savedInstanceState);
-
-        /**
-         * Set APP build mode
-         * Note:
-         *  1. for AdMob: it works after Google Play store release
-         *  2. for assets mode: need to enable build.gradle assets.srcDirs = ['preferred/assets/']
-         */
-        /** 1 debug, initial */
-//        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_INITIAL);
-
-        /** 2 debug, assets */
-//        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_ASSETS);
-
-        /** 3 debug, download */
-//        Define.setAppBuildMode(Define.DEBUG_DEFAULT_BY_DOWNLOAD);
-
-        /** 4 release, initial */
-//        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_INITIAL);
-
-        /** 5 release, assets */
-        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_ASSETS);
-
-        /** 6 release, download */
-//        Define.setAppBuildMode(Define.RELEASE_DEFAULT_BY_DOWNLOAD);
+        Define.setAppBuildMode();
 
         // Release mode: no debug message
         if (Define.CODE_MODE == Define.RELEASE_MODE) {
@@ -239,6 +216,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // Show dialog of EULA
         if (!bEULA_accepted)
         {
+            //deleteDatabase(Define.DB_FILE_NAME);
+
             // Ok button listener
             dialog_EULA.clickListener_Ok = (DialogInterface dialog, int i) -> {
 
@@ -248,46 +227,57 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 if( (Define.DEFAULT_CONTENT == Define.BY_ASSETS) ||
                     (Define.DEFAULT_CONTENT == Define.BY_DOWNLOAD) )
                 {
-                    // Click Yes
-                    DialogInterface.OnClickListener click_Yes = (DialogInterface dlg, int j) -> {
-                        // Close dialog
-                        dialog.dismiss();
+                    // has not answered if default content needed
+                    if(!Pref.getPref_has_answered_if_default_content_needed(this)) {
+                        // Click Yes
+                        DialogInterface.OnClickListener click_Yes = (DialogInterface dlg, int j) -> {
+                            // Close dialog
+                            dialog.dismiss();
 
-                        // check build version for permission request (starts from API 23)
-                        if(Build.VERSION.SDK_INT >= 23)
-                            checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_YES);
-                        else {
-                            if (Define.DEFAULT_CONTENT == Define.BY_DOWNLOAD) {
-                                createDefaultContent_byDownload();
-                            }
+                            // check build version for permission request (starts from API 23)
+                            if (Build.VERSION.SDK_INT >= 23)
+                                checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_YES);
                             else {
-                                Pref.setPref_will_create_default_content(this, true);
+                                if (Define.DEFAULT_CONTENT == Define.BY_DOWNLOAD) {
+                                    createDefaultContent_byDownload();
+                                } else {
+                                    Pref.setPref_will_create_default_content(this, true);
+                                    recreate();
+                                }
+                            }
+                        };
+
+                        // Click No
+                        DialogInterface.OnClickListener click_No = (DialogInterface dlg, int j) -> {
+                            // Close dialog
+                            dialog.dismiss();
+
+                            // check build version for permission request
+                            if (Build.VERSION.SDK_INT >= 23)
+                                checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_NO);
+                            else {
+                                Pref.setPref_will_create_default_content(this, false);
                                 recreate();
                             }
-                        }
-                    };
+                        };
 
-                    // Click No
-                    DialogInterface.OnClickListener click_No = (DialogInterface dlg, int j) -> {
-                        // Close dialog
-                        dialog.dismiss();
-
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mAct)
+                                .setTitle(R.string.sample_notes_title)
+                                .setMessage(R.string.sample_notes_message)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.confirm_dialog_button_yes, click_Yes)
+                                .setNegativeButton(R.string.confirm_dialog_button_no, click_No);
+                        builder.create().show();
+                    } else {
                         // check build version for permission request
-                        if(Build.VERSION.SDK_INT >= 23)
+                        if (Build.VERSION.SDK_INT >= 23)
                             checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_NO);
                         else {
                             Pref.setPref_will_create_default_content(this, false);
                             recreate();
                         }
-                    };
+                    }
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mAct)
-                            .setTitle(R.string.sample_notes_title)
-                            .setMessage(R.string.sample_notes_message)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.confirm_dialog_button_yes, click_Yes)
-                            .setNegativeButton(R.string.confirm_dialog_button_no, click_No);
-                    builder.create().show();
                 }
                 else if((Define.DEFAULT_CONTENT == Define.BY_INITIAL_TABLES) && (Define.INITIAL_FOLDERS_COUNT > 0))
                 {

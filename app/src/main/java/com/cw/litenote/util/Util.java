@@ -869,7 +869,8 @@ public class Util
 								// check if network connection is OK
 								Util.tryUrlConnection(uriString, activity);
 								// wait for response
-								Thread.sleep(Util.oneSecond/10);
+//								Thread.sleep(Util.oneSecond/10);
+								Thread.sleep(Util.oneSecond/2);
 
 								// check response
 								if(200 <= Util.mResponseCode && Util.mResponseCode <= 399) {
