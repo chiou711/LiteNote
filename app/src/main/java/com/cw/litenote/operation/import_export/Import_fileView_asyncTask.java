@@ -132,7 +132,10 @@ class Import_fileView_asyncTask extends AsyncTask<Void, Integer, Void> {
             importObject = new ParseXmlToDB(fileInputStream, act);
             importObject.enableInsertDB(enableInsertDB);
             importObject.handleXML();
-            while (importObject.isParsing) ;
+            while (ParseXmlToDB.isParsing)
+            {
+                try { Thread.sleep(100); } catch (InterruptedException e) {}
+            }
         }
     }
 }

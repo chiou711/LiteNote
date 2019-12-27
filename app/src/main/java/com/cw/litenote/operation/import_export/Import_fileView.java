@@ -196,7 +196,10 @@ public class Import_fileView extends Fragment
 		ParseXmlToDB importObject = new ParseXmlToDB(fileInputStream,act);
         importObject.enableInsertDB(true);
         importObject.handleXML();
-        while(importObject.isParsing);
+        while(ParseXmlToDB.isParsing);
+	    {
+		    try { Thread.sleep(100); } catch (InterruptedException e) {}
+	    }
 	}
 
     @Override
