@@ -203,7 +203,8 @@ public class Import_filesList extends ListFragment
         if(files == null)
         {
         	Toast.makeText(getActivity(),R.string.toast_import_SDCard_no_file,Toast.LENGTH_SHORT).show();
-        	getActivity().finish();
+//        	getActivity().finish();
+            getActivity().getSupportFragmentManager().popBackStack();
         }
         else
         {
@@ -219,7 +220,7 @@ public class Import_filesList extends ListFragment
 	        for(File file : files)
 	        {
                 // add for filtering non-XML file
-//                if(file.getName().contains("XML") || file.getName().contains("xml"))
+                if(file.getName().contains("XML") || file.getName().contains("xml"))
                 {
                     filePathArray.add(file.getPath());
                     fileNames.add(file.getName());
