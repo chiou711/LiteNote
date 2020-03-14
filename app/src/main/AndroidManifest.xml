@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cw.litenote"
-    android:versionCode="20408"
-    android:versionName="2.04.08">
+    android:versionCode="20409"
+    android:versionName="2.04.09">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -102,7 +102,7 @@
         <!--Add_recording-->
         <activity
             android:name=".note_add.add_recording.Add_recording_act"
-            android:screenOrientation="portrait"
+            android:screenOrientation="unspecified"
             android:label="@string/app_name"
             android:theme="@style/MyTheme" >
         </activity>

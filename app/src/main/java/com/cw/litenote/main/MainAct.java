@@ -230,7 +230,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     // has not answered if default content needed
                     if(!Pref.getPref_has_answered_if_default_content_needed(this)) {
                         // Click Yes
-                        DialogInterface.OnClickListener click_Yes = (DialogInterface dlg, int j) -> {
+                        DialogInterface.OnClickListener click_sample_Yes = (DialogInterface dlg, int j) -> {
                             // Close dialog
                             dialog.dismiss();
 
@@ -248,7 +248,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                         };
 
                         // Click No
-                        DialogInterface.OnClickListener click_No = (DialogInterface dlg, int j) -> {
+                        DialogInterface.OnClickListener click_sample_No = (DialogInterface dlg, int j) -> {
                             // Close dialog
                             dialog.dismiss();
 
@@ -265,8 +265,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                                 .setTitle(R.string.sample_notes_title)
                                 .setMessage(R.string.sample_notes_message)
                                 .setCancelable(false)
-                                .setPositiveButton(R.string.confirm_dialog_button_yes, click_Yes)
-                                .setNegativeButton(R.string.confirm_dialog_button_no, click_No);
+                                .setPositiveButton(R.string.confirm_dialog_button_yes, click_sample_Yes)
+                                .setNegativeButton(R.string.confirm_dialog_button_no, click_sample_No);
                         builder.create().show();
                     } else {
                         // check build version for permission request
@@ -322,11 +322,15 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                                                                Manifest.permission.READ_EXTERNAL_STORAGE },
                                                   permissions_request);
             }
-            else
-                doCreate(savedInstanceState);
+            else {
+                Pref.setPref_will_create_default_content(this, false);
+                recreate();
+            }
         }
-        else
-            doCreate(savedInstanceState);
+        else {
+            Pref.setPref_will_create_default_content(this, false);
+            recreate();
+        }
     }
 
     // Do major create operation

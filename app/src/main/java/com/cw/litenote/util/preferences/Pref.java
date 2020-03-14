@@ -143,7 +143,7 @@ public class Pref
     public static void setPref_will_create_default_content(Activity act, boolean will)
     {
         SharedPreferences pref = act.getSharedPreferences("create_view", 0);
-        String keyName = "KEY_WITH_DEFAULT_CONTENT";
+        String keyName = "KEY_WILL_CREATE_DEFAULT_CONTENT";
         pref.edit().putBoolean(keyName, will).apply();
 
         setPref_has_answered_if_default_content_needed(act,true);
@@ -153,7 +153,7 @@ public class Pref
     public static boolean getPref_will_create_default_content(Context context)
     {
         SharedPreferences pref = context.getSharedPreferences("create_view", 0);
-        String keyName = "KEY_WITH_DEFAULT_CONTENT";
+        String keyName = "KEY_WILL_CREATE_DEFAULT_CONTENT";
         return pref.getBoolean(keyName, false);
     }
 
