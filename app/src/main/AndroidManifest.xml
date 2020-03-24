@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cw.litenote"
-    android:versionCode="20409"
-    android:versionName="2.04.09">
+    android:versionCode="20411"
+    android:versionName="2.04.11">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -32,6 +32,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         >
 
         <!-- android:theme="@style/Theme.AppCompat" -->

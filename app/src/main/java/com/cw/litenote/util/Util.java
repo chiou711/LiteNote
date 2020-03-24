@@ -1130,11 +1130,11 @@ public class Util
 	    int currentOrientation = act.getResources().getConfiguration().orientation;
 	    if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
 //		       act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-		       act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE);
+		       act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 	    }
 	    else {
 //		       act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-		       act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);
+		       act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 	    }	    
 	}
 
@@ -1661,7 +1661,8 @@ public class Util
                 inputStream.close();
                 outputStream.close();
             } catch (IOException e) {
-                //Logging exception
+	            //Logging exception
+            	e.printStackTrace();
             }
         }
 		return file;

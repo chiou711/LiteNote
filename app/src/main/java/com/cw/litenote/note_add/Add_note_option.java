@@ -114,7 +114,7 @@ public class Add_note_option {
                     R.string.note_ready_audio));
 
             // camera image
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
                 addNoteList.add(new Add_note_option(ID_NEW_CAMERA_IMAGE,
                         android.R.drawable.ic_menu_camera,
                         R.string.note_camera_image));
@@ -126,7 +126,7 @@ public class Add_note_option {
                     R.string.note_ready_image));
 
             // camera video
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
                 addNoteList.add(new Add_note_option(ID_NEW_CAMERA_VIDEO,
                         android.R.drawable.presence_video_online,
                         R.string.note_camera_video));
