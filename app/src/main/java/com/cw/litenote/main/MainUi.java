@@ -81,17 +81,16 @@ public class MainUi {
 
             DB_drawer db_drawer = new DB_drawer(act);
             DB_folder db_folder = new DB_folder(act, Pref.getPref_focusView_folder_tableId(MainAct.mAct));
-            if((db_drawer.getFoldersCount(true) == 0) || (db_folder.getPagesCount(true) == 0))
-            {
+            int folders_count = db_drawer.getFoldersCount(true);
+            int pages_count = db_folder.getPagesCount(true);
+            if((folders_count == 0) || (pages_count == 0))            {
                 Toast.makeText(act,"No folder or no page yet, please add a new one in advance.",Toast.LENGTH_LONG).show();
                 return null;
             }
 
             System.out.println("MainUi / _addNote_IntentLink / path = " + path);
             DB_page dB_page = new DB_page(act,Pref.getPref_focusView_page_tableId(MainAct.mAct));
-            dB_page.open();
             dB_page.insertNote("", "", "", "", path, "", 0, (long) 0);// add new note, get return row Id
-            dB_page.close();
 
             // save to top or to bottom
             final String link =path;
@@ -102,7 +101,7 @@ public class MainUi {
             boolean isAddedToTop = pref_show_note_attribute.getString("KEY_ADD_NEW_NOTE_TO","bottom").equalsIgnoreCase("top");
             if( isAddedToTop && (count > 1) )
             {
-                Page_recycler.swap(dB_page);
+                Page_recycler.swapTopBottom();
             }
 
             // update title: YouTube
@@ -182,7 +181,7 @@ public class MainUi {
                 title = pathOri;
                 if (pref_show_note_attribute.getString("KEY_ADD_NEW_NOTE_TO", "bottom").equalsIgnoreCase("top") &&
                         (count > 1)) {
-                    Page_recycler.swap(dB_page);
+                    Page_recycler.swapTopBottom();
                 }
 
                 Toast.makeText(act,

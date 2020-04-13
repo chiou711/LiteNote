@@ -141,7 +141,7 @@ public class Note_addReadyVideo extends Activity {
 		        	if( (dB_page.getNotesCount(true) > 0) &&
 		        		option.equalsIgnoreCase("single_to_top"))
 		        	{
-		        		Page_recycler.swap(Page_recycler.mDb_page);
+		        		Page_recycler.swapTopBottom();
 		        	}
 		        	
 		        	if(!Util.isEmptyString(uriStr))	
@@ -200,7 +200,7 @@ public class Note_addReadyVideo extends Activity {
 				        	if( (dB_page.getNotesCount(true) > 0) &&
 	  		        			option.equalsIgnoreCase("directory_to_top") ) 
 				        	{
-				        		Page_recycler.swap(Page_recycler.mDb_page);
+				        		Page_recycler.swapTopBottom();
 				        	}
 				    		
 				        	// avoid showing empty toast

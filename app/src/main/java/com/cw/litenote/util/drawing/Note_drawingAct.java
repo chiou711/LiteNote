@@ -245,7 +245,7 @@ public class Note_drawingAct extends Activity
             if( getIntent().getExtras().getString("extra_ADD_NEW_TO_TOP", "false").equalsIgnoreCase("true") &&
                     dB.getNotesCount(true) > 0 )
             {
-                Page_recycler.swap(Page_recycler.mDb_page);
+                Page_recycler.swapTopBottom();
             }
 
             if(!Util.isEmptyString(uriStr))

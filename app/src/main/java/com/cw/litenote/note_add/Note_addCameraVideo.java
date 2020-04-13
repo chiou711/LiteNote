@@ -275,7 +275,7 @@ public class Note_addCameraVideo extends Activity {
 		        
     			if( getIntent().getExtras().getString("extra_ADD_NEW_TO_TOP", "false").equalsIgnoreCase("true") &&
     				(dB_page.getNotesCount(true) > 0) )
-		               Page_recycler.swap(Page_recycler.mDb_page);
+		               Page_recycler.swapTopBottom();
     			
     			Toast.makeText(this, R.string.toast_saved , Toast.LENGTH_SHORT).show();
 

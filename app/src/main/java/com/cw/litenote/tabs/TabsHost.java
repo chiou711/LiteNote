@@ -689,7 +689,8 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     // get footer message of list view
     static String getFooterMessage(AppCompatActivity mAct)
     {
-        DB_page mDb_page = new DB_page(mAct, mTabsPagerAdapter.getItem(getFocus_tabPos()).page_tableId);
+        int pageTableId = Pref.getPref_focusView_page_tableId(mAct);
+        DB_page mDb_page = new DB_page(mAct, pageTableId);
         return mAct.getResources().getText(R.string.footer_checked).toString() +
                 "/" +
                 mAct.getResources().getText(R.string.footer_total).toString() +

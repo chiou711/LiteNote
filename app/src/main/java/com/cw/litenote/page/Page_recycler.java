@@ -41,19 +41,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * Demonstrates the use of {@link RecyclerView} with a {@link LinearLayoutManager} and a
- * {@link GridLayoutManager}.
- */
 public class Page_recycler extends Fragment implements OnStartDragListener {
 
-    public static DB_page mDb_page;
     public int page_tableId;
-    Cursor cursor_note;
 
     public RecyclerView recyclerView;
-    protected RecyclerView.LayoutManager layoutMgr;
-    int page_pos;
+    RecyclerView.LayoutManager layoutMgr;
+    private int page_pos;
     public static int mCurrPlayPosition;
     public static int mHighlightPosition;
     public SeekBar seekBarProgress;
@@ -140,17 +134,10 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
         }
     }
 
-    public void fillData()
+    private void fillData()
     {
         System.out.println("Page_recycler / _fillData / page_tableId = " + page_tableId);
-        mDb_page = new DB_page(getActivity(), page_tableId);
-        mDb_page.open();
-        cursor_note = mDb_page.mCursor_note;
-
-        itemAdapter = new PageAdapter_recycler(cursor_note,page_pos, this);
-
-        mDb_page.close();// set close here, if cursor is used in mTabsPagerAdapter
-
+        itemAdapter = new PageAdapter_recycler(page_pos, page_tableId, this);
         // Set PageAdapter_recycler as the adapter for RecyclerView.
         recyclerView.setAdapter(itemAdapter);
     }
@@ -221,8 +208,9 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
         dB_page.close();
     }
 
-    static public void swap(DB_page dB_page)
+    static public void swapTopBottom()
     {
+        DB_page dB_page = new DB_page(  MainAct.mAct ,DB_page.getFocusPage_tableId());
         int startCursor = dB_page.getNotesCount(true)-1;
         int endCursor = 0;
 
@@ -242,9 +230,7 @@ public class Page_recycler extends Fragment implements OnStartDragListener {
     public int getNotesCountInPage(AppCompatActivity act)
     {
         DB_page db_page = new DB_page(act,page_tableId );
-        db_page.open();
-        int count = db_page.getNotesCount(false);
-        db_page.close();
+        int count = db_page.getNotesCount(true);
         return count;
     }
 

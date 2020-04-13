@@ -156,9 +156,11 @@ public class Note_addText extends AppCompatActivity {
 					enSaveDb = true;
 					rowId = saveStateInDB(rowId, enSaveDb,"", "", "");
 
+					int notes_count = TabsHost.getCurrentPage().getNotesCountInPage(this);
+
 					if( getIntent().getExtras().getString("extra_ADD_NEW_TO_TOP", "false").equalsIgnoreCase("true") &&
-							(Page_recycler.mDb_page.getNotesCount(true) > 0) )
-						Page_recycler.swap(Page_recycler.mDb_page);
+							(notes_count > 0) )
+						Page_recycler.swapTopBottom();
 
 					Toast.makeText(Note_addText.this, getString(R.string.toast_saved) +" + 1", Toast.LENGTH_SHORT).show();
 
