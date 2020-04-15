@@ -102,8 +102,12 @@ public class RecordingService extends Service {
     }
 
     public void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
+        try {
+            mRecorder.stop();
+            mRecorder.release();
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "stop() failed");
+        }
 
         //remove notification
         if (mIncrementTimerTask != null) {
