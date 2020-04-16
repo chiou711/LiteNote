@@ -1234,7 +1234,7 @@ public class Util
 				// add span (CLOUD)
 		        Spannable saf_span = new SpannableString(" (CLOUD)");
 		        saf_span.setSpan(new ForegroundColorSpan(android.graphics.Color.RED), 0, saf_span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		        CharSequence newSafLabel = TextUtils.concat(ri.loadLabel(pkgMgr), saf_span);
+		        CharSequence newSafLabel = TextUtils.concat(ri.loadLabel(pkgMgr), saf_span.toString());
 //	        	System.out.println("Util / _chooseMediaIntentByType / SAF label " + i + " = " + newSafLabel );
 //				extraIntentsSaf[i] = new LabeledIntent(intentSaf, packageName, newSafLabel, ri.icon);
 

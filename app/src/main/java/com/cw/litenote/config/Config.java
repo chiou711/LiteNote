@@ -49,6 +49,9 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import androidx.fragment.app.Fragment;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class Config extends Fragment
 {
 	// style
@@ -566,8 +569,14 @@ public class Config extends Fragment
             ((MainAct)getActivity()).getSupportFragmentManager()//??? warning
                     .beginTransaction()
                     .detach(Config.this)
-                    .attach(Config.this)
+//                    .attach(Config.this)
                     .commit();
+
+			Intent new_intent = new Intent(getActivity(), MainAct.class);
+			new_intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK);
+			new_intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+
+			getActivity().startActivity(new_intent);
 		}
 	};
 
