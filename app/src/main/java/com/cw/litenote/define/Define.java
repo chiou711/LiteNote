@@ -77,7 +77,7 @@ public class Define {
         setAppBuildMode(mode);
     }
 
-    public static void setAppBuildMode(int appBuildMode) {
+    private static void setAppBuildMode(int appBuildMode) {
         app_build_mode = appBuildMode;
 
         switch (appBuildMode)

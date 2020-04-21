@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cw.litenote"
-    android:versionCode="20414"
-    android:versionName="2.04.14">
+    android:versionCode="20419"
+    android:versionName="2.04.19">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -129,12 +129,15 @@
             <action android:name="android.media.browse.MediaBrowserService" />
         </intent-filter>
         </service>
-<!--        <meta-data
+
+        <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/ad_mob_app_id"/>-->
-<!--        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/ad_mob_app_id_test"/> -->
+            android:value="@string/ad_mob_app_id"/>
+
+<!--            <meta-data-->
+<!--                android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--                android:value="@string/ad_mob_app_id_test"/>-->
+
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>

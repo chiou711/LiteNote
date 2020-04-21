@@ -60,10 +60,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
+import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
-
 
 public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTabSelectedListener
 {
@@ -81,6 +83,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     public static AudioUi_page audioUi_page;
     public static AudioPlayer_page audioPlayer_page;
     public static boolean isDoingMarking;
+    private AdView adView;
 
     public TabsHost()
     {
@@ -179,18 +182,59 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // if ENABLE_ADMOB = true, enable the following
         // test app id
         if(Define.ENABLE_ADMOB) {
-            if (Define.CODE_MODE == Define.DEBUG_MODE)
-                MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id_test));
-            else // real app id
-                MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id));
 
-            // Load an ad into the AdMob banner view.
-            AdView adView = (AdView) rootView.findViewById(R.id.adView);
+            // old code
+//                if (Define.CODE_MODE == Define.DEBUG_MODE)
+//                    MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id_test));
+//                else // real app id
+//                    MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id));
+//
+//                // Load an ad into the AdMob banner view.
+//                AdView adView = (AdView) rootView.findViewById(R.id.adView);
+//                AdRequest adRequest = new AdRequest.Builder().build();
+//                adView.loadAd(adRequest);
+
+            // new code
+            // Initialize the Mobile Ads SDK.
+            MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
+                @Override
+                public void onInitializationComplete(InitializationStatus initializationStatus) {}
+            });
+
+            // get test ads on a physical device
+//            String android_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+//            String deviceId = md5(android_id).toUpperCase();
+//
+//            Log.d("TabsHost  <deviceId>" , deviceId);
+//
+//            MobileAds.setRequestConfiguration(
+//                    new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList(deviceId))
+//                            .build());
+
+            // Create an ad request.
             AdRequest adRequest = new AdRequest.Builder().build();
+
+            adView = rootView.findViewById(R.id.adView);
+            // Start loading the ad in the background.
             adView.loadAd(adRequest);
         }
         return rootView;
     }
+
+    // get MD5
+//    private String md5(String md5) {
+//        try {
+//            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+//            byte[] array = md.digest(md5.getBytes());
+//            StringBuffer sb = new StringBuffer();
+//            for (int i = 0; i < array.length; ++i) {
+//                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+//            }
+//            return sb.toString();
+//        } catch (java.security.NoSuchAlgorithmException e) {
+//        }
+//        return null;
+//    }
 
     /**
      * Add pages
@@ -389,6 +433,10 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // set long click listener
         setLongClickListener();
+
+        if (adView != null) {
+            adView.resume();
+        }
     }
 
     @Override
@@ -398,6 +446,18 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         //  Remove fragments
         if(!MainAct.mAct.isDestroyed())
             removeTabs();//Put here will solve onBackStackChanged issue (no Page_recycler / _onCreate)
+
+        if (adView != null) {
+            adView.pause();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (adView != null) {
+            adView.destroy();
+        }
     }
 
     // store scroll of recycler view
