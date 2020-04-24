@@ -45,6 +45,18 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="ToolbarTitleTheme" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textStyle">normal</item>
+        <!-- include other attributes you want to change: textColor, textStyle, etc -->
+    </style>
+
+    <style name="ToolbarSubtitleTheme" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
 <!--
     <style name="cwEditText" parent="@android:style/Widget.Holo.Light.EditText">
         <item name="android:textSize">28sp</item>
