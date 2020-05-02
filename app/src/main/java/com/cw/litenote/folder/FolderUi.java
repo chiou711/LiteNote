@@ -86,6 +86,12 @@ public class FolderUi
         View rootView = act.getLayoutInflater().inflate(R.layout.add_new_folder, null);
         final TouchableEditText editFolderName = (TouchableEditText) rootView.findViewById(R.id.new_folder_name);
 
+	    // set hint
+	    ((EditText)editFolderName).setHint(hintFolderName);
+
+	    // request cursor
+	    editFolderName.requestFocus();
+
         // set cursor
 //        try {
 //            Field f = TextView.class.getDeclaredField("mCursorDrawableRes");

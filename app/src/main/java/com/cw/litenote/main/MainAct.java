@@ -1787,9 +1787,11 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             System.out.println("MainAct / MediaBrowserCompat.Callback / _onConnected");
             try {
-                mMediaControllerCompat = new MediaControllerCompat(mAct, mMediaBrowserCompat.getSessionToken());
-                mMediaControllerCompat.registerCallback(mMediaControllerCompatCallback);
-                MediaControllerCompat.setMediaController(mAct,mMediaControllerCompat);
+                if(mMediaBrowserCompat != null) {
+                    mMediaControllerCompat = new MediaControllerCompat(mAct, mMediaBrowserCompat.getSessionToken());
+                    mMediaControllerCompat.registerCallback(mMediaControllerCompatCallback);
+                    MediaControllerCompat.setMediaController(mAct, mMediaControllerCompat);
+                }
             } catch( RemoteException e ) {
                 System.out.println("MainAct / MediaBrowserCompat.Callback / RemoteException");
             }
