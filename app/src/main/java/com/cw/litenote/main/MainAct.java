@@ -1580,9 +1580,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             return true;
 
             case MenuId.DELETE_PAGES:
+                //hide the menu
+                mMenu.setGroupVisible(R.id.group_notes, false);
+                mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+
                 if(dB_folder.getPagesCount(true)>0)
                 {
-                    mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
                     DeletePages delPgsFragment = new DeletePages();
                     mFragmentTransaction = mFragmentManager.beginTransaction();
                     mFragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
@@ -1667,7 +1670,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.SEND_PAGES:
-                mMenu.setGroupVisible(R.id.group_notes, false); //hide the menu
+                //hide the menu
+                mMenu.setGroupVisible(R.id.group_notes, false);
+                mMenu.setGroupVisible(R.id.group_pages_and_more, false);
 
                 if(dB_folder.getPagesCount(true)>0)
                 {
