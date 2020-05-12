@@ -582,6 +582,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         return false;
     }
 
+    private boolean isStorageRequested = false;
+    private boolean isStorageRequestedImport = false;
+    private boolean isStorageRequestedExport = false;
 
     // callback of granted permission
     @Override
@@ -595,6 +598,18 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         {
             switch (requestCode)
             {
+                case Util.PERMISSIONS_REQUEST_STORAGE:
+                    isStorageRequested = true;
+                    break;
+
+                case Util.PERMISSIONS_REQUEST_STORAGE_IMPORT:
+                    isStorageRequestedImport = true;
+                    break;
+
+                case Util.PERMISSIONS_REQUEST_STORAGE_EXPORT:
+                    isStorageRequestedExport = true;
+                    break;
+
                 case Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_YES:
                     if(Define.DEFAULT_CONTENT == Define.BY_DOWNLOAD)
                         createDefaultContent_byDownload();
@@ -869,16 +884,65 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         System.out.println("MainAct / _onResumeFragments ");
         super.onResumeFragments();
 
-//		// fix: home button failed after power off/on in Config fragment
-        if(bEULA_accepted) {
-            mFragmentManager.popBackStack();
+        if( isStorageRequested ||
+            isStorageRequestedImport ||
+            isStorageRequestedExport   )
+        {
+            //hide the menu
+            mMenu.setGroupVisible(R.id.group_notes, false);
+            mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-            if(!mAct.isDestroyed()) {
-	            System.out.println("MainAct / _onResumeFragments / mAct is not Destroyed()");
-	            openFolder();
+            if(isStorageRequested)
+            {
+                DB_folder dB_folder = new DB_folder(this, Pref.getPref_focusView_folder_tableId(this));
+                if (dB_folder.getPagesCount(true) > 0) {
+                    MailPagesFragment mailFragment = new MailPagesFragment();
+                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                    transaction.replace(R.id.content_frame, mailFragment, "mail").addToBackStack(null).commit();
+                } else {
+                    Toast.makeText(this, R.string.no_page_yet, Toast.LENGTH_SHORT).show();
+                }
+                isStorageRequested = false;
             }
-            else
-	            System.out.println("MainAct / _onResumeFragments / mAct is Destroyed()");
+
+            if(isStorageRequestedImport) {
+                // replace fragment
+                Import_filesList importFragment = new Import_filesList();
+                transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                transaction.replace(R.id.content_frame, importFragment, "import").addToBackStack(null).commit();
+
+                isStorageRequestedImport = false;
+            }
+
+            if(isStorageRequestedExport)
+            {
+                DB_folder dB_folder = new DB_folder(this, Pref.getPref_focusView_folder_tableId(this));
+                if (dB_folder.getPagesCount(true) > 0) {
+                    Export_toSDCardFragment exportFragment = new Export_toSDCardFragment();
+                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                    transaction.replace(R.id.content_frame, exportFragment, "export").addToBackStack(null).commit();
+                } else {
+                    Toast.makeText(this, R.string.no_page_yet, Toast.LENGTH_SHORT).show();
+                }
+                isStorageRequestedExport = false;
+            }
+
+            if (FolderUi.mHandler != null)
+                FolderUi.mHandler.removeCallbacks(FolderUi.mTabsHostRun);
+        }
+        // fix: home button failed after power off/on in Config fragment
+        else {
+//		// fix: home button failed after power off/on in Config fragment
+            if (bEULA_accepted) {
+                mFragmentManager.popBackStack();
+
+                if (!mAct.isDestroyed()) {
+                    System.out.println("MainAct / _onResumeFragments / mAct is not Destroyed()");
+                    openFolder();
+                } else
+                    System.out.println("MainAct / _onResumeFragments / mAct is Destroyed()");
+            }
         }
     }
 
@@ -1644,45 +1708,75 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 return true;
 
             case MenuId.IMPORT_FROM_SD_CARD:
-                //hide the menu
-                mMenu.setGroupVisible(R.id.group_notes, false);
-                mMenu.setGroupVisible(R.id.group_pages_and_more, false);
-                // replace fragment
-                Import_filesList importFragment = new Import_filesList();
-                transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                transaction.replace(R.id.content_frame, importFragment,"import").addToBackStack(null).commit();
+                if( (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && //API23
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) // check permission
+                                != PackageManager.PERMISSION_GRANTED))
+                {
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE},
+                            Util.PERMISSIONS_REQUEST_STORAGE_IMPORT);
+                }
+                else {
+                    //hide the menu
+                    mMenu.setGroupVisible(R.id.group_notes, false);
+                    mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                    // replace fragment
+                    Import_filesList importFragment = new Import_filesList();
+                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                    transaction.replace(R.id.content_frame, importFragment, "import").addToBackStack(null).commit();
+                }
                 return true;
 
             case MenuId.EXPORT_TO_SD_CARD:
-                //hide the menu
-                mMenu.setGroupVisible(R.id.group_notes, false);
-                mMenu.setGroupVisible(R.id.group_pages_and_more, false);
-                if(dB_folder.getPagesCount(true)>0)
+                if( (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && //API23
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) // check permission
+                                != PackageManager.PERMISSION_GRANTED))
                 {
-                    Export_toSDCardFragment exportFragment = new Export_toSDCardFragment();
-                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                    transaction.replace(R.id.content_frame, exportFragment,"export").addToBackStack(null).commit();
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE},
+                            Util.PERMISSIONS_REQUEST_STORAGE_EXPORT);
                 }
-                else
-                {
-                    Toast.makeText(this, R.string.no_page_yet, Toast.LENGTH_SHORT).show();
+                else {
+                    //hide the menu
+                    mMenu.setGroupVisible(R.id.group_notes, false);
+                    mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+                    if (dB_folder.getPagesCount(true) > 0) {
+                        Export_toSDCardFragment exportFragment = new Export_toSDCardFragment();
+                        transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                        transaction.replace(R.id.content_frame, exportFragment, "export").addToBackStack(null).commit();
+                    } else {
+                        Toast.makeText(this, R.string.no_page_yet, Toast.LENGTH_SHORT).show();
+                    }
                 }
                 return true;
 
             case MenuId.SEND_PAGES:
-                //hide the menu
-                mMenu.setGroupVisible(R.id.group_notes, false);
-                mMenu.setGroupVisible(R.id.group_pages_and_more, false);
-
-                if(dB_folder.getPagesCount(true)>0)
+                if( (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) && //API23
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) // check permission
+                                != PackageManager.PERMISSION_GRANTED))
                 {
-                    MailPagesFragment mailFragment = new MailPagesFragment();
-                    transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
-                    transaction.replace(R.id.content_frame, mailFragment,"mail").addToBackStack(null).commit();
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE},
+                            Util.PERMISSIONS_REQUEST_STORAGE);
                 }
-                else
-                {
-                    Toast.makeText(this, R.string.no_page_yet, Toast.LENGTH_SHORT).show();
+                else {
+                    //hide the menu
+                    mMenu.setGroupVisible(R.id.group_notes, false);
+                    mMenu.setGroupVisible(R.id.group_pages_and_more, false);
+
+                    if (dB_folder.getPagesCount(true) > 0) {
+                        MailPagesFragment mailFragment = new MailPagesFragment();
+                        transaction.setCustomAnimations(R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_left, R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_right);
+                        transaction.replace(R.id.content_frame, mailFragment, "mail").addToBackStack(null).commit();
+                    } else {
+                        Toast.makeText(this, R.string.no_page_yet, Toast.LENGTH_SHORT).show();
+                    }
                 }
                 return true;
 

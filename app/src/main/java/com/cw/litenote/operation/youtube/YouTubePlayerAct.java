@@ -61,6 +61,27 @@ public class YouTubePlayerAct extends YouTubeFailureRecoveryActivity
         // initialize YouTubeView
         YouTubePlayerView youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
         youTubeView.initialize(YouTubeDeveloperKey.DEVELOPER_KEY, this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(youTube_player != null)
+            youTube_player.release();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        bShow_landscape_prev_next_control = false;
+        setLayout();
+    }
+
+
+    YouTubePlayer youTube_player;
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+        youTube_player = youTubePlayer;
 
         btn_group = findViewById(R.id.youtube_control);
         // image: previous button
@@ -99,21 +120,6 @@ public class YouTubePlayerAct extends YouTubeFailureRecoveryActivity
                     prepare_play_YouTube(youTube_player);
             }
         });
-
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        bShow_landscape_prev_next_control = false;
-        setLayout();
-    }
-
-
-    YouTubePlayer youTube_player;
-    @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
-        youTube_player = youTubePlayer;
 
         youTube_player.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
             @Override
@@ -167,7 +173,7 @@ public class YouTubePlayerAct extends YouTubeFailureRecoveryActivity
 
     /**
      *  Prepare to play YouTube
-     * @param youTubePlayer
+     * @param youTubePlayer YouTubePlayer instance
      */
     void prepare_play_YouTube(YouTubePlayer youTubePlayer)
     {
@@ -196,7 +202,12 @@ public class YouTubePlayerAct extends YouTubeFailureRecoveryActivity
            Util.isEmptyString(playListIdStr) )
         {
             // auto start playing
-            youTubePlayer.loadVideo(idStr);// cf. _cueVideo for manual start
+            try {
+                youTubePlayer.loadVideo(idStr); // cf. _cueVideo for manual start
+            } catch (IllegalStateException e) {
+                youTubeView = findViewById(R.id.youtube_view);
+                youTubeView.initialize(YouTubeDeveloperKey.DEVELOPER_KEY, this);
+            }
         }
         // v and list
         else if(!Util.isEmptyString(idStr) &&
