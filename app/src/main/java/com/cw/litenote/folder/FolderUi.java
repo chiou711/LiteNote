@@ -19,11 +19,13 @@ package com.cw.litenote.folder;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -49,6 +51,7 @@ import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -462,7 +465,7 @@ public class FolderUi
 	private static int mFolderTableId2;
 	private static String mFolderTitle1;
 	private static String mFolderTitle2;
-	public static void swapFolderRows(int startPosition, int endPosition)
+	static void swapFolderRows(int startPosition, int endPosition)
 	{
         Activity act = MainAct.mAct;
 		DB_drawer db_drawer = new DB_drawer(act);
@@ -488,7 +491,7 @@ public class FolderUi
 	}
 
     // Update focus position
-    public static void updateFocus_folderPosition()
+    static void updateFocus_folderPosition()
     {
     	Activity act = MainAct.mAct;
         DB_drawer db_drawer = new DB_drawer(act);
@@ -527,7 +530,14 @@ public class FolderUi
 	        act.invalidateOptionsMenu();
 
 	        // use Runnable to make sure only one folder background is seen
-	        startTabsHostRun();
+	        PowerManager pm = (PowerManager) act.getSystemService(Context.POWER_SERVICE);
+	        boolean isScreenOn = Objects.requireNonNull(pm).isScreenOn();
+	        if( isScreenOn) {
+		        System.out.println("FolderUi / _selectFolder / screen ON");
+		        startTabsHostRun();
+	        } else
+		        System.out.println("FolderUi / _selectFolder / screen OFF");
+
         }
     }
 

@@ -156,7 +156,7 @@ public class Drawer {
                         // will call Folder_adapter _getView to update audio playing high light
                         listView.invalidateViews();
                     }
-                }
+                }// onDrawerOpened
 
                 public void onDrawerClosed(View view)
                 {
@@ -178,9 +178,7 @@ public class Drawer {
                                 MainAct.mToolbar.setLogo(null);
                             }
                         }
-
-                        MainAct.openFolder();
-                    }
+                    } // onDrawerClosed
                 }
            };
     }

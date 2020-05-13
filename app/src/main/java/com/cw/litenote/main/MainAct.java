@@ -421,6 +421,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         MainAct.mPlaying_folderPos = -1;
         Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
         TabsHost.audioPlayTabPos = -1;
+
+        if(bEULA_accepted)
+            configLayoutView(); //createAssetsFile inside
     }
 
 
@@ -873,8 +876,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
         // Sync the toggle state after onRestoreInstanceState has occurred.
         if(bEULA_accepted) {
-            configLayoutView(); //createAssetsFile inside
-            drawer.drawerToggle.syncState();
+            if(drawer != null)
+                drawer.drawerToggle.syncState();
         }
     }
 
@@ -935,7 +938,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         else {
 //		// fix: home button failed after power off/on in Config fragment
             if (bEULA_accepted) {
-                mFragmentManager.popBackStack();
+	            if(mFragmentManager != null)
+                    mFragmentManager.popBackStack();
 
                 if (!mAct.isDestroyed()) {
                     System.out.println("MainAct / _onResumeFragments / mAct is not Destroyed()");
