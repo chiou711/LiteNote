@@ -367,20 +367,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 DB_page.setFocusPage_tableId(Pref.getPref_focusView_page_tableId(this));
             }//if(ENABLE_DB_CHECK)
 
-            // get focus folder table Id, default folder table Id: 1
-            DB_drawer dB_drawer = new DB_drawer(this);
-            dB_drawer.open();
-            if (savedInstanceState == null) {
-                for (int i = 0; i < dB_drawer.getFoldersCount(false); i++) {
-                    if (dB_drawer.getFolderTableId(i, false) == Pref.getPref_focusView_folder_tableId(this)) {
-                        FolderUi.setFocus_folderPos(i);
-                        System.out.println("MainAct / _mainAction / FolderUi.getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
-                    }
-                }
-                Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
-            }
-            dB_drawer.close();
-
             // enable ActionBar app icon to behave as action to toggle nav drawer
 //	        getActionBar().setDisplayHomeAsUpEnabled(true);
 //	        getActionBar().setHomeButtonEnabled(true);
@@ -878,6 +864,18 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         if(bEULA_accepted) {
             if(drawer != null)
                 drawer.drawerToggle.syncState();
+
+            // get focus folder table Id, default folder table Id: 1
+            DB_drawer dB_drawer = new DB_drawer(this);
+            dB_drawer.open();
+            for (int i = 0; i < dB_drawer.getFoldersCount(false); i++) {
+                if (dB_drawer.getFolderTableId(i, false) == Pref.getPref_focusView_folder_tableId(this)) {
+                    FolderUi.setFocus_folderPos(i);
+                    System.out.println("MainAct / _mainAction / FolderUi.getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
+                }
+            }
+            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
+            dB_drawer.close();
         }
     }
 

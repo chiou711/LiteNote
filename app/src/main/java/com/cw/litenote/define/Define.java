@@ -56,23 +56,24 @@ public class Define {
          *  1. for AdMob: it works after Google Play store release
          *  2. for assets mode: need to enable build.gradle assets.srcDirs = ['preferred/assets/']
          */
-         /** 1 debug, initial */
-//        int mode = DEBUG_DEFAULT_BY_INITIAL;
 
-        /** 2 debug, assets */
+        /** 1 debug, assets */
 //        int mode  = DEBUG_DEFAULT_BY_ASSETS;
+
+        /** 2 release, assets */
+        int mode  =  RELEASE_DEFAULT_BY_ASSETS;
 
         /** 3 debug, download */
 //        int mode  =  DEBUG_DEFAULT_BY_DOWNLOAD;
 
-        /** 4 release, initial */
-//        int mode  =  Define.RELEASE_DEFAULT_BY_INITIAL;
-
-        /** 5 release, assets */
-        int mode  =  RELEASE_DEFAULT_BY_ASSETS;
-
-        /** 6 release, download */
+        /** 4 release, download */
 //        int mode  =  RELEASE_DEFAULT_BY_DOWNLOAD;
+
+        /** 5 debug, initial */
+//        int mode = DEBUG_DEFAULT_BY_INITIAL;
+
+        /** 6 release, initial */
+//        int mode  =  Define.RELEASE_DEFAULT_BY_INITIAL;
 
         setAppBuildMode(mode);
     }

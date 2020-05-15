@@ -18,6 +18,7 @@ package com.cw.litenote.config;
 
 
 import java.io.File;
+import java.util.Objects;
 
 import com.cw.litenote.folder.FolderUi;
 import com.cw.litenote.operation.audio.Audio_manager;
@@ -553,7 +554,7 @@ public class Config extends Fragment
 				.show();
 	}
 
-	DialogInterface.OnClickListener listener_recover_default = new DialogInterface.OnClickListener(){
+	private DialogInterface.OnClickListener listener_recover_default = new DialogInterface.OnClickListener(){
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 
@@ -562,7 +563,7 @@ public class Config extends Fragment
 				Audio_manager.stopAudioPlayer();
 
 			//remove preference
-			clearSharedPreferencesForSettings(getActivity());
+			clearSharedPreferencesForSettings(Objects.requireNonNull(getActivity()));
 
 			dialog.dismiss();
 
@@ -580,35 +581,35 @@ public class Config extends Fragment
 		}
 	};
 
-    public static void clearSharedPreferencesForSettings(Context context)
+    private static void clearSharedPreferencesForSettings(Context context)
 	{
 		File dir = new File(context.getFilesDir().getParent() + "/shared_prefs/");
 
 		String[] children = dir.list();
 
-		for (int i = 0; i < children.length; i++) {
-			System.out.println("original: " + children[i]);
+		for (String child : children) {
+			System.out.println("original: " + child);
 
-            // EULA is using PreferenceManager.getDefaultSharedPreferences(MainAct.mAct)
-            // it will create packageName_preferences.xml
+			// EULA is using PreferenceManager.getDefaultSharedPreferences(MainAct.mAct)
+			// it will create packageName_preferences.xml
 
-			// clear each preferences XML file content, except default shared preferences file
-            if(!children[i].contains("preferences")) {
-                context.getSharedPreferences(children[i].replace(".xml", ""), Context.MODE_PRIVATE)
-                        .edit().clear().apply();
-                System.out.println("clear: " + children[i]);
-            }
+			// clear each preferences XML file content, except DEFAULT shared preferences file
+			if (!child.contains("preferences")) {
+				context.getSharedPreferences(child.replace(".xml", ""), Context.MODE_PRIVATE)
+						.edit().clear().apply();
+				System.out.println("clear: " + child);
+			}
 		}
 
 		// Make sure it has enough time to save all the committed changes
 		try { Thread.sleep(1000); } catch (InterruptedException e) {}
 
-		for (int i = 0; i < children.length; i++) {
+		for (String child : children) {
 			// delete the files
-            if(!children[i].contains("preferences")) {
-                new File(dir, children[i]).delete();
-                System.out.println("delete:" + " " + children[i]);
-            }
+			if (!child.contains("preferences")) {
+				new File(dir, child).delete();
+				System.out.println("delete:" + " " + child);
+			}
 		}
     }
     

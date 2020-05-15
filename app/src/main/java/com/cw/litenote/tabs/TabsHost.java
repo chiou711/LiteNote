@@ -112,7 +112,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                     rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
             }
             else
-                rootView = inflater.inflate(R.layout.tabs_host_landscape, container, false);
+                rootView = inflater.inflate(R.layout.tabs_host_landscape_no_admob, container, false);
         }
         else {
             if(Define.ENABLE_ADMOB) {
@@ -122,7 +122,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                     rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
             }
             else
-                rootView = inflater.inflate(R.layout.tabs_host_portrait, container, false);
+                rootView = inflater.inflate(R.layout.tabs_host_portrait_no_admob, container, false);
         }
 
         // view pager
