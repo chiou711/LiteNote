@@ -459,6 +459,13 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 			    }
 			});
 
+			holder.thumbWeb.setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					v.performClick();
+					return true;
+				}
+			});
 
 			if (Util.isEmptyString(strTitle)) {
 
