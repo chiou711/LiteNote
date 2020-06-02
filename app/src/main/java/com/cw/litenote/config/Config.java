@@ -42,9 +42,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
@@ -83,6 +85,9 @@ public class Config extends Fragment
 		
 		//Set Take Picture Option
 		setTakeImageOption();
+
+		//set YouTube auto play
+		setYouTube_auto_play();
 
 		//Set YouTube launch delay
 		setYouTubeLaunchDelay();
@@ -267,6 +272,34 @@ public class Config extends Fragment
 			dialog.dismiss();
 		}
    };
+
+	/**
+	 * Set YouTube auto play
+	 *
+	 */
+	private void setYouTube_auto_play(){
+		Switch sw = mRootView.findViewById(R.id.switch_youtube_auto_play);
+		if(Pref.getPref_is_autoPlay_YouTubeApi(getActivity()) ) {
+			sw.setChecked(true);
+			sw.setText(R.string.config_status_enabled);
+		}
+		else {
+			sw.setChecked(false);
+			sw.setText(R.string.config_status_disabled);
+		}
+
+		sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				Pref.setPref_is_autoPlay_YouTubeApi(getActivity(),isChecked);
+				if(isChecked)
+					sw.setText(R.string.config_status_enabled);
+				else
+					sw.setText(R.string.config_status_disabled);
+			}
+		});
+	}
+
 
 	/**
 	 *  set YouTube launch delay
