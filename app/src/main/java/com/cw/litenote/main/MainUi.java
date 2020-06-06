@@ -226,6 +226,27 @@ public class MainUi {
     }
 
     /**
+     *  get YouTube title
+     */
+    String getYouTubeTitle(AppCompatActivity act,int pos)
+    {
+        DB_page dB_page = new DB_page(act, TabsHost.getCurrentPageTableId());
+        int count = dB_page.getNotesCount(true);
+        if(pos >= count)
+        {
+            pos = 0;
+            Page_recycler.mCurrPlayPosition = 0;
+        }
+
+        String titleStr="";
+        if(pos < count)
+            titleStr =dB_page.getNoteTitle(pos,true);
+
+        return titleStr;
+    }
+
+
+    /**
      *  launch next YouTube intent
      */
     void launchNextYouTubeIntent(AppCompatActivity act, Handler handler, Runnable runCountDown)

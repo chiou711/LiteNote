@@ -1094,7 +1094,8 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     Handler handler;
     int count;
     String countStr;
-    String nextLinkTitle;
+    String nextLink;
+    String nextTitle;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -1134,15 +1135,16 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                 if(Page_recycler.mCurrPlayPosition >= TabsHost.getCurrentPage().getNotesCountInPage(mAct))
                     TabsHost.getCurrentPage().mCurrPlayPosition = 0; //back to first index
 
-                nextLinkTitle = mMainUi.getYouTubeLink(this,TabsHost.getCurrentPage().mCurrPlayPosition);
+                nextLink = mMainUi.getYouTubeLink(this,TabsHost.getCurrentPage().mCurrPlayPosition);
+                nextTitle = mMainUi.getYouTubeTitle(this,TabsHost.getCurrentPage().mCurrPlayPosition);
             }
-            while (!Util.isYouTubeLink(nextLinkTitle));
+            while (!Util.isYouTubeLink(nextLink));
 
             countStr = getResources().getString(R.string.message_continue_or_stop_YouTube_message);
             countStr = countStr.replaceFirst("[0-9]",String.valueOf(count));
 
             builder.setTitle(R.string.message_continue_or_stop_YouTube_title)
-                    .setMessage(nextLinkTitle +"\n\n" + countStr)
+                    .setMessage( "\n" + nextTitle +"\n\n" + countStr)
                     .setNegativeButton(R.string.confirm_dialog_button_no, new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -1195,7 +1197,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             count--;
             countStr = getResources().getString(R.string.message_continue_or_stop_YouTube_message);
             countStr = countStr.replaceFirst("[0-9]",String.valueOf(count));
-            messageView.setText(nextLinkTitle + "\n\n" +countStr);
+            messageView.setText( "\n" + nextTitle + "\n\n" +countStr);
 
             if(count>0)
                 handler.postDelayed(runCountDown,1000);

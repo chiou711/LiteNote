@@ -182,7 +182,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // if ENABLE_ADMOB = true, enable the following
         // test app id
         if(Define.ENABLE_ADMOB) {
-
             // old code
 //                if (Define.CODE_MODE == Define.DEBUG_MODE)
 //                    MobileAds.initialize(getActivity(), getActivity().getResources().getString(R.string.ad_mob_app_id_test));
