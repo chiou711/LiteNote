@@ -815,38 +815,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
     }
 
-    // for Rotate screen
-    @Override
-    protected void onSaveInstanceState(Bundle outState)
-    {
-       super.onSaveInstanceState(outState);
-        System.out.println("MainAct / onSaveInstanceState / getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
-        outState.putInt("NowFolderPosition", FolderUi.getFocus_folderPos());
-        outState.putInt("Playing_pageId", mPlaying_pagePos);
-        outState.putInt("Playing_folderPos", mPlaying_folderPos);
-        outState.putInt("SeekBarProgress", AudioUi_page.mProgress);
-        outState.putInt("AudioInfo_state", Audio_manager.getPlayerState());
-        if(FolderUi.mHandler != null)
-            FolderUi.mHandler.removeCallbacks(FolderUi.mTabsHostRun);
-        FolderUi.mHandler = null;
-    }
-
-    // for After Rotate
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState)
-    {
-        super.onRestoreInstanceState(savedInstanceState);
-        System.out.println("MainAct / _onRestoreInstanceState ");
-        if(savedInstanceState != null)
-        {
-            FolderUi.setFocus_folderPos(savedInstanceState.getInt("NowFolderPosition"));
-            mPlaying_pagePos = savedInstanceState.getInt("Playing_pageId");
-            mPlaying_folderPos = savedInstanceState.getInt("Playing_folderPos");
-            Audio_manager.setPlayerState(savedInstanceState.getInt("AudioInfo_state"));
-            AudioUi_page.mProgress = savedInstanceState.getInt("SeekBarProgress");
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -874,7 +842,6 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                     System.out.println("MainAct / _mainAction / FolderUi.getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
                 }
             }
-            Audio_manager.setPlayerState(Audio_manager.PLAYER_AT_STOP);
             dB_drawer.close();
         }
     }
