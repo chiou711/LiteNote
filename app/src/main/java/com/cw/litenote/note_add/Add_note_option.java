@@ -137,18 +137,18 @@ public class Add_note_option {
                     R.drawable.ic_ready_video,
                     R.string.note_ready_video));
         }
+
         // YouTube link
         addNoteList.add(new Add_note_option(ID_NEW_YOUTUBE_LINK,
                 android.R.drawable.ic_menu_share,
                 R.string.note_youtube_link));
-
 
         // Web link
         addNoteList.add(new Add_note_option(ID_NEW_WEB_LINK,
                 android.R.drawable.ic_menu_share,
                 R.string.note_web_link));
 
-            // Back
+        // Back
         addNoteList.add(new Add_note_option(ID_NEW_BACK,
                 R.drawable.ic_menu_back,
                 R.string.btn_Cancel));
@@ -379,6 +379,27 @@ public class Add_note_option {
                 holder.imageView = (ImageView) view.findViewById(R.id.grid_item_image);
                 holder.text = (TextView) view.findViewById(R.id.grid_item_text);
                 view.setTag(holder);
+
+                // set grid item background color
+                // text , drawing
+                if( (position == 0) || (position == 1) )
+                    view.setBackgroundColor( act.getResources().getColor(R.color.textGrid));
+                // recording, audio
+                else if((position == 2) || (position == 3))
+                    view.setBackgroundColor( act.getResources().getColor(R.color.audioGrid));
+                // picture, ready picture
+                else if ( (position == 4) || (position == 5) )
+                    view.setBackgroundColor( act.getResources().getColor(R.color.pictureGrid));
+                // video , ready video
+                else if((position == 6) || (position == 7))
+                    view.setBackgroundColor( act.getResources().getColor(R.color.videoGrid));
+                // link
+                else if((position == 8) || (position == 9))
+                    view.setBackgroundColor( act.getResources().getColor(R.color.linkGrid));
+                // others
+                else if((position == 10) || (position == 11))
+                    view.setBackgroundColor( act.getResources().getColor(R.color.otherGrid));
+
             } else {
                 holder = (ViewHolder) view.getTag();
             }
