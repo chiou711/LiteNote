@@ -119,17 +119,44 @@ public class ParseXmlToDB {
                             String folderName = text.trim();
                             if(mEnableInsertDB)
                             {
-                                // insert folder
                                 DB_drawer dB_drawer = new DB_drawer(MainAct.mAct);
-                                dB_drawer.insertFolder(folderTableId, folderName, true); // Note: must set false for DB creation stage
-                                dB_drawer.insertFolderTable(folderTableId, true);
+                                int folders_count = dB_drawer.getFoldersCount(true);
 
-                                Pref.setPref_focusView_folder_tableId(MainAct.mAct,folderTableId);
-                                DB_folder.setFocusFolder_tableId(folderTableId);
-                                TabsHost.setLastPageTableId(0);
+                                // get last folder Id
+                                long  lastFolderId = 0;
+                                for(int i=0; i<folders_count; i++)
+                                {
+                                    if(dB_drawer.getFolderId(i,true) > lastFolderId)
+                                        lastFolderId = dB_drawer.getFolderId(i,true);
+                                }
 
-                                mDb_folder = new DB_folder(MainAct.mAct, folderTableId);
-                                folderTableId++;
+                                // new last folder Id
+                                lastFolderId++;
+
+                                // insert new folder row
+                                dB_drawer.insertFolder((int)lastFolderId, folderName, true);
+
+                                // get last folder table Id
+                                int lastFolderTableId =0;
+                                for(int i=0;i<folders_count;i++)
+                                {
+                                    if(dB_drawer.getFolderTableId(i,true)>lastFolderTableId)
+                                        lastFolderTableId = dB_drawer.getFolderTableId(i,true);
+                                }
+
+                                // new last folder table Id
+                                lastFolderTableId++;
+
+                                // insert new folder table
+                                dB_drawer.insertFolderTable(lastFolderTableId, true);
+
+                                DB_folder.setFocusFolder_tableId(lastFolderTableId);
+
+                                Pref.setPref_focusView_folder_tableId(MainAct.mAct, lastFolderTableId);
+                                Pref.setPref_focusView_page_tableId(MainAct.mAct, 1);
+//                                TabsHost.setLastPageTableId(0);
+
+                                TabsHost.setFocus_tabPos(0);
                             }
                             fileBody = fileBody.concat(Util.NEW_LINE + "*** " + "Folder:" + " " + folderName + " ***");
                         }
@@ -140,6 +167,18 @@ public class ParseXmlToDB {
                             {
                                 int style = Util.getNewPageStyle(mContext);
 
+                                // get last page table Id
+                                mDb_folder = new DB_folder(MainAct.mAct,Pref.getPref_focusView_folder_tableId(mContext));
+                                int lastPageTableId = 0;
+                                for(int i=0; i<mDb_folder.getPagesCount(true); i++)
+                                {
+                                    if(mDb_folder.getPageTableId(i,true) > lastPageTableId)
+                                        lastPageTableId = mDb_folder.getPageTableId(i,true);
+                                }
+
+                                // set last page table Id
+                                TabsHost.setLastPageTableId(lastPageTableId);
+
                                 // style is not set in XML file, so insert default style instead
                                 mDb_folder.insertPage(DB_folder.getFocusFolder_tableName(),
                                                       pageName,
@@ -147,8 +186,9 @@ public class ParseXmlToDB {
                                                       style ,
                                                       true);
 
-                                // insert table for new tab
+                                // insert page table for new tab
                                 mDb_folder.insertPageTable(mDb_folder,DB_folder.getFocusFolder_tableId(), TabsHost.getLastPageTableId() + 1, true );
+
                                 // update last tab Id after Insert
                                 TabsHost.setLastPageTableId(TabsHost.getLastPageTableId() + 1);//todo ??? logic error? should be max page Id?
 
@@ -260,7 +300,9 @@ public class ParseXmlToDB {
                     stream.close();
                 }
                 catch (Exception e)
-                { }
+                {
+                    e.printStackTrace();
+                }
             }
         });
         thread.start();

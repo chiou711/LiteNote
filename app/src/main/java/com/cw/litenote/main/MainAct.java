@@ -304,8 +304,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             dialog_EULA.show();
         }
         else
-            doCreate(savedInstanceState);
-
+            doCreate();
     }
 
     // check permission dialog
@@ -334,7 +333,7 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     }
 
     // Do major create operation
-    void doCreate(Bundle savedInstanceState)
+    void doCreate()
     {
         System.out.println("MainAct / _doCreate");
 
@@ -919,12 +918,24 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
     public static void openFolder()
     {
         System.out.println("MainAct / _openFolder");
-        DB_drawer dB_drawer = new DB_drawer(mAct);
-        if (dB_drawer.getFoldersCount(true) > 0) {
-            System.out.println("MainAct / _openFolder / getFocus_folderPos() = " + FolderUi.getFocus_folderPos());
 
-            int focus_folderPos = FolderUi.getFocus_folderPos();
-            FolderUi.selectFolder(mAct, focus_folderPos);
+        DB_drawer dB_drawer = new DB_drawer(mAct);
+        int folders_count = dB_drawer.getFoldersCount(true);
+
+        if (folders_count > 0) {
+            int pref_focus_table_id = Pref.getPref_focusView_folder_tableId(MainAct.mAct);
+            for(int folder_pos=0; folder_pos<folders_count; folder_pos++)
+            {
+                if(dB_drawer.getFolderTableId(folder_pos,true) == pref_focus_table_id) {
+                    // select folder
+                    FolderUi.selectFolder(mAct, folder_pos);
+
+                    // set focus folder position
+                    FolderUi.setFocus_folderPos(folder_pos);
+                }
+            }
+            // set focus table Id
+            DB_folder.setFocusFolder_tableId(pref_focus_table_id);
 
             if (mAct.getSupportActionBar() != null)
                 mAct.getSupportActionBar().setTitle(mFolderTitle);

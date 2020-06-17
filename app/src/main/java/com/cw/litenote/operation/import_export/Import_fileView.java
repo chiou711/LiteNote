@@ -58,7 +58,6 @@ public class Import_fileView extends Fragment
 
 //		getActivity().getActionBar().setDisplayShowHomeEnabled(false);
 
-
         Import_fileView_asyncTask task = null;
 		if(savedInstanceState == null) {
 			task = new Import_fileView_asyncTask(MainAct.mAct,rootView,filePath);

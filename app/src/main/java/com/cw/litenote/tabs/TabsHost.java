@@ -285,8 +285,10 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-        System.out.println("TabsHost / _onTabSelected: " + tab.getPosition());
+        System.out.println("TabsHost / _onTabSelected / tab position: " + tab.getPosition());
 
+        // TODO
+        //  note: tab position is kept after importing new XML, how to change it?
         setFocus_tabPos(tab.getPosition());
 
         // keep focus view page table Id
@@ -374,12 +376,14 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         // restore focus view page
         int pageCount = mTabsPagerAdapter.dbFolder.getPagesCount(true);
-        for(int i=0;i<pageCount;i++)
+        System.out.println("TabsHost / _onResume / pageCount = " + pageCount);
+        for(int pos=0; pos<pageCount; pos++)
         {
-            int pageTableId = mTabsPagerAdapter.dbFolder.getPageTableId(i, true);
+            int pageTableId = mTabsPagerAdapter.dbFolder.getPageTableId(pos, true);
 
             if(pageTableId == Pref.getPref_focusView_page_tableId(MainAct.mAct)) {
-                setFocus_tabPos(i);
+                System.out.println("TabsHost / _onResume / set focus tab pos = " + pos);
+                setFocus_tabPos(pos);
                 setCurrentPageTableId(pageTableId);
             }
         }
@@ -442,6 +446,7 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
     public void onPause() {
         super.onPause();
         System.out.println("TabsHost / _onPause");
+
         //  Remove fragments
         if(!MainAct.mAct.isDestroyed())
             removeTabs();//Put here will solve onBackStackChanged issue (no Page_recycler / _onCreate)

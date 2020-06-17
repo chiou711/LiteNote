@@ -40,7 +40,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     TabsPagerAdapter(AppCompatActivity act, FragmentManager fm)
     {
-        super(fm);
+        super(fm,FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         int folderTableId = Pref.getPref_focusView_folder_tableId(act);
         dbFolder = new DB_folder(act, folderTableId);
     }
