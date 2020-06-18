@@ -205,6 +205,9 @@ public class DeleteFolders extends Fragment {
                 // get folder table id
                 int folderTableId = dbDrawer.getFolderTableId(i,false);
 
+                // remove focus view Key for page table Id
+                Pref.removePref_focusView_page_tableId_key(act, folderTableId);
+
                 // 1) delete related page tables
                 DB_folder dbFolder = new DB_folder(act, folderTableId);
                 int pgsCnt = dbFolder.getPagesCount(true);

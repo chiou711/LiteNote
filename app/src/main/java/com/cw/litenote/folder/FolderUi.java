@@ -272,6 +272,9 @@ public class FolderUi
         // get folder table Id
         int folderTableId = db_drawer.getFolderTableId(position,true);
 
+		// remove focus view Key for page table Id
+		Pref.removePref_focusView_page_tableId_key(act, folderTableId);
+
         // 1) delete related page table
         DB_folder dbFolder = new DB_folder(act, folderTableId);
         int pgsCnt = dbFolder.getPagesCount(true);
@@ -339,9 +342,6 @@ public class FolderUi
 
             }
         }
-
-        // remove focus view Key for page table Id
-        Pref.removePref_focusView_page_tableId_key(act, folderTableId);
 
         // refresh drawer list view
         folderAdapter.notifyDataSetChanged();

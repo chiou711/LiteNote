@@ -78,7 +78,7 @@ public class Pref
         SharedPreferences pref = act.getSharedPreferences("focus_view", 0);
         String keyPrefix = "KEY_FOCUS_VIEW_PAGE_TABLE_ID_";
         String keyName = keyPrefix.concat(String.valueOf(folderTableId));
-        pref.edit().remove(keyName).apply();
+        pref.edit().remove(keyName).commit();
     }
 
     // Set list view first visible Index of focus view
