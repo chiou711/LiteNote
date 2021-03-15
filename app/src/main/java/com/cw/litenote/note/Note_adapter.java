@@ -286,6 +286,10 @@ public class Note_adapter extends FragmentStatePagerAdapter
   			UtilVideo.mVideoView = null;
   			linkWebView.setVisibility(View.GONE);
   			imageView.setVisibility(View.VISIBLE);
+
+  			// workaround to fix no image in View note
+		    imageView.setZoom((float) 0.999);
+
   			try
 			{
 			    AsyncTaskAudioBitmap audioAsyncTask;
