@@ -375,7 +375,7 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 		if(Util.isEmptyString(pictureUri) &&
 		   Util.isYouTubeLink(linkUri)      )
 		{
-			pictureUri = "http://img.youtube.com/vi/"+Util.getYoutubeId(linkUri)+"/0.jpg";
+			pictureUri = "https://img.youtube.com/vi/"+Util.getYoutubeId(linkUri)+"/0.jpg";
 		}
 		else if(UtilImage.hasImageExtension(drawingUri, mAct ))
             pictureUri = drawingUri;

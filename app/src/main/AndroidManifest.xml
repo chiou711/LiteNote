@@ -23,6 +23,22 @@
                   android:required="false"/>
     <uses-feature android:name="android.hardware.telephony"
                   android:required="false"/>
+
+    <!--option 1-->
+    <!--    <queries>-->
+    <!--        <intent>-->
+    <!--            <action android:name="com.google.android.youtube.api.service.START" />-->
+    <!--        </intent>-->
+    <!--    </queries>-->
+
+    <!--    option 2-->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data  android:scheme="https" android:host="youtube.com" />
+        </intent>
+    </queries>
+
     <application
         android:name=".util.uil.UilApplication"
         android:allowBackup="true"

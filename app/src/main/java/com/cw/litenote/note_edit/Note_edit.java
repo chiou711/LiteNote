@@ -533,7 +533,7 @@ public class Note_edit extends Activity
 			@Override
 			public void onClick(DialogInterface dialog, int which) 
 			{
-	        	Intent intent_youtube_link = new Intent(Intent.ACTION_VIEW,Uri.parse("http://www.youtube.com"));
+	        	Intent intent_youtube_link = new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.youtube.com"));
 	        	startActivityForResult(intent_youtube_link,EDIT_LINK);
 	        	enSaveDb = false;
 			}
