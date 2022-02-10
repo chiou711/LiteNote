@@ -528,13 +528,14 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
     public static void setCurrentPageTableId(int id)
     {
+        System.out.println("TabsHost / _setCurrentPageTableId / id = " + id);
         mFocusPageTableId = id;
     }
 
 
     public static int getCurrentPageTableId()
     {
-        //System.out.println("TabsHost / _getCurrentPageTableId / mFocusPageTableId = " + mFocusPageTableId);
+        System.out.println("TabsHost / _getCurrentPageTableId / mFocusPageTableId = " + mFocusPageTableId);
         return mFocusPageTableId;
     }
 
@@ -658,13 +659,16 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
 
         final DB_folder mDbFolder = mTabsPagerAdapter.dbFolder;
         int pageId =  mDbFolder.getPageId(tabPos, true);
-        mDbFolder.open();
+
         // check if only one page left
-        int pagesCount = mDbFolder.getPagesCount(false);
+        int pagesCount = mDbFolder.getPagesCount(true);
         int mFirstPos_PageId = 1;
+
+        mDbFolder.open();
         Cursor mPageCursor = mDbFolder.getPageCursor();
         if(mPageCursor.isFirst())
             mFirstPos_PageId = pageId;
+        mDbFolder.close();
 
         if(pagesCount > 0)
         {
@@ -678,32 +682,35 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 boolean bGotNext = false;
                 while(!bGotNext){
                     try{
-                        mFirstPos_PageId =  mDbFolder.getPageId(cGetNextExistIndex, false);
+                        mFirstPos_PageId =  mDbFolder.getPageId(cGetNextExistIndex, true);
                         bGotNext = true;
                     }catch(Exception e){
                         bGotNext = false;
-                        cGetNextExistIndex++;}}
+                        cGetNextExistIndex++;
+                    }
+                }
             }
 
             //change to first existing page
-            int newFirstPageTblId = 0;
+            mDbFolder.open();
             for(int i=0 ; i<pagesCount; i++)
             {
                 if(	mDbFolder.getPageId(i, false)== mFirstPos_PageId)
                 {
-                    newFirstPageTblId =  mDbFolder.getPageTableId(i, false);
+                    int newFirstPageTblId =  mDbFolder.getPageTableId(i, false);
                     System.out.println("TabsHost / deletePage / newFirstPageTblId = " + newFirstPageTblId);
+                    Pref.setPref_focusView_page_tableId(activity, newFirstPageTblId);
                 }
             }
-            System.out.println("TabsHost / deletePage / --- after delete / newFirstPageTblId = " + newFirstPageTblId);
-            Pref.setPref_focusView_page_tableId(activity, newFirstPageTblId);//todo Could be 0?
+            mDbFolder.close();
+
+//            Pref.setPref_focusView_page_tableId(activity, newFirstPageTblId);//todo Could be 0?
         }
 //		else
 //		{
 //             Toast.makeText(activity, R.string.toast_keep_one_page , Toast.LENGTH_SHORT).show();
 //             return;
 //		}
-        mDbFolder.close();
 
         // get page table Id for dropping
         int pageTableId = mDbFolder.getPageTableId(tabPos, true);

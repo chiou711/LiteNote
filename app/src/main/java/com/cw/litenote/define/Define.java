@@ -58,10 +58,10 @@ public class Define {
          */
 
         /** 1 debug, assets */
-//        int mode  = DEBUG_DEFAULT_BY_ASSETS;
+        int mode  = DEBUG_DEFAULT_BY_ASSETS;
 
         /** 2 release, assets */
-        int mode  =  RELEASE_DEFAULT_BY_ASSETS;
+//        int mode  =  RELEASE_DEFAULT_BY_ASSETS;
 
         /** 3 debug, download */
 //        int mode  =  DEBUG_DEFAULT_BY_DOWNLOAD;

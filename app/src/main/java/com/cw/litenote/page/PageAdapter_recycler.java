@@ -184,8 +184,9 @@ public class PageAdapter_recycler extends RecyclerView.Adapter<PageAdapter_recyc
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, final int _position) {
 
+    	int position = holder.getAdapterPosition();
 //        System.out.println("PageAdapter_recycler / _onBindViewHolder / position = " + position);
 
         // style

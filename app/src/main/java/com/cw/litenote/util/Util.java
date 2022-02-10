@@ -1739,6 +1739,7 @@ public class Util
 		return pictureUri;
 	}
 
+	public static final int STORAGE_MANAGER_PERMISSION = 98;
 	final public static int YOUTUBE_LINK_INTENT = 99;
 	final public static int YOUTUBE_ADD_NEW_LINK_INTENT = 100;
 	//

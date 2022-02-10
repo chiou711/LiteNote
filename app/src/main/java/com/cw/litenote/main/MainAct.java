@@ -71,6 +71,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.os.StrictMode;
@@ -80,6 +81,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -235,7 +237,9 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
                             dialog.dismiss();
 
                             // check build version for permission request (starts from API 23)
-                            if (Build.VERSION.SDK_INT >= 23)
+                            if(Build.VERSION.SDK_INT >= 30)
+                                checkStorageManagerPermission();
+                            else if (Build.VERSION.SDK_INT >= 23)
                                 checkPermission(savedInstanceState, Util.PERMISSIONS_REQUEST_STORAGE_WITH_DEFAULT_CONTENT_YES);
                             else {
                                 if (Define.DEFAULT_CONTENT == Define.BY_DOWNLOAD) {
@@ -305,6 +309,20 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         }
         else
             doCreate();
+    }
+
+    public void checkStorageManagerPermission() {
+        if (!Environment.isExternalStorageManager()) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //set this will go to _onActivityResult soon
+            startActivityForResult(intent,Util.STORAGE_MANAGER_PERMISSION);
+
+            // flow of this query:
+            // MainAct / _onPause / _onStop
+            // this query UI
+            // onActivityResult
+            // MainAct / _onStart / _onResume
+        }
     }
 
     // check permission dialog
@@ -1162,6 +1180,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
 
             if(Build.VERSION.SDK_INT >= O)//API26
                 isAddedOnNewIntent = false;
+        }
+
+        if(requestCode == Util.STORAGE_MANAGER_PERMISSION){
+            if(Environment.isExternalStorageManager()){
+                Pref.setPref_will_create_default_content(this, true);
+                recreate();
+            }
         }
     }
 

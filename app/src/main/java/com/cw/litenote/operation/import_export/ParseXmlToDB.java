@@ -88,6 +88,7 @@ public class ParseXmlToDB {
 
     public void parseXMLAndInsertDB(XmlPullParser myParser)
     {
+        System.out.println("ParseXmlToDB / myParser.getText()= " + myParser.getText());
         int event;
         String text=null;
         try
