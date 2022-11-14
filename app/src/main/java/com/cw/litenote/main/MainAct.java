@@ -475,8 +475,12 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
         // already has preferred tables
         Pref.setPref_will_create_default_content(this, false);
 
-        //workaround: fix blank page after adding default page (due to no TabsHost onPause/onResume cycles, but why?)
-        recreate();
+        // restart App after adding default page
+        finish();
+        Intent intent  = new Intent(this,MainAct.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     /**
@@ -1522,12 +1526,13 @@ public class MainAct extends AppCompatActivity implements FragmentManager.OnBack
             case MenuId.ADD_NEW_NOTE:
                 if(Build.VERSION.SDK_INT >= M)//api23
                 {
-                    // check permission
-                    int permissionWriteExtStorage = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    if(permissionWriteExtStorage == PackageManager.PERMISSION_GRANTED)
-                        Add_note_option.createSelection(this,true);
-                    else
-                        Add_note_option.createSelection(this,false);
+                    // create selection list
+                    if(Build.VERSION.SDK_INT >= 30)
+                        Add_note_option.createSelection(this, Environment.isExternalStorageManager());
+                    else if (Build.VERSION.SDK_INT >= 23) {
+                        int permissionWriteExtStorage = ActivityCompat.checkSelfPermission(mAct, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        Add_note_option.createSelection(this, permissionWriteExtStorage == PackageManager.PERMISSION_GRANTED);
+                    }
                 }
                 else
                     Add_note_option.createSelection(this,true);

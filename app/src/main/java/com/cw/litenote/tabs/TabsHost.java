@@ -703,8 +703,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
                 }
             }
             mDbFolder.close();
-
-//            Pref.setPref_focusView_page_tableId(activity, newFirstPageTblId);//todo Could be 0?
         }
 //		else
 //		{
@@ -719,7 +717,6 @@ public class TabsHost extends AppCompatDialogFragment implements TabLayout.OnTab
         // delete tab name
         mDbFolder.dropPageTable(pageTableId,true);
         mDbFolder.deletePage(DB_folder.getFocusFolder_tableName(),pageId,true);
-//        mPagesCount--;
 
         // After Delete page, update highlight tab
         if(getFocus_tabPos() < MainAct.mPlaying_pagePos)

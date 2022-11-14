@@ -990,7 +990,6 @@ public class Util
         }
     }
     
-    static boolean isValid = false;
     static String mStringUrl;
     public static int mResponseCode;
     static String mResponseMessage;
