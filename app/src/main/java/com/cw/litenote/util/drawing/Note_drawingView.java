@@ -351,6 +351,7 @@ public class Note_drawingView extends View
         values.put(Images.Media.TITLE, fileName);
         values.put(Images.Media.DATE_ADDED, System.currentTimeMillis());
         values.put(Images.Media.MIME_TYPE, "image/jpg");
+        values.put(Images.Media.MIME_TYPE, "image/jpeg");
 
         String uriStr = "file://"+ dirString +"/" +fileName +".jpg";
 
