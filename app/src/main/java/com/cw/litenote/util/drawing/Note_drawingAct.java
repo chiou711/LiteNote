@@ -89,12 +89,16 @@ public class Note_drawingAct extends Activity
     @Override
     protected void onResume() {
         super.onResume();
+        // unspecified
+//        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+
+        // portrait
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 
     @Override
